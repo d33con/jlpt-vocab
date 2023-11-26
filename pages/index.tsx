@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import type { GetServerSideProps } from "next";
+import React from "react";
 import Layout from "../components/Layout";
 import Post, { PostProps } from "../components/Post";
 import prisma from "../lib/prisma";
