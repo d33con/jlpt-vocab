@@ -6,204 +6,90 @@ import { signOut, useSession } from "next-auth/react";
 const Header: React.FC = () => {
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
-    router.pathname === pathname;
+    router.asPath === pathname;
 
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
 
   let left = (
-    <div className="left">
+    <div>
       <Link href="/" legacyBehavior>
-        <a className="bold" data-active={isActive("/")}>
-          Feed
+        <a className="font-bold" data-active={isActive("/")}>
+          Home
         </a>
       </Link>
-      <style jsx>{`
-        .bold {
-          font-weight: bold;
-        }
-
-        a {
-          text-decoration: none;
-          color: #000;
-          display: inline-block;
-        }
-
-        .left a[data-active="true"] {
-          color: gray;
-        }
-
-        a + a {
-          margin-left: 1rem;
-        }
-      `}</style>
     </div>
   );
 
   let right = null;
 
-  if (status === 'loading') {
-    left = (
-      <div className="left">
-        <Link href="/" legacyBehavior>
-          <a className="bold" data-active={isActive("/")}>
-            Feed
-          </a>
-        </Link>
-        <style jsx>{`
-          .bold {
-            font-weight: bold;
-          }
-
-          a {
-            text-decoration: none;
-            color: #000;
-            display: inline-block;
-          }
-
-          .left a[data-active="true"] {
-            color: gray;
-          }
-
-          a + a {
-            margin-left: 1rem;
-          }
-        `}</style>
-      </div>
-    );
+  if (status === "loading") {
     right = (
-      <div className="right">
+      <div className="ms-auto">
         <p>Validating session ...</p>
-        <style jsx>{`
-          .right {
-            margin-left: auto;
-          }
-        `}</style>
       </div>
     );
   }
 
   if (!session) {
     right = (
-      <div className="right">
+      <div className="ms-auto">
         <Link href="/api/auth/signin" legacyBehavior>
-          <a data-active={isActive("/signup")}>Log in</a>
+          <a
+            className="inline-block bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+            data-active={isActive("/signup")}
+          >
+            Log in
+          </a>
         </Link>
-        <style jsx>{`
-          a {
-            text-decoration: none;
-            color: #000;
-            display: inline-block;
-          }
-
-          a + a {
-            margin-left: 1rem;
-          }
-
-          .right {
-            margin-left: auto;
-          }
-
-          .right a {
-            border: 1px solid black;
-            padding: 0.5rem 1rem;
-            border-radius: 3px;
-          }
-        `}</style>
       </div>
     );
   }
 
   if (session) {
     left = (
-      <div className="left">
+      <div>
         <Link href="/" legacyBehavior>
-          <a className="bold" data-active={isActive("/")}>
-            Feed
+          <a className="font-bold mr-2" data-active={isActive("/")}>
+            Home
           </a>
         </Link>
-        <Link href="/drafts" legacyBehavior>
-          <a data-active={isActive("/drafts")}>My drafts</a>
+        <Link href="/level/5" legacyBehavior>
+          <a className="font-bold mr-2" data-active={isActive("/level/5")}>
+            JLPT Level 5
+          </a>
         </Link>
-        <style jsx>{`
-          .bold {
-            font-weight: bold;
-          }
-
-          a {
-            text-decoration: none;
-            color: #000;
-            display: inline-block;
-          }
-
-          .left a[data-active="true"] {
-            color: gray;
-          }
-
-          a + a {
-            margin-left: 1rem;
-          }
-        `}</style>
+        <Link href="/level/4" legacyBehavior>
+          <a className="font-bold mr-2" data-active={isActive("/level/4")}>
+            JLPT Level 4
+          </a>
+        </Link>
       </div>
     );
     right = (
-      <div className="right">
-        <p>
-          {session.user.name} ({session.user.email})
+      <div className="ms-auto">
+        <p className="inline-block pr-4 text-sm text-gray-800">
+          Welcome {session.user.name}
         </p>
-        <Link href="/create" legacyBehavior>
-          <button>
-            <a>New post</a>
+        <Link href="/my-words" legacyBehavior>
+          <button className="mr-2">
+            <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
+              My words
+            </a>
           </button>
         </Link>
         <button onClick={() => signOut()}>
-          <a>Log out</a>
+          <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
+            Log out
+          </a>
         </button>
-        <style jsx>{`
-          a {
-            text-decoration: none;
-            color: #000;
-            display: inline-block;
-          }
-
-          p {
-            display: inline-block;
-            font-size: 13px;
-            padding-right: 1rem;
-          }
-
-          a + a {
-            margin-left: 1rem;
-          }
-
-          .right {
-            margin-left: auto;
-          }
-
-          .right a {
-            border: 1px solid black;
-            padding: 0.5rem 1rem;
-            border-radius: 3px;
-          }
-
-          button {
-            border: none;
-          }
-        `}</style>
       </div>
     );
   }
 
   return (
-    <nav>
+    <nav className="flex p-8 items-center">
       {left}
       {right}
-      <style jsx>{`
-        nav {
-          display: flex;
-          padding: 2rem;
-          align-items: center;
-        }
-      `}</style>
     </nav>
   );
 };

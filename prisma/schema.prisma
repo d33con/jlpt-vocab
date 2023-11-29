@@ -59,6 +59,7 @@ model User {
   posts         Post[]
   accounts      Account[]
   sessions      Session[]
+  words         Word[]
 
   @@map(name: "users")
 }
@@ -70,4 +71,15 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+
+model Word {
+  id       Int    @id @default(autoincrement())
+  word     String
+  meaning  String
+  furigana String
+  romaji   String
+  level    Int
+  user     User?  @relation(fields: [userId], references: [id])
+  userId   Int?
 }
