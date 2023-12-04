@@ -7,10 +7,12 @@ export type WordProps = {
   furigana: string;
   romaji: string;
   level: number;
+  dateAdded: string;
 };
 
 const Word: React.FC<{ word: WordProps }> = ({ word }) => {
   const [showFurigana, setShowFurigana] = useState(false);
+  const [showMeaning, setShowMeaning] = useState(false);
 
   return (
     <div className="w-1/4 h-1/4 rounded overflow-hidden shadow-md p-16 text-center bg-slate-200">
@@ -27,7 +29,19 @@ const Word: React.FC<{ word: WordProps }> = ({ word }) => {
       >
         {word?.word}
       </p>
-      <p className="text-2xl text-gray-700">{word?.meaning}</p>
+      <p
+        className={`text-2xl text-gray-700 ${
+          showMeaning ? "visible" : "invisible"
+        }`}
+      >
+        {word?.meaning}
+      </p>
+      <button
+        onClick={() => setShowMeaning(!showMeaning)}
+        className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+      >
+        Show meaning
+      </button>
     </div>
   );
 };

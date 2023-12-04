@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
+import levels from "../utils/levels";
+import Image from "next/image";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -53,22 +55,29 @@ const Header: React.FC = () => {
             Home
           </a>
         </Link>
-        <Link href="/level/5" legacyBehavior>
-          <a className="font-bold mr-2" data-active={isActive("/level/5")}>
-            JLPT Level 5
-          </a>
-        </Link>
-        <Link href="/level/4" legacyBehavior>
-          <a className="font-bold mr-2" data-active={isActive("/level/4")}>
-            JLPT Level 4
-          </a>
-        </Link>
+        {levels.map((level) => (
+          <Link href={`/level/${level}`} legacyBehavior>
+            <a
+              className=" bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow mr-2"
+              data-active={isActive(`/level/${level}`)}
+            >
+              JLPT Level {level}
+            </a>
+          </Link>
+        ))}
       </div>
     );
     right = (
       <div className="ms-auto">
-        <p className="inline-block pr-4 text-sm text-gray-800">
+        <p className="flex justify-center items-center pr-4 text-sm text-gray-800">
           Welcome {session.user.name}
+          <Image
+            src={session.user.image}
+            alt={session.user.name}
+            width={50}
+            height={50}
+            className="rounded ml-4"
+          />
         </p>
         <Link href="/my-words" legacyBehavior>
           <button className="mr-2">

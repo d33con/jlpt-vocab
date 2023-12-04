@@ -10,12 +10,44 @@ export default async function handle(
   const session = await getServerSession(req, res, authOptions);
 
   if (session) {
-    const words = await prisma.word.findMany({
-      where: {
-        user: { email: session.user.email },
+    if (req.method == "PATCH") {
+      const result = await prisma.user.update({
+        where: {
+          email: session?.user?.email,
+        },
+        data: {
+          words: {
+            deleteMany: {
+              id: req.query.word.id,
+            },
+          },
+        },
+        select: {
+          words: true,
+        },
+      });
+      res.json(result);
+    }
+    if (req.query.level) {
+      const words = await prisma.user.findMany({
+        where: { email: session.user.email },
+        select: {
+          words: {
+            where: {
+              level: parseInt(req.query.level),
+            },
+          },
+        },
+      });
+      res.json(words[0]);
+    }
+    const words = await prisma.user.findMany({
+      where: { email: session.user.email },
+      select: {
+        words: true,
       },
     });
-    res.json(words);
+    res.json(words[0]);
   } else {
     res.status(401).send({ message: "Unauthorized" });
   }

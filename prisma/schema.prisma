@@ -82,4 +82,5 @@ model Word {
   level    Int
   user     User?  @relation(fields: [userId], references: [id])
   userId   Int?
+  dateAdded     DateTime  @default(now()) @map(name: "date_added")
 }

@@ -1,44 +1,51 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import Word from "../../components/Word";
-
-export type Word = {
-  word: string;
-  meaning: string;
-  furigana: string;
-  romaji: string;
-  level: number;
-};
+import Word, { WordProps } from "../../components/Word";
+import { useEffect, useState } from "react";
 
 const Level = () => {
-  const [word, setWord] = useState<Word>(null);
   const router = useRouter();
+  const [word, setWord] = useState<WordProps>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchNewWord();
+  }, [router.query.level]);
 
   async function fetchNewWord() {
-    const res = await fetch(
-      `https://jlpt-vocab-api.vercel.app/api/words/random?level=${router.query.level}`
-    );
-    const data = await res.json();
-    setWord(data);
+    try {
+      const res = await fetch(
+        `https://jlpt-vocab-api.vercel.app/api/words/random?level=${router.query.level}`
+      );
+      setWord(await res.json());
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+    }
   }
 
-  const addToMyWords = async () => {
+  async function addToMyWords() {
     try {
-      await fetch(`/api/word`, {
+      await fetch(`/api/words`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(word),
       });
       fetchNewWord();
     } catch (error) {
-      console.error(error);
+      setError(error);
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchNewWord();
-  }, [router.query.level]);
+  if (error) return <div>Sorry something went wrong: {error}</div>;
+
+  if (isLoading)
+    return (
+      <Layout>
+        <div className="text-center">Loading...</div>
+      </Layout>
+    );
 
   return (
     <Layout>
