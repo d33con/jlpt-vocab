@@ -49,48 +49,50 @@ const Header: React.FC = () => {
 
   if (session) {
     left = (
-      <div>
+      <div className="me-auto">
         <Link href="/" legacyBehavior>
           <a className="font-bold mr-2" data-active={isActive("/")}>
             Home
           </a>
         </Link>
         {levels.map((level) => (
-          <Link href={`/level/${level}`} legacyBehavior>
-            <a
-              className=" bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow mr-2"
-              data-active={isActive(`/level/${level}`)}
-            >
-              JLPT Level {level}
-            </a>
+          <Link href={`/level/${level}`} legacyBehavior key={level}>
+            <button className="mr-2">
+              <a
+                className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+                data-active={isActive(`/level/${level}`)}
+              >
+                JLPT Level {level}
+              </a>
+            </button>
           </Link>
         ))}
       </div>
     );
     right = (
       <div className="ms-auto">
-        <p className="flex justify-center items-center pr-4 text-sm text-gray-800">
-          Welcome {session.user.name}
+        <div className="flex justify-center items-center pr-4 text-gray-800">
+          <span>Welcome {session.user.name}</span>
           <Image
             src={session.user.image}
             alt={session.user.name}
-            width={50}
-            height={50}
-            className="rounded ml-4"
+            width={40}
+            height={40}
+            className="rounded mx-4"
           />
-        </p>
-        <Link href="/my-words" legacyBehavior>
-          <button className="mr-2">
+          <Link href="/my-words" legacyBehavior>
+            <button className="mr-2">
+              <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
+                My words
+              </a>
+            </button>
+          </Link>
+          <button onClick={() => signOut()}>
             <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-              My words
+              Log out
             </a>
           </button>
-        </Link>
-        <button onClick={() => signOut()}>
-          <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-            Log out
-          </a>
-        </button>
+        </div>
       </div>
     );
   }
