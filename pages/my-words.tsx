@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import SavedWord from "../components/SavedWord";
 import { WordProps } from "../components/Word";
 import levels from "../utils/levels";
+import Link from "next/link";
 
 const MyWords = () => {
   const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
@@ -11,7 +12,8 @@ const MyWords = () => {
   const [words, setWords] = useState<WordProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [wordsCount, setWordsCount] = useState(1);
+  const [totalWordsCount, setTotalWordsCount] = useState(0);
+  const [totalLevelWordCount, setTotalLevelWordCount] = useState([]);
 
   useEffect(() => {
     fetchMyWords();
@@ -27,7 +29,10 @@ const MyWords = () => {
 
   async function fetchMyWords() {
     const res = await fetch("api/words");
-    setWords(await res.json());
+    const data = await res.json();
+    setWords(data.words);
+    setTotalWordsCount(data.total);
+    setTotalLevelWordCount(data.levels);
     setIsLoading(false);
   }
 
@@ -41,7 +46,8 @@ const MyWords = () => {
 
   async function getFilteredWordsList() {
     const filtered = await fetch(`/api/words?level=[${selectedLevels}]`);
-    setWords(await filtered.json());
+    const filteredWords = await filtered.json();
+    setWords(filteredWords.words);
   }
 
   const removeFromMyWords = async (word: WordProps) => {
@@ -50,11 +56,17 @@ const MyWords = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(word),
     });
-    setWords(await res.json());
+    const data = await res.json();
+    setWords(data.words);
+    setTotalWordsCount(data.total);
+    setTotalLevelWordCount(data.levels);
   };
 
   function wordLevelCount(level: number) {
-    return words.filter((word) => word.level === level).length;
+    const levelObject = totalLevelWordCount?.find(
+      (levelObj) => level === levelObj.level
+    );
+    return levelObject ? levelObject._count.word : 0;
   }
 
   if (!session) {
@@ -86,7 +98,7 @@ const MyWords = () => {
     );
   }
 
-  if (wordsCount === 0) {
+  if (totalWordsCount === 0) {
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
@@ -98,7 +110,18 @@ const MyWords = () => {
   return (
     <Layout>
       <main>
-        <p className="text-center text-2xl mb-8">My Saved Words</p>
+        <p className="text-center text-2xl mb-8">
+          My Saved Words ({totalWordsCount})
+        </p>
+        <div className="flex flex-col content-center items-center mb-8">
+          <Link href={`/test`} legacyBehavior>
+            <button className="mr-2">
+              <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
+                Study these words
+              </a>
+            </button>
+          </Link>
+        </div>
         <section className="mb-8 flex justify-center">
           {levels.map((level: number) => {
             let activeLevel = selectedLevels.includes(level);
@@ -110,7 +133,7 @@ const MyWords = () => {
                   activeLevel ? "bg-sky-100" : "bg-white"
                 } hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow mr-4`}
               >
-                {activeLevel ? "Hide" : "Show"} Level {level}{" "}
+                {activeLevel ? "Hide" : "Show"} Level {level}
                 <span className="text-sky-600 text-sm">
                   ({wordLevelCount(level)})
                 </span>
