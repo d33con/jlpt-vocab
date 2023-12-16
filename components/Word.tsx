@@ -30,7 +30,7 @@ const Word: React.FC<{ word: WordProps }> = ({ word }) => {
         {word?.word}
       </p>
       <p
-        className={`text-2xl text-gray-700 ${
+        className={`text-2xl text-gray-700 mb-4 ${
           showMeaning ? "visible" : "invisible"
         }`}
       >

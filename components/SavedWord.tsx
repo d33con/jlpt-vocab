@@ -13,7 +13,9 @@ const SavedWord: React.FC<{
   return (
     <div className="rounded overflow-hidden shadow-md p-8 text-center bg-slate-200">
       <div className="flex justify-between items-center mb-4">
-        <div className="text-sm">Level {word?.level}</div>
+        <div className="bg-white py-1 px-2 font-semibold border border-sky-400 rounded">
+          {word?.level}
+        </div>
         <button
           onClick={() => removeFromMyWords(word)}
           className="bg-white hover:bg-red-100 text-sm text-red-800 font-semibold py-1 px-2 border border-red-400 rounded shadow"
@@ -35,7 +37,7 @@ const SavedWord: React.FC<{
         {word?.word}
       </p>
       <p
-        className={`text-2xl text-gray-700 ${
+        className={`text-2xl text-gray-700 mb-4 ${
           showMeaning ? "visible" : "invisible"
         }`}
       >
