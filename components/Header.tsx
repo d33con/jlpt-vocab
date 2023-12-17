@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import levels from "../utils/levels";
 import Image from "next/image";
+import FuriganaToggle from "./FuriganaToggle";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -49,7 +50,7 @@ const Header: React.FC = () => {
 
   if (session) {
     left = (
-      <div className="me-auto">
+      <div className="me-auto flex">
         <Link href="/" legacyBehavior>
           <a className="font-bold mr-2" data-active={isActive("/")}>
             Home
@@ -67,6 +68,7 @@ const Header: React.FC = () => {
             </button>
           </Link>
         ))}
+        <FuriganaToggle />
       </div>
     );
     right = (

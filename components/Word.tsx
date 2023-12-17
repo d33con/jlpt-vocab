@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { FuriganaContext } from "../contexts/furiganaContext";
 
 export type WordProps = {
   id?: number;
@@ -11,24 +12,19 @@ export type WordProps = {
 };
 
 const Word: React.FC<{ word: WordProps }> = ({ word }) => {
-  const [showFurigana, setShowFurigana] = useState(false);
+  const { status } = useContext(FuriganaContext);
   const [showMeaning, setShowMeaning] = useState(false);
 
   return (
     <div className="w-1/4 h-1/4 rounded overflow-hidden shadow-md p-16 text-center bg-slate-200">
       <p
         className={`text-lg text-gray-700 mb-1 ${
-          showFurigana ? "visible" : "invisible"
-        }`}
+          status ? "visible" : "invisible"
+        } ${!word.furigana && "p-4"}`}
       >
         {word?.furigana}
       </p>
-      <p
-        className="text-5xl text-gray-900 mb-8"
-        onClick={() => setShowFurigana(!showFurigana)}
-      >
-        {word?.word}
-      </p>
+      <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
       <p
         className={`text-2xl text-gray-700 mb-4 ${
           showMeaning ? "visible" : "invisible"

@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { WordProps } from "./Word";
+import { FuriganaContext } from "../contexts/furiganaContext";
 
 const SavedWord: React.FC<{
   word: WordProps;
   removeFromMyWords: (word: WordProps) => {};
 }> = ({ word, removeFromMyWords }) => {
-  const [showFurigana, setShowFurigana] = useState(false);
   const [showMeaning, setShowMeaning] = useState(false);
+  const { status } = useContext(FuriganaContext);
 
   const dateAddedString = new Date(word?.dateAdded);
 
@@ -25,17 +26,12 @@ const SavedWord: React.FC<{
       </div>
       <p
         className={`text-lg text-gray-700 mb-1 ${
-          showFurigana ? "visible" : "invisible"
-        }`}
+          status ? "visible" : "invisible"
+        } ${!word.furigana && "p-4"}`}
       >
         {word?.furigana}
       </p>
-      <p
-        className="text-5xl text-gray-900 mb-8"
-        onClick={() => setShowFurigana(!showFurigana)}
-      >
-        {word?.word}
-      </p>
+      <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
       <p
         className={`text-2xl text-gray-700 mb-4 ${
           showMeaning ? "visible" : "invisible"
