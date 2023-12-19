@@ -78,8 +78,8 @@ const Header: React.FC = () => {
           <Image
             src={session.user.image}
             alt={session.user.name}
-            width={40}
-            height={40}
+            width={42}
+            height={42}
             className="rounded mx-4"
           />
           <Link href="/my-words" legacyBehavior>
