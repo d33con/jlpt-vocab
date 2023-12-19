@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import SavedWord from "../components/SavedWord";
 import { WordProps } from "../components/Word";
-import levels from "../utils/levels";
 import Link from "next/link";
+import LevelSelect from "../components/LevelSelect";
+import { MultiValue } from "react-select";
 
 const MyWords = () => {
   const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
@@ -36,13 +37,13 @@ const MyWords = () => {
     setIsLoading(false);
   }
 
-  const filterWordList = async (level: number) => {
-    setSelectedLevels((prevState) => {
-      if (prevState.includes(level))
-        return prevState.filter((stateLevel) => level !== stateLevel);
-      return [...prevState, level];
-    });
-  };
+  async function filterWordList(
+    levels: MultiValue<{ value: number; level: string }>
+  ) {
+    const selectedOptions = [] as Array<number>;
+    levels.map((level) => selectedOptions.push(level.value));
+    setSelectedLevels(selectedOptions);
+  }
 
   async function getFilteredWordsList() {
     const filtered = await fetch(`/api/words?level=[${selectedLevels}]`);
@@ -50,7 +51,7 @@ const MyWords = () => {
     setWords(filteredWords.words);
   }
 
-  const removeFromMyWords = async (word: WordProps) => {
+  async function removeFromMyWords(word: WordProps) {
     const res = await fetch(`/api/words?id=${word.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -60,13 +61,6 @@ const MyWords = () => {
     setWords(data.words);
     setTotalWordsCount(data.total);
     setTotalLevelWordCount(data.levels);
-  };
-
-  function wordLevelCount(level: number) {
-    const levelObject = totalLevelWordCount?.find(
-      (levelObj) => level === levelObj.level
-    );
-    return levelObject ? levelObject._count.word : 0;
   }
 
   if (!session) {
@@ -122,24 +116,12 @@ const MyWords = () => {
             </button>
           </Link>
         </div>
-        <section className="mb-8 flex justify-center">
-          {levels.map((level: number) => {
-            let activeLevel = selectedLevels.includes(level);
-            return (
-              <button
-                key={level}
-                onClick={() => filterWordList(level)}
-                className={`${
-                  activeLevel ? "bg-sky-100" : "bg-white"
-                } hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow mr-4`}
-              >
-                {activeLevel ? "Hide" : "Show"} Level {level}
-                <span className="text-sky-600 text-sm">
-                  ({wordLevelCount(level)})
-                </span>
-              </button>
-            );
-          })}
+        <section className="mb-8 flex justify-center items-center">
+          <div className="mr-4">Filter by level</div>
+          <LevelSelect
+            filterWordList={filterWordList}
+            totalLevelWordCount={totalLevelWordCount}
+          />
         </section>
         <section className="container mx-auto grid grid-cols-4 gap-4">
           {words.map((word) => (
