@@ -19,9 +19,9 @@ const SavedWord: React.FC<{
         </div>
         <button
           onClick={() => removeFromMyWords(word)}
-          className="bg-white hover:bg-red-100 text-sm text-red-800 font-semibold py-1 px-2 border border-red-400 rounded shadow"
+          className="hover:bg-gray-300 text-gray-600 text-lg font-semibold w-10 h-10 rounded-full"
         >
-          Remove
+          X
         </button>
       </div>
       <p
