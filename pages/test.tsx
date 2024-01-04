@@ -7,7 +7,6 @@ const Test = () => {
   const [dontKnowWords, setDontKnowWords] = useState<WordProps[]>([]);
   const [knownWords, setKnownWords] = useState<WordProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentArrayPosition, setCurrentArrayPosition] = useState(0);
 
   useEffect(() => {
     fetchMyWords();
@@ -32,21 +31,16 @@ const Test = () => {
     setIsLoading(false);
   }
 
-  function showNextWord(wordStatus?: string) {
-    wordStatus === "known"
-      ? setCurrentArrayPosition(0)
-      : setCurrentArrayPosition(currentArrayPosition + 1);
-  }
-
   function handleKnownWord() {
     const knownWord = dontKnowWords.shift();
     setDontKnowWords(dontKnowWords);
     setKnownWords((prevState) => prevState.concat(knownWord));
-    showNextWord("known");
   }
 
   function handleDontKnowWord() {
-    showNextWord();
+    const unknownWord = dontKnowWords.shift();
+    setDontKnowWords((prevState) => prevState.concat(unknownWord));
+    // shuffle??
   }
 
   if (isLoading) {
@@ -70,7 +64,7 @@ const Test = () => {
               <p className="mb-4">
                 Words left in this test: {dontKnowWords.length}
               </p>
-              <Word word={dontKnowWords[currentArrayPosition]} />
+              <Word word={dontKnowWords[0]} />
               <div className="flex justify-around mt-12 w-1/4">
                 <div className="flex flex-col">
                   <div className="pb-2 italic">{knownWords.length}</div>
