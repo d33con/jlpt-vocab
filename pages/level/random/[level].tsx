@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import Layout from "../../components/Layout";
-import Word, { WordProps } from "../../components/Word";
+import Layout from "../../../components/Layout";
+import Word, { WordProps } from "../../../components/Word";
 import { useEffect, useState } from "react";
 
 const Level = () => {
