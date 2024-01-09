@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
-import levels from "../utils/levels";
 import Image from "next/image";
 import FuriganaToggle from "./FuriganaToggle";
 
@@ -12,6 +11,7 @@ const Header: React.FC = () => {
     router.asPath === pathname;
 
   const { data: session, status } = useSession();
+  const JLPTLevels = [5, 4, 3, 2, 1];
 
   let left = (
     <div>
@@ -56,17 +56,19 @@ const Header: React.FC = () => {
             Home
           </a>
         </Link>
-        {levels.map((level) => (
-          <Link href={`/level/${level}`} legacyBehavior key={level}>
-            <button className="mr-2">
-              <a
-                className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
-                data-active={isActive(`/level/${level}`)}
-              >
-                JLPT Level {level}
-              </a>
-            </button>
-          </Link>
+        {JLPTLevels.map((level) => (
+          <>
+            <Link href={`/level/all/${level}`} legacyBehavior key={level}>
+              <button className="mr-2">
+                <a
+                  className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+                  data-active={isActive(`/level/all/${level}`)}
+                >
+                  JLPT Level {level}
+                </a>
+              </button>
+            </Link>
+          </>
         ))}
         <FuriganaToggle />
       </div>
