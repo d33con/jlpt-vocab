@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "../components/Layout";
-import Search from "../components/Search";
 
 const Home = () => {
   return (
@@ -10,7 +9,6 @@ const Home = () => {
         <p className="text-2xl font-semibold mb-8 text-gray-700">
           Practice Japanese vocab
         </p>
-        <Search />
       </main>
     </Layout>
   );
