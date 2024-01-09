@@ -1,6 +1,4 @@
 import Select, { MultiValue } from "react-select";
-import levels from "../utils/levels";
-import { useMemo } from "react";
 
 interface LevelSelectProps {
   filterWordList: (value: MultiValue<{}>) => void;
@@ -11,6 +9,7 @@ const LevelSelect: React.FC<LevelSelectProps> = ({
   filterWordList,
   totalLevelWordCount,
 }) => {
+  const levels = [5, 4, 3, 2, 1];
   function wordLevelCount(level: number) {
     const levelObject = totalLevelWordCount?.find(
       (levelObj) => level === levelObj.level
