@@ -1,4 +1,5 @@
 import Select, { MultiValue } from "react-select";
+import JLPTLevels from "../utils/levels";
 
 interface LevelSelectProps {
   filterWordList: (value: MultiValue<{}>) => void;
@@ -9,7 +10,6 @@ const LevelSelect: React.FC<LevelSelectProps> = ({
   filterWordList,
   totalLevelWordCount,
 }) => {
-  const levels = [5, 4, 3, 2, 1];
   function wordLevelCount(level: number) {
     const levelObject = totalLevelWordCount?.find(
       (levelObj) => level === levelObj.level
@@ -22,7 +22,7 @@ const LevelSelect: React.FC<LevelSelectProps> = ({
       <Select
         isMulti
         name="levels"
-        options={levels.map((level) => ({
+        options={JLPTLevels.map((level) => ({
           value: level,
           label: `Level ${String(level)} (${wordLevelCount(level)})`,
         }))}
