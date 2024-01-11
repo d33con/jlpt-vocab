@@ -1,36 +1,52 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import Layout from "../../../components/Layout";
 import SimpleWord from "../../../components/SimpleWord";
 import { WordProps } from "../../../components/Word";
 
 const BrowseLevel = () => {
   const router = useRouter();
-  const [words, setWords] = useState<WordProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { ref, inView } = useInView();
+
+  const fetchWords = async ({ pageParam }) => {
+    console.log("request");
+    const response = await fetch(
+      `https://jlpt-vocab-api.vercel.app/api/words?level=${parseInt(
+        router.query.level as string
+      )}&offset=${pageParam}&limit=10`
+    );
+    return await response.json();
+  };
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["words", router.query.level],
+    queryFn: fetchWords,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.offset + 1,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
-    fetchNewWord();
-  }, [router.query.level]);
-
-  async function fetchNewWord() {
-    try {
-      const res = await fetch(
-        `https://jlpt-vocab-api.vercel.app/api/words?level=${router.query.level}&offset=0&limit=10`
-      );
-      const data = await res.json();
-      setWords(data.words);
-      setIsLoading(false);
-    } catch (error) {
-      setError(error);
+    if (inView) {
+      fetchNextPage();
     }
-  }
+  }, [inView, router.query.level, fetchNextPage]);
 
-  if (error) return <div>Sorry something went wrong: {error}</div>;
+  if (status == "error")
+    return <div>Sorry something went wrong: {error.message}</div>;
 
-  if (isLoading)
+  if (status == "pending")
     return (
       <Layout>
         <div className="text-center">Loading...</div>
@@ -40,9 +56,10 @@ const BrowseLevel = () => {
   return (
     <Layout>
       <main className="flex flex-col items-center justify-center w-full h-max">
-        <section className="mb-8 text-2xl">
+        <section className="mb-4 text-2xl">
           JLPT Level {router.query.level}
         </section>
+        <section className="mb-8 text-lg">{data?.pages[0].total} words</section>
         <Link href={`/level/random/${router.query.level}`} legacyBehavior>
           <button className="mr-2">
             <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
@@ -51,9 +68,14 @@ const BrowseLevel = () => {
           </button>
         </Link>
         <section className="mt-8 w-3/4">
-          {words.map((word) => (
-            <SimpleWord word={word} key={word.id} />
+          {data?.pages.map((group, i) => (
+            <Fragment key={i}>
+              {group.words.map((word: WordProps) => (
+                <SimpleWord word={word} key={word.id} />
+              ))}
+            </Fragment>
           ))}
+          <div ref={ref} className="h-1"></div>
         </section>
       </main>
     </Layout>
