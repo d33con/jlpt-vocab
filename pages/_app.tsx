@@ -5,6 +5,7 @@ import { useState } from "react";
 import "tailwindcss/tailwind.css";
 import FuriganaProvider from "../contexts/furiganaContext";
 import "../styles/globals.css";
+import { Providers } from "../redux/provider";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [queryClient] = useState(
@@ -19,13 +20,15 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={pageProps.session}>
-        <FuriganaProvider>
-          <Component {...pageProps} />
-        </FuriganaProvider>
-      </SessionProvider>
-    </QueryClientProvider>
+    <Providers>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={pageProps.session}>
+          <FuriganaProvider>
+            <Component {...pageProps} />
+          </FuriganaProvider>
+        </SessionProvider>
+      </QueryClientProvider>
+    </Providers>
   );
 };
 
