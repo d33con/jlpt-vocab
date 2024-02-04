@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React from "react";
+import { useAppSelector } from "../redux/hooks";
 import { WordProps } from "./Word";
-import { FuriganaContext } from "../contexts/furiganaContext";
+import MeaningWithToggle from "./MeaningWithToggle";
 
 const SavedWord: React.FC<{
   word: WordProps;
-  removeFromMyWords: (word: WordProps) => {};
+  removeFromMyWords: (word: WordProps) => void;
 }> = ({ word, removeFromMyWords }) => {
-  const [showMeaning, setShowMeaning] = useState(false);
-  const { status } = useContext(FuriganaContext);
+  const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 
   const dateAddedString = new Date(word?.dateAdded);
 
@@ -26,28 +26,13 @@ const SavedWord: React.FC<{
       </div>
       <p
         className={`text-lg text-gray-700 mb-2 ${
-          status ? "visible" : "invisible"
+          furiganaStatus ? "visible" : "invisible"
         } ${!word.furigana && "p-4"}`}
       >
         {word?.furigana}
       </p>
       <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
-      <p
-        className={`text-xl text-gray-700 mb-4 h-16 ${
-          showMeaning ? "visible" : "invisible"
-        }`}
-        title={word?.meaning}
-      >
-        {word?.meaning.length > 35
-          ? word.meaning.slice(0, 35).concat("...")
-          : word.meaning}
-      </p>
-      <button
-        onClick={() => setShowMeaning(!showMeaning)}
-        className="bg-white hover:bg-sky-100 text-sky-800 text-sm py-1 px-2 border border-sky-400 rounded shadow"
-      >
-        Toggle meaning
-      </button>
+      <MeaningWithToggle meaning={word?.meaning} />
       <p className="text-sm text-gray-600 mt-4">
         Added on: {dateAddedString.toLocaleString().slice(0, 10)}
       </p>

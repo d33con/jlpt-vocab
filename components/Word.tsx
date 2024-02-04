@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
-import { FuriganaContext } from "../contexts/furiganaContext";
+import React from "react";
 import { useAppSelector } from "../redux/hooks";
 import kanjiRegex from "../utils/kanjiRegex";
+import MeaningWithToggle from "./MeaningWithToggle";
 
 export type WordProps = {
   id?: number;
@@ -17,8 +17,6 @@ const Word: React.FC<{ word: WordProps; loading: boolean }> = ({
   word,
   loading,
 }) => {
-  const { status } = useContext(FuriganaContext);
-  const [showMeaning, setShowMeaning] = useState(false);
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 
   return (
@@ -45,22 +43,7 @@ const Word: React.FC<{ word: WordProps; loading: boolean }> = ({
                 )
               )}
           </p>
-          <p
-            className={`text-xl text-gray-700 mb-4 h-16 ${
-              showMeaning ? "visible" : "invisible"
-            }`}
-            title={word?.meaning}
-          >
-            {word?.meaning.length > 35
-              ? word.meaning.slice(0, 35).concat("...")
-              : word.meaning}
-          </p>
-          <button
-            onClick={() => setShowMeaning(!showMeaning)}
-            className="bg-white hover:bg-sky-100 text-sky-800 text-sm py-1 px-2 border border-sky-400 rounded shadow"
-          >
-            Show meaning
-          </button>
+          <MeaningWithToggle meaning={word?.meaning} />
         </>
       )}
     </div>
