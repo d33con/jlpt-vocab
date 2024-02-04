@@ -19,6 +19,7 @@ const LevelSelect: React.FC<LevelSelectProps> = ({
 
   return (
     <>
+      <div className="mr-4">Filter by level</div>
       <Select
         isMulti
         name="levels"

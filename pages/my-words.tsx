@@ -117,7 +117,6 @@ const MyWords = () => {
           </Link>
         </div>
         <section className="mb-8 flex justify-center items-center">
-          <div className="mr-4">Filter by level</div>
           <LevelSelect
             filterWordList={filterWordList}
             totalLevelWordCount={totalLevelWordCount}
