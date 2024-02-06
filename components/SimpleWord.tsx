@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
-import { FuriganaContext } from "../contexts/furiganaContext";
+import React, { useState } from "react";
+import { useAppSelector } from "../redux/hooks";
 import { WordProps } from "./Word";
 
 const SimpleWord: React.FC<{ word: WordProps }> = ({ word }) => {
-  const { status } = useContext(FuriganaContext);
+  const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
   const [error, setError] = useState("");
 
   // use custom hook
@@ -25,7 +25,7 @@ const SimpleWord: React.FC<{ word: WordProps }> = ({ word }) => {
         {word.furigana && (
           <div
             className={`text-sm text-gray-700 ${
-              status ? "visible" : "invisible"
+              furiganaStatus ? "visible" : "invisible"
             } ${!word.furigana && "p-4"}`}
           >
             {word?.furigana}
