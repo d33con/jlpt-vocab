@@ -6,6 +6,7 @@ import { WordProps } from "../components/Word";
 import Link from "next/link";
 import LevelSelect from "../components/LevelSelect";
 import { MultiValue } from "react-select";
+import WordSort from "../components/WordSort";
 
 const MyWords = () => {
   const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
@@ -61,6 +62,47 @@ const MyWords = () => {
     setWords(data.words);
     setTotalWordsCount(data.total);
     setTotalLevelWordCount(data.levels);
+  }
+
+  function sortWordList(e: { label: string; value: string }) {
+    switch (e.value) {
+      case "date-asc":
+        const sortedDateAsc = [...words].sort(
+          (a, b) =>
+            new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
+        );
+        setWords(sortedDateAsc);
+        break;
+      case "date-desc":
+        const sortedDateDesc = [...words].sort(
+          (a, b) =>
+            new Date(a.dateAdded).getTime() + new Date(b.dateAdded).getTime()
+        );
+        setWords(sortedDateDesc);
+        break;
+      case "level-asc":
+        const sortedLevelAsc = [...words].sort((a, b) => a.level - b.level);
+        setWords(sortedLevelAsc);
+        break;
+      case "level-desc":
+        const sortedLevelDesc = [...words].sort((a, b) => a.level + b.level);
+        setWords(sortedLevelDesc);
+        break;
+      case "meaning-asc":
+        const sortedMeaningAsc = [...words].sort((a, b) =>
+          a.meaning.localeCompare(b.meaning)
+        );
+        setWords(sortedMeaningAsc);
+        break;
+      case "meaning-desc":
+        const sortedMeaningDesc = [...words].sort((a, b) =>
+          b.meaning.localeCompare(a.meaning)
+        );
+        setWords(sortedMeaningDesc);
+        break;
+      default:
+        break;
+    }
   }
 
   if (!session) {
@@ -121,6 +163,7 @@ const MyWords = () => {
             filterWordList={filterWordList}
             totalLevelWordCount={totalLevelWordCount}
           />
+          <WordSort sortWordList={sortWordList} />
         </section>
         <section className="container mx-auto grid grid-cols-4 gap-4">
           {words.map((word) => (
