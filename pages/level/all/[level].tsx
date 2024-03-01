@@ -12,7 +12,6 @@ const BrowseLevel = () => {
   const { ref, inView } = useInView();
 
   const fetchWords = async ({ pageParam }) => {
-    console.log("request");
     const response = await fetch(
       `https://jlpt-vocab-api.vercel.app/api/words?level=${parseInt(
         router.query.level as string
@@ -21,15 +20,7 @@ const BrowseLevel = () => {
     return await response.json();
   };
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
+  const { data, error, fetchNextPage, status } = useInfiniteQuery({
     queryKey: ["words", router.query.level],
     queryFn: fetchWords,
     initialPageParam: 0,

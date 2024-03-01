@@ -6,8 +6,8 @@ export const vocabApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://jlpt-vocab-api.vercel.app/api/words",
   }),
-  endpoints: (builder) => ({
-    getNewWordByLevel: builder.query<WordProps, { level: string }>({
+  endpoints: (build) => ({
+    getNewWordByLevel: build.query<WordProps, { level: string }>({
       query: ({ level }) => `random?level=${level}`,
     }),
   }),
