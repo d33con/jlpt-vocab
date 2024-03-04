@@ -1,71 +1,47 @@
 import { useRouter } from "next/router";
+import { useState } from "react";
 import Layout from "../../../components/Layout";
-import Word, { WordProps } from "../../../components/Word";
-import { useEffect, useState } from "react";
+import Word from "../../../components/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
 
 const Level = () => {
   const router = useRouter();
-  // const [word, setWord] = useState<WordProps>();
-  // const [isLoading, setIsLoading] = useState(true);
+
   const [postError, setPostError] = useState("");
-  const { isLoading, error, data, isFetching, refetch } =
-    useGetNewWordByLevelQuery({ level: router.query.level as string });
-
-  // useEffect(() => {
-  //   dispatch(useGetNewWordByLevelQuery(router.query.level as string));
-  //   // fetchNewWord();
-  // }, [router.query.level]);
-
-  // async function fetchNewWord() {
-  //   try {
-  //     const res = await fetch(
-  //       `https://jlpt-vocab-api.vercel.app/api/words/random?level=${router.query.level}`
-  //     );
-  //     setWord(await res.json());
-  //     setIsLoading(false);
-  //   } catch (error) {
-  //     setError(error);
-  //   }
-  // }
+  const {
+    isLoading,
+    error,
+    data: word,
+    isFetching,
+    refetch,
+  } = useGetNewWordByLevelQuery({ level: router.query.level as string });
 
   async function addToMyWords() {
     try {
       await fetch(`/api/words`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(word),
       });
-      fetchNewWord();
+      refetch();
     } catch (error) {
       setPostError(error);
     }
   }
 
-  function fetchNewWord() {
-    refetch();
-  }
-
   if (postError) return <div>Sorry something went wrong: {postError}</div>;
-
-  // if (isLoading)
-  //   return (
-  //     <Layout>
-  //       <div className="text-center">Loading...</div>
-  //     </Layout>
-  //   );
 
   return (
     <Layout>
       <main className="flex flex-col items-center justify-center w-full h-max">
         {error ? (
           <div>Sorry something went wrong when getting a new word</div>
-        ) : data ? (
+        ) : word ? (
           <>
-            <Word word={data} loading={isLoading || isFetching} />
+            <Word word={word} loading={isLoading || isFetching} />
             <div className="flex justify-around mt-12 w-1/4">
               <button
-                onClick={() => fetchNewWord()}
+                onClick={() => refetch()}
                 className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
               >
                 Next word
