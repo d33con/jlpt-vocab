@@ -1,104 +1,73 @@
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
-import Layout from "../components/Layout";
-import SavedWord from "../components/SavedWord";
-import { WordProps } from "../components/Word";
 import Link from "next/link";
-import LevelSelect from "../components/LevelSelect";
+import { useState } from "react";
 import { MultiValue } from "react-select";
+import Layout from "../components/Layout";
+import LevelSelect from "../components/LevelSelect";
+import SavedWord from "../components/SavedWord";
 import WordSort from "../components/WordSort";
+import {
+  useGetMyFilteredWordsQuery,
+  useGetMyWordsQuery,
+  useRemoveFromMyWordsMutation,
+} from "../redux/services/wordsApi";
 
 const MyWords = () => {
-  const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
   const { data: session } = useSession();
-  const [words, setWords] = useState<WordProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [totalWordsCount, setTotalWordsCount] = useState(0);
-  const [totalLevelWordCount, setTotalLevelWordCount] = useState([]);
 
-  useEffect(() => {
-    fetchMyWords();
-  }, []);
-
-  useMemo(() => {
-    if (selectedLevels.length) {
-      getFilteredWordsList();
-    } else {
-      fetchMyWords();
-    }
-  }, [selectedLevels]);
-
-  async function fetchMyWords() {
-    const res = await fetch("api/words");
-    const data = await res.json();
-    setWords(data.words);
-    setTotalWordsCount(data.total);
-    setTotalLevelWordCount(data.levels);
-    setIsLoading(false);
-  }
+  const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
+  const { isLoading, error, data, isFetching, refetch } = useGetMyWordsQuery();
+  const { data: filteredWords } = useGetMyFilteredWordsQuery(selectedLevels);
+  const [removeFromMyWords, { isLoading: isDeleting }] =
+    useRemoveFromMyWordsMutation();
 
   async function filterWordList(
     levels: MultiValue<{ value: number; level: string }>
   ) {
-    const selectedOptions = [] as Array<number>;
+    const selectedOptions = [] as number[];
     levels.map((level) => selectedOptions.push(level.value));
     setSelectedLevels(selectedOptions);
-  }
-
-  async function getFilteredWordsList() {
-    const filtered = await fetch(`/api/words?level=[${selectedLevels}]`);
-    const filteredWords = await filtered.json();
-    setWords(filteredWords.words);
-  }
-
-  async function removeFromMyWords(word: WordProps) {
-    const res = await fetch(`/api/words?id=${word.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(word),
-    });
-    const data = await res.json();
-    setWords(data.words);
-    setTotalWordsCount(data.total);
-    setTotalLevelWordCount(data.levels);
   }
 
   function sortWordList(e: { label: string; value: string }) {
     switch (e.value) {
       case "date-asc":
-        const sortedDateAsc = [...words].sort(
+        const sortedDateAsc = [...data.words].sort(
           (a, b) =>
             new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
         );
-        setWords(sortedDateAsc);
+        setFilteredWords(sortedDateAsc);
         break;
       case "date-desc":
-        const sortedDateDesc = [...words].sort(
+        const sortedDateDesc = [...data.words].sort(
           (a, b) =>
             new Date(a.dateAdded).getTime() + new Date(b.dateAdded).getTime()
         );
-        setWords(sortedDateDesc);
+        setFilteredWords(sortedDateDesc);
         break;
       case "level-asc":
-        const sortedLevelAsc = [...words].sort((a, b) => a.level - b.level);
-        setWords(sortedLevelAsc);
+        const sortedLevelAsc = [...data.words].sort(
+          (a, b) => a.level - b.level
+        );
+        setFilteredWords(sortedLevelAsc);
         break;
       case "level-desc":
-        const sortedLevelDesc = [...words].sort((a, b) => a.level + b.level);
-        setWords(sortedLevelDesc);
+        const sortedLevelDesc = [...data.words].sort(
+          (a, b) => a.level + b.level
+        );
+        setFilteredWords(sortedLevelDesc);
         break;
       case "meaning-asc":
-        const sortedMeaningAsc = [...words].sort((a, b) =>
+        const sortedMeaningAsc = [...data.words].sort((a, b) =>
           a.meaning.localeCompare(b.meaning)
         );
-        setWords(sortedMeaningAsc);
+        setFilteredWords(sortedMeaningAsc);
         break;
       case "meaning-desc":
-        const sortedMeaningDesc = [...words].sort((a, b) =>
+        const sortedMeaningDesc = [...data.words].sort((a, b) =>
           b.meaning.localeCompare(a.meaning)
         );
-        setWords(sortedMeaningDesc);
+        setFilteredWords(sortedMeaningDesc);
         break;
       default:
         break;
@@ -114,17 +83,6 @@ const MyWords = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Layout>
-        <p className="text-center text-2xl mb-8">My Saved Words</p>
-        <div className="text-center">
-          Sorry there was an error fetching your words: {error}
-        </div>
-      </Layout>
-    );
-  }
-
   if (isLoading) {
     return (
       <Layout>
@@ -134,7 +92,27 @@ const MyWords = () => {
     );
   }
 
-  if (totalWordsCount === 0) {
+  if (error) {
+    let errMsg: string;
+
+    if ("status" in error) {
+      // you can access all properties of `FetchBaseQueryError` here
+      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+    } else {
+      // you can access all properties of `SerializedError` here
+      errMsg = error.message;
+    }
+    return (
+      <Layout>
+        <p className="text-center text-2xl mb-8">My Saved Words</p>
+        <div className="text-center">
+          Sorry there was an error fetching your words: {errMsg}
+        </div>
+      </Layout>
+    );
+  }
+
+  if (data.total === 0) {
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
@@ -147,7 +125,7 @@ const MyWords = () => {
     <Layout>
       <main>
         <p className="text-center text-2xl mb-8">
-          My Saved Words ({totalWordsCount})
+          My Saved Words ({data.total})
         </p>
         <div className="flex flex-col content-center items-center mb-8">
           <Link href={`/test`} legacyBehavior>
@@ -161,18 +139,26 @@ const MyWords = () => {
         <section className="mb-8 flex justify-center items-center">
           <LevelSelect
             filterWordList={filterWordList}
-            totalLevelWordCount={totalLevelWordCount}
+            totalLevelWordCount={data.levels}
           />
           <WordSort sortWordList={sortWordList} />
         </section>
         <section className="container mx-auto grid grid-cols-4 gap-4">
-          {words.map((word) => (
-            <SavedWord
-              word={word}
-              key={word.id}
-              removeFromMyWords={removeFromMyWords}
-            />
-          ))}
+          {filteredWords.words.length > 0
+            ? filteredWords.words.map((word) => (
+                <SavedWord
+                  word={word}
+                  key={word.id}
+                  removeFromMyWords={removeFromMyWords}
+                />
+              ))
+            : data.words.map((word) => (
+                <SavedWord
+                  word={word}
+                  key={word.id}
+                  removeFromMyWords={removeFromMyWords}
+                />
+              ))}
         </section>
       </main>
     </Layout>
