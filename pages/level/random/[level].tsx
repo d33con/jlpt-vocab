@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from "../../../components/Layout";
 import Word from "../../../components/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
+import { useAddToMyWordsMutation } from "../../../redux/services/wordsApi";
 
 const Level = () => {
   const router = useRouter();
@@ -15,19 +16,31 @@ const Level = () => {
     isFetching,
     refetch,
   } = useGetNewWordByLevelQuery({ level: router.query.level as string });
+  const [addToMyWords, { isLoading: isAdding }] = useAddToMyWordsMutation();
 
-  async function addToMyWords() {
+  const handleAddWord = async () => {
     try {
-      await fetch(`/api/words`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(word),
-      });
-      refetch();
+      await addToMyWords(word).then(() => refetch());
     } catch (error) {
-      setPostError(error);
+      let errMsg: string;
+
+      if ("status" in error) {
+        // you can access all properties of `FetchBaseQueryError` here
+        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+      } else {
+        // you can access all properties of `SerializedError` here
+        errMsg = error.message;
+      }
+      setPostError(errMsg);
+      // toast({
+      //   title: 'An error occurred',
+      //   description: "We couldn't save your post, try again!",
+      //   status: 'error',
+      //   duration: 2000,
+      //   isClosable: true,
+      // })
     }
-  }
+  };
 
   if (postError) return <div>Sorry something went wrong: {postError}</div>;
 
@@ -47,10 +60,14 @@ const Level = () => {
                 Next word
               </button>
               <button
-                onClick={() => addToMyWords()}
+                onClick={handleAddWord}
                 className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
               >
-                Add to my words
+                {isAdding ? (
+                  <span className="loading loading-dots loading-xs"></span>
+                ) : (
+                  "Add to my words"
+                )}
               </button>
             </div>
           </>

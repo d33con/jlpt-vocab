@@ -13,7 +13,7 @@ type WordsResponse = WordProps[];
 export const wordsApi = createApi({
   reducerPath: "wordsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "api/",
+    baseUrl: "/api/",
   }),
   tagTypes: ["Words"],
   endpoints: (build) => ({
@@ -40,6 +40,19 @@ export const wordsApi = createApi({
       query: (selectedLevels) => `words?level=[${selectedLevels}]`,
       providesTags: (result, error, id) => [{ type: "Words", id: "LIST" }],
     }),
+    addToMyWords: build.mutation<WordProps, WordProps>({
+      query(word) {
+        return {
+          url: "words",
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(word),
+        };
+      },
+      // Invalidates all Word-type queries providing the `LIST` id - after all, depending on the sort order,
+      // that newly created saved word could show up in any lists.
+      invalidatesTags: [{ type: "Words", id: "LIST" }],
+    }),
     removeFromMyWords: build.mutation<
       { success: boolean; word: WordProps },
       WordProps
@@ -61,4 +74,5 @@ export const {
   useGetMyWordsQuery,
   useGetMyFilteredWordsQuery,
   useRemoveFromMyWordsMutation,
+  useAddToMyWordsMutation,
 } = wordsApi;
