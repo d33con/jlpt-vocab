@@ -59,7 +59,7 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
       </div>
       <button
         onClick={handleAddWord}
-        className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow ms-auto"
+        className="btn btn-neutral btn-outline mr-2"
       >
         {isAdding ? (
           <span className="loading loading-dots loading-xs"></span>

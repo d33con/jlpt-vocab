@@ -1,10 +1,10 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import FuriganaToggle from "./FuriganaToggle";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
 import JLPTLevels from "../utils/levels";
+import FuriganaToggle from "./FuriganaToggle";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -16,9 +16,13 @@ const Header: React.FC = () => {
   let left = (
     <div>
       <Link href="/" legacyBehavior>
-        <a className="font-bold" data-active={isActive("/")}>
+        <button
+          className={`btn btn-ghost text-lg mr-2 ${
+            isActive("/") && "btn-active"
+          }`}
+        >
           Home
-        </a>
+        </button>
       </Link>
     </div>
   );
@@ -37,12 +41,7 @@ const Header: React.FC = () => {
     right = (
       <div className="ms-auto">
         <Link href="/api/auth/signin" legacyBehavior>
-          <a
-            className="inline-block bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
-            data-active={isActive("/signup")}
-          >
-            Log in
-          </a>
+          <button className="btn btn-neutral text-lg">Log In</button>
         </Link>
       </div>
     );
@@ -52,19 +51,22 @@ const Header: React.FC = () => {
     left = (
       <div className="me-auto flex">
         <Link href="/" legacyBehavior>
-          <a className="font-bold mr-2" data-active={isActive("/")}>
+          <button
+            className={`btn btn-ghost text-lg mr-2 ${
+              isActive("/") && "btn-active"
+            }`}
+          >
             Home
-          </a>
+          </button>
         </Link>
         {JLPTLevels.map((level) => (
           <Link href={`/level/all/${level}`} legacyBehavior key={level}>
-            <button className="mr-2">
-              <a
-                className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
-                data-active={isActive(`/level/all/${level}`)}
-              >
-                JLPT Level {level}
-              </a>
+            <button
+              className={`btn btn-neutral btn-outline mr-2 ${
+                isActive(`/level/all/${level}`) && "btn-active"
+              }`}
+            >
+              JLPT Level {level}
             </button>
           </Link>
         ))}
@@ -78,21 +80,21 @@ const Header: React.FC = () => {
           <Image
             src={session.user.image}
             alt={session.user.name}
-            width={42}
-            height={42}
+            width={54}
+            height={54}
             className="rounded mx-4"
           />
           <Link href="/my-words" legacyBehavior>
-            <button className="mr-2">
-              <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-                My words
-              </a>
+            <button
+              className={`btn btn-neutral btn-outline mr-2 ${
+                isActive(`/my-words`) && "btn-active"
+              }`}
+            >
+              My words
             </button>
           </Link>
-          <button onClick={() => signOut()}>
-            <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-              Log out
-            </a>
+          <button onClick={() => signOut()} className="btn btn-neutral">
+            Log out
           </button>
         </div>
       </div>
@@ -100,7 +102,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className="flex p-8 items-center sticky top-0 bg-gray-100 shadow-sm">
+    <nav className="flex p-8 items-center sticky top-0 z-10 bg-gray-100 shadow-sm">
       {left}
       {right}
     </nav>

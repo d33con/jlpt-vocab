@@ -55,13 +55,13 @@ const Level = () => {
             <div className="flex justify-around mt-12 w-1/4">
               <button
                 onClick={() => refetch()}
-                className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+                className="btn btn-neutral btn-outline"
               >
                 Next word
               </button>
               <button
                 onClick={handleAddWord}
-                className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
+                className="btn btn-neutral btn-outline"
               >
                 {isAdding ? (
                   <span className="loading loading-dots loading-xs"></span>

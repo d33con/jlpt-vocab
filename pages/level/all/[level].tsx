@@ -52,10 +52,8 @@ const BrowseLevel = () => {
         </section>
         <section className="mb-8 text-lg">{data?.pages[0].total} words</section>
         <Link href={`/level/random/${router.query.level}`} legacyBehavior>
-          <button className="mr-2">
-            <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-              Random word
-            </a>
+          <button className="btn btn-neutral btn-outline mr-2">
+            Random word
           </button>
         </Link>
         <section className="mt-8 w-3/4">

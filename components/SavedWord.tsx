@@ -14,12 +14,10 @@ const SavedWord: React.FC<{
   return (
     <div className="rounded overflow-hidden shadow-md p-8 text-center bg-slate-200">
       <div className="flex justify-between items-center mb-4">
-        <div className="bg-white py-1 px-2 font-semibold border border-sky-400 rounded">
-          {word?.level}
-        </div>
+        <div className="badge badge-neutral">{word?.level}</div>
         <button
           onClick={() => removeFromMyWords(word)}
-          className="hover:bg-gray-300 text-gray-600 text-lg font-semibold w-10 h-10 rounded-full"
+          className="btn btn-sm btn-circle text-lg text-red-700"
         >
           X
         </button>

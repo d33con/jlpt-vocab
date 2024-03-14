@@ -129,11 +129,7 @@ const MyWords = () => {
         </p>
         <div className="flex flex-col content-center items-center mb-8">
           <Link href={`/test`} legacyBehavior>
-            <button className="mr-2">
-              <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-                Study these words
-              </a>
-            </button>
+            <button className="btn btn-accent mr-2">Study these words</button>
           </Link>
         </div>
         <section className="mb-8 flex justify-center items-center">
@@ -143,7 +139,7 @@ const MyWords = () => {
           />
           <WordSort sortWordList={sortWordList} />
         </section>
-        <section className="container mx-auto grid grid-cols-4 gap-4">
+        <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
           {filteredWords.words.length > 0
             ? filteredWords.words.map((word) => (
                 <SavedWord
