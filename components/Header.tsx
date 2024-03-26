@@ -13,19 +13,7 @@ const Header: React.FC = () => {
 
   const { data: session, status } = useSession();
 
-  let left = (
-    <div>
-      <Link href="/" legacyBehavior>
-        <button
-          className={`btn btn-ghost text-lg mr-2 ${
-            isActive("/") && "btn-active"
-          }`}
-        >
-          Home
-        </button>
-      </Link>
-    </div>
-  );
+  let left = null;
 
   let right = null;
 
