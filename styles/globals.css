@@ -20,3 +20,16 @@ body {
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   height: 100%;
 }
+
+/* override the default animation on daisyUI buttons, it's annoying as it happens on every button on every page load/refresh */
+:root {
+  --btn-focus-scale: 0.9;
+}
+
+.btn {
+  animation: none;
+}
+
+.btn:active {
+  transition: transform 0.1s !important;
+}
