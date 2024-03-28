@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { WordProps } from "../../components/Word";
 
-interface LevelsCounts {
+export interface LevelsCounts {
   _count: {
     word: number;
   };
@@ -18,7 +18,11 @@ export const wordsApi = createApi({
   tagTypes: ["Words"],
   endpoints: (build) => ({
     getMyWords: build.query<
-      { words: WordsResponse; total: number; levels: LevelsCounts[] },
+      {
+        words: WordsResponse;
+        total: number;
+        levels: LevelsCounts[];
+      },
       void
     >({
       query: () => "words",
@@ -49,9 +53,7 @@ export const wordsApi = createApi({
           body: JSON.stringify(word),
         };
       },
-      // Invalidates all Word-type queries providing the `LIST` id - after all, depending on the sort order,
-      // that newly created saved word could show up in any lists.
-      invalidatesTags: [{ type: "Words", id: "LIST" }],
+      invalidatesTags: ["Words"],
     }),
     removeFromMyWords: build.mutation<
       { success: boolean; word: WordProps },

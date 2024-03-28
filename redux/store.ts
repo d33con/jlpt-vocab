@@ -1,17 +1,25 @@
 import { configureStore } from "@reduxjs/toolkit";
 import furiganaReducer from "./features/furiganaSlice";
+import wordstestReducer from "./features/wordsTestSlice";
 import { vocabApi } from "./services/vocabApi";
 import { wordsApi } from "./services/wordsApi";
+import { listsApi } from "./services/listsApi";
 
 export const store = configureStore({
   reducer: {
     furiganaReducer,
+    wordstestReducer,
     [vocabApi.reducerPath]: vocabApi.reducer,
     [wordsApi.reducerPath]: wordsApi.reducer,
+    [listsApi.reducerPath]: listsApi.reducer,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({}).concat([vocabApi.middleware, wordsApi.middleware]),
+    getDefaultMiddleware({}).concat([
+      vocabApi.middleware,
+      wordsApi.middleware,
+      listsApi.middleware,
+    ]),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

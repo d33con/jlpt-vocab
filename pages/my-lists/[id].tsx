@@ -2,24 +2,41 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { MultiValue } from "react-select";
-import Layout from "../components/Layout";
-import LevelSelect from "../components/LevelSelect";
-import SavedWord from "../components/SavedWord";
-import WordSort from "../components/WordSort";
+import Layout from "../../components/Layout";
+import LevelSelect from "../../components/LevelSelect";
+import SavedWord from "../../components/SavedWord";
+import WordSort from "../../components/WordSort";
 import {
   useGetMyFilteredWordsQuery,
-  useGetMyWordsQuery,
   useRemoveFromMyWordsMutation,
-} from "../redux/services/wordsApi";
+} from "../../redux/services/wordsApi";
+import {
+  useDeleteListMutation,
+  useGetSavedListQuery,
+} from "../../redux/services/listsApi";
+import { useRouter } from "next/router";
 
-const MyWords = () => {
+const SavedList = () => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
-  const { isLoading, error, data, isFetching, refetch } = useGetMyWordsQuery();
+  const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
+    listId: router.query.id as string,
+  });
   const { data: filteredWords } = useGetMyFilteredWordsQuery(selectedLevels);
   const [removeFromMyWords, { isLoading: isDeleting }] =
     useRemoveFromMyWordsMutation();
+  const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
+
+  async function handleDeleteList() {
+    try {
+      await deleteList(data.savedList.id); //.unwrap();
+      router.push("/my-lists");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function filterWordList(
     levels: MultiValue<{ value: number; level: string }>
@@ -87,7 +104,9 @@ const MyWords = () => {
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
-        <div className="text-center">Loading...</div>
+        <div className="flex justify-center">
+          <div className="loading loading-spinner loading-lg" />
+        </div>
       </Layout>
     );
   }
@@ -124,23 +143,27 @@ const MyWords = () => {
   return (
     <Layout>
       <main>
-        <p className="text-center text-2xl mb-8">
-          My Saved Words ({data.total})
+        <div className="text-center mb-4">
+          <Link href="/my-lists/" legacyBehavior>
+            <button className="btn btn-ghost btn-sm">
+              &lt;- Back to my lists
+            </button>
+          </Link>
+        </div>
+        <p className="text-center text-2xl mb-4">{data.savedList.name}</p>
+        <p className="text-center text-xl italic mb-8">
+          {`${data.savedList.words.length} words`}
         </p>
-
-        {data.savedLists &&
-          data.savedLists.map((list) => (
-            <div>
-              <div key={list.id}>{list.name}</div>
-              {list.words.map((word) => (
-                <div key={word.id}>{word.word}</div>
-              ))}
-            </div>
-          ))}
-        <div className="flex flex-col content-center items-center mb-8">
+        <div className="flex justify-center mb-8">
           <Link href={`/test`} legacyBehavior>
             <button className="btn btn-accent mr-2">Study these words</button>
           </Link>
+          <button
+            onClick={handleDeleteList}
+            className="btn btn-error btn-outline"
+          >
+            Delete list
+          </button>
         </div>
         <section className="mb-8 flex justify-center items-center">
           <LevelSelect
@@ -150,25 +173,17 @@ const MyWords = () => {
           <WordSort sortWordList={sortWordList} />
         </section>
         <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
-          {filteredWords.words.length > 0
-            ? filteredWords.words.map((word) => (
-                <SavedWord
-                  word={word}
-                  key={word.id}
-                  removeFromMyWords={removeFromMyWords}
-                />
-              ))
-            : data.words.map((word) => (
-                <SavedWord
-                  word={word}
-                  key={word.id}
-                  removeFromMyWords={removeFromMyWords}
-                />
-              ))}
+          {data.savedList?.words.map((word) => (
+            <SavedWord
+              word={word}
+              key={word.id}
+              removeFromMyWords={removeFromMyWords}
+            />
+          ))}
         </section>
       </main>
     </Layout>
   );
 };
 
-export default MyWords;
+export default SavedList;

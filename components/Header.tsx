@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   if (status === "loading") {
     right = (
       <div className="ms-auto">
-        <p>Validating session ...</p>
+        <div className="text-center loading loading-spinner loading-lg" />
       </div>
     );
   }
@@ -72,13 +72,13 @@ const Header: React.FC = () => {
             height={54}
             className="rounded mx-4"
           />
-          <Link href="/my-words" legacyBehavior>
+          <Link href="/my-lists" legacyBehavior>
             <button
               className={`btn btn-neutral btn-outline mr-2 ${
-                isActive(`/my-words`) && "btn-active"
+                isActive(`/my-lists`) && "btn-active"
               }`}
             >
-              My words
+              My lists
             </button>
           </Link>
           <button onClick={() => signOut()} className="btn btn-neutral">

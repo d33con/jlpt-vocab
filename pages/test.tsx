@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import Word, { WordProps } from "../components/Word";
 import TestCompleted from "../components/TestCompleted";
+import { useGetMyWordsQuery } from "../redux/services/wordsApi";
 
 const Test = () => {
   const [dontKnowWords, setDontKnowWords] = useState<WordProps[]>([]);
   const [knownWords, setKnownWords] = useState<WordProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, error, data, isFetching, refetch } = useGetMyWordsQuery();
 
   useEffect(() => {
     fetchMyWords();
@@ -24,11 +26,11 @@ const Test = () => {
   }
 
   async function fetchMyWords() {
-    const res = await fetch("api/words");
-    const data = await res.json();
+    // const res = await fetch("api/words");
+    // const data = await res.json();
     const shuffledWords = shuffleWords(data.words);
     setDontKnowWords(shuffledWords);
-    setIsLoading(false);
+    // setIsLoading(false);
   }
 
   function handleKnownWord() {

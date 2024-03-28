@@ -49,17 +49,18 @@ model Session {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  accounts      Account[]
-  sessions      Session[]
-  words         Word[]
+  id              Int              @id @default(autoincrement())
+  name            String?
+  email           String?          @unique
+  emailVerified   DateTime?        @map("email_verified")
+  image           String?
+  createdAt       DateTime         @default(now()) @map(name: "created_at")
+  updatedAt       DateTime         @updatedAt @map(name: "updated_at")
+  posts           Post[]
+  accounts        Account[]
+  sessions        Session[]
+  words           Word[]
+  savedWordsLists SavedWordsList[]
 
   @@map(name: "users")
 }
@@ -74,13 +75,24 @@ model VerificationToken {
 }
 
 model Word {
-  id       Int    @id @default(autoincrement())
-  word     String
-  meaning  String
-  furigana String
-  romaji   String
-  level    Int
-  user     User?  @relation(fields: [userId], references: [id])
-  userId   Int?
-  dateAdded     DateTime  @default(now()) @map(name: "date_added")
+  id               Int             @id @default(autoincrement())
+  word             String
+  meaning          String
+  furigana         String
+  romaji           String
+  level            Int
+  user             User?           @relation(fields: [userId], references: [id])
+  userId           Int?
+  dateAdded        DateTime        @default(now()) @map(name: "date_added")
+  SavedWordsList   SavedWordsList? @relation(fields: [savedWordsListId], references: [id])
+  savedWordsListId Int?
+}
+
+model SavedWordsList {
+  id        Int      @id @default(autoincrement())
+  name      String
+  words     Word[]
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  dateAdded DateTime @default(now()) @map(name: "date_added")
 }
