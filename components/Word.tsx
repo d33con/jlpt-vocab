@@ -22,7 +22,7 @@ const Word: React.FC<{ word: WordProps; loading: boolean }> = ({
   return (
     <div className="w-1/4 h-1/4 rounded overflow-hidden shadow-md p-16 text-center bg-slate-200">
       {loading ? (
-        <p className="h-full">Loading...</p>
+        <div className="text-center loading loading-spinner loading-lg" />
       ) : (
         <>
           <p

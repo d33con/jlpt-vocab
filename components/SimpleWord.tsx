@@ -62,7 +62,7 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
         className="btn btn-neutral btn-outline mr-2"
       >
         {isAdding ? (
-          <span className="loading loading-dots loading-xs"></span>
+          <span className="loading loading-spinner loading-xs"></span>
         ) : (
           "Add to my words"
         )}
