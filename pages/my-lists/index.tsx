@@ -10,7 +10,7 @@ import {
 
 const MySavedLists = () => {
   const { data: session } = useSession();
-  const [showRenameInput, setShowRenameInput] = useState(false);
+  const [showRenameInput, setShowRenameInput] = useState<number | null>(null);
   const [newListName, setNewListName] = useState("");
   const { isLoading, error, data, isFetching } = useGetMyListsQuery();
   const [deleteList, { isLoading: isDeleting }] = useDeleteListMutation();
@@ -18,9 +18,9 @@ const MySavedLists = () => {
 
   const handleRenameList = async (listId: number) => {
     try {
-      await renameList({ listId, newName: newListName }).then(() =>
-        setShowRenameInput(false)
-      );
+      await renameList({ listId, newName: newListName })
+        .then(() => setShowRenameInput(null))
+        .then(() => setNewListName(""));
     } catch (error) {
       let errMsg: string;
 
@@ -45,8 +45,9 @@ const MySavedLists = () => {
   if (!session) {
     return (
       <Layout>
-        <p className="text-center text-2xl">My Saved Lists</p>
-        <div>You need to login to view this page.</div>
+        <div className="text-center text-error">
+          You need to login to view this page.
+        </div>
       </Layout>
     );
   }
@@ -115,13 +116,22 @@ const MySavedLists = () => {
                       >
                         {isDeleting ? "Deleting..." : "Delete"}
                       </button>
-                      <button
-                        onClick={() => setShowRenameInput(!showRenameInput)}
-                        className="btn btn-info btn-outline btn-sm mr-2"
-                      >
-                        {showRenameInput ? "Close" : "Rename"}
-                      </button>
-                      {showRenameInput && (
+                      {showRenameInput === list.id ? (
+                        <button
+                          onClick={() => setShowRenameInput(null)}
+                          className="btn btn-info btn-outline btn-sm mr-2"
+                        >
+                          Close
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setShowRenameInput(list.id)}
+                          className="btn btn-info btn-outline btn-sm mr-2"
+                        >
+                          Rename
+                        </button>
+                      )}
+                      {showRenameInput === list.id && (
                         <div className="flex justify-between">
                           <input
                             id={`list-${list.id}`}
@@ -137,7 +147,7 @@ const MySavedLists = () => {
                             onClick={() => handleRenameList(list.id)}
                             className="btn btn-neutral btn-outline btn-sm"
                           >
-                            Rename
+                            {isRenaming ? "Renaming..." : "Rename"}
                           </button>
                         </div>
                       )}
