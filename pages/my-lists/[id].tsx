@@ -1,20 +1,19 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";
 import LevelSelect from "../../components/LevelSelect";
 import SavedWord from "../../components/SavedWord";
+import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
-import {
-  useGetMyFilteredWordsQuery,
-  useRemoveFromMyWordsMutation,
-} from "../../redux/services/wordsApi";
 import {
   useDeleteListMutation,
   useGetSavedListQuery,
+  useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
-import { useRouter } from "next/router";
+import { useGetMyFilteredWordsQuery } from "../../redux/services/wordsApi";
 
 const SavedList = () => {
   const { data: session } = useSession();
@@ -25,18 +24,26 @@ const SavedList = () => {
     listId: router.query.id as string,
   });
   const { data: filteredWords } = useGetMyFilteredWordsQuery(selectedLevels);
-  const [removeFromMyWords, { isLoading: isDeleting }] =
-    useRemoveFromMyWordsMutation();
+  const [removewordFromList, { isLoading: isDeletingWord }] =
+    useRemoveWordFromListMutation();
   const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
 
-  async function handleDeleteList() {
+  const handleDeleteList = async () => {
     try {
-      await deleteList(data.savedList.id); //.unwrap();
+      await deleteList(data.list.id); //.unwrap();
       router.push("/my-lists");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleRemoveWordFromList = async (word: WordProps) => {
+    try {
+      await removewordFromList({ listId: data.list.id, word }); //.unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   async function filterWordList(
     levels: MultiValue<{ value: number; level: string }>
@@ -150,9 +157,9 @@ const SavedList = () => {
             </button>
           </Link>
         </div>
-        <p className="text-center text-2xl mb-4">{data.savedList.name}</p>
+        <p className="text-center text-2xl mb-4">{data.list.name}</p>
         <p className="text-center text-xl italic mb-8">
-          {`${data.savedList.words.length} words`}
+          {`${data.list.words.length} words`}
         </p>
         <div className="flex justify-center mb-8">
           <Link href={`/test`} legacyBehavior>
@@ -173,11 +180,11 @@ const SavedList = () => {
           <WordSort sortWordList={sortWordList} />
         </section>
         <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
-          {data.savedList?.words.map((word) => (
+          {data.list?.words.map((word) => (
             <SavedWord
               word={word}
               key={word.id}
-              removeFromMyWords={removeFromMyWords}
+              removeWordFromList={handleRemoveWordFromList}
             />
           ))}
         </section>

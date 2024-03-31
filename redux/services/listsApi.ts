@@ -38,14 +38,28 @@ export const listsApi = createApi({
     }),
     getSavedList: build.query<
       {
-        savedList: SavedListsResponse;
+        list: SavedListsResponse;
       },
       { listId: string }
     >({
       query: ({ listId }) => `lists?id=${listId}`,
       providesTags: (result, error, id) => [{ type: "Lists", id: "LIST" }],
     }),
-    deleteList: build.mutation<{ name: string }, number>({
+    renameList: build.mutation<
+      { success: boolean; list: SavedListsResponse },
+      { listId: number; newName: string }
+    >({
+      query({ listId, newName }) {
+        return {
+          url: `lists?id=${listId}`,
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newName),
+        };
+      },
+      invalidatesTags: (result, error, id) => [{ type: "Lists", id: "LIST" }],
+    }),
+    deleteList: build.mutation<{ success: Boolean; name: string }, number>({
       query(listId) {
         return {
           url: `lists?id=${listId}`,
@@ -61,10 +75,10 @@ export const listsApi = createApi({
     >({
       query({ listId, word }) {
         return {
-          url: "lists",
+          url: `lists?id=${listId}`,
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ listId, word }),
+          body: JSON.stringify(word),
         };
       },
       invalidatesTags: ["Lists"],
@@ -83,6 +97,20 @@ export const listsApi = createApi({
       },
       invalidatesTags: ["Lists"],
     }),
+    removeWordFromList: build.mutation<
+      { success: boolean; word: WordProps },
+      { listId: number; word: WordProps }
+    >({
+      query({ listId, word }) {
+        return {
+          url: `lists/edit?id=${listId}`,
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(word),
+        };
+      },
+      invalidatesTags: ["Lists"],
+    }),
   }),
 });
 
@@ -92,4 +120,6 @@ export const {
   useDeleteListMutation,
   useAddWordToSavedListMutation,
   useAddWordToNewListMutation,
+  useRenameListMutation,
+  useRemoveWordFromListMutation,
 } = listsApi;

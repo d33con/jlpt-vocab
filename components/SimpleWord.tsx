@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAppSelector } from "../redux/hooks";
-import { useAddToMyWordsMutation } from "../redux/services/wordsApi";
+import AddToListModal from "./AddToListModal";
 import { WordProps } from "./Word";
 
 const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
@@ -8,32 +8,6 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
   key,
 }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
-  const [postError, setPostError] = useState("");
-  const [addToMyWords, { isLoading: isAdding }] = useAddToMyWordsMutation();
-
-  const handleAddWord = async () => {
-    try {
-      await addToMyWords(word);
-    } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        // you can access all properties of `SerializedError` here
-        errMsg = error.message;
-      }
-      setPostError(errMsg);
-      // toast({
-      //   title: 'An error occurred',
-      //   description: "We couldn't save your post, try again!",
-      //   status: 'error',
-      //   duration: 2000,
-      //   isClosable: true,
-      // })
-    }
-  };
 
   return (
     <div
@@ -58,15 +32,12 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
           : word.meaning}
       </div>
       <button
-        onClick={handleAddWord}
+        onClick={() => document.getElementById("addToListModal").showModal()}
         className="btn btn-neutral btn-outline mr-2"
       >
-        {isAdding ? (
-          <span className="loading loading-spinner loading-xs"></span>
-        ) : (
-          "Add to my words"
-        )}
+        Add to list
       </button>
+      <AddToListModal word={word} autoRefetch={false} />
     </div>
   );
 };

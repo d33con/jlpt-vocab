@@ -8,15 +8,15 @@ import {
 } from "@reduxjs/toolkit/query";
 import { useState } from "react";
 import {
-  useAddWordToSavedListMutation,
   useAddWordToNewListMutation,
+  useAddWordToSavedListMutation,
   useGetMyListsQuery,
 } from "../redux/services/listsApi";
 import { WordProps } from "./Word";
 
 const AddToListModal: React.FC<{
   word: WordProps;
-  refetch: () => QueryActionCreatorResult<
+  refetch?: () => QueryActionCreatorResult<
     QueryDefinition<
       {
         level: string;
@@ -33,9 +33,11 @@ const AddToListModal: React.FC<{
       "vocabApi"
     >
   >;
-}> = ({ word, refetch }) => {
+  autoRefetch: boolean;
+}> = ({ word, refetch, autoRefetch }) => {
   const [postError, setPostError] = useState("");
   const [newListName, setNewListName] = useState("");
+  const [inputError, setInputError] = useState<string | null>(null);
   const { isLoading, error, data, isFetching } = useGetMyListsQuery();
   const [addWordToSavedList, { isLoading: isAdding }] =
     useAddWordToSavedListMutation();
@@ -44,9 +46,15 @@ const AddToListModal: React.FC<{
 
   const handleAddWordToSavedList = async (listId: number) => {
     try {
-      await addWordToSavedList({ listId, word })
-        .then(() => refetch())
-        .then(document.getElementById("addToListModal").close());
+      if (autoRefetch) {
+        await addWordToSavedList({ listId, word })
+          .then(document.getElementById("addToListModal").close())
+          .then(() => refetch());
+      } else {
+        await addWordToSavedList({ listId, word }).then(
+          document.getElementById("addToListModal").close()
+        );
+      }
     } catch (error) {
       let errMsg: string;
 
@@ -69,28 +77,33 @@ const AddToListModal: React.FC<{
   };
 
   const handleAddWordToNewList = async () => {
-    try {
-      await addWordToNewList({ listName: newListName, word })
-        .then(() => refetch())
-        .then(document.getElementById("addToListModal").close());
-    } catch (error) {
-      let errMsg: string;
+    if (!newListName) {
+      setInputError("Please enter a name");
+    } else {
+      try {
+        await addWordToNewList({ listName: newListName, word })
+          .then(() => refetch())
+          .then(document.getElementById("addToListModal").close());
+        setInputError(null);
+      } catch (error) {
+        let errMsg: string;
 
-      if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        // you can access all properties of `SerializedError` here
-        errMsg = error.message;
+        if ("status" in error) {
+          // you can access all properties of `FetchBaseQueryError` here
+          errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+        } else {
+          // you can access all properties of `SerializedError` here
+          errMsg = error.message;
+        }
+        setPostError(errMsg);
+        // toast({
+        //   title: 'An error occurred',
+        //   description: "We couldn't save your post, try again!",
+        //   status: 'error',
+        //   duration: 2000,
+        //   isClosable: true,
+        // })
       }
-      setPostError(errMsg);
-      // toast({
-      //   title: 'An error occurred',
-      //   description: "We couldn't save your post, try again!",
-      //   status: 'error',
-      //   duration: 2000,
-      //   isClosable: true,
-      // })
     }
   };
 
@@ -99,6 +112,11 @@ const AddToListModal: React.FC<{
   return (
     <dialog id="addToListModal" className="modal">
       <div className="modal-box p-6">
+        <form method="dialog" className="text-end">
+          <button className="btn btn-sm btn-circle btn-ghost text-end">
+            ✕
+          </button>
+        </form>
         <h3 className="font-bold text-lg">Add to a saved list</h3>
         <ul className="p-4">
           {data &&
@@ -130,10 +148,10 @@ const AddToListModal: React.FC<{
             Create
           </button>
         </div>
+        {inputError && (
+          <div className="text-error text-sm px-4">{inputError}</div>
+        )}
       </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
     </dialog>
   );
 };

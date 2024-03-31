@@ -45,7 +45,7 @@ const Level = () => {
                 Add to list
               </button>
             </div>
-            <AddToListModal word={word} refetch={refetch} />
+            <AddToListModal word={word} refetch={refetch} autoRefetch />
           </>
         ) : null}
       </main>

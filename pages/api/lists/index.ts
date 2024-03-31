@@ -14,7 +14,7 @@ export default async function handle(
   // GET
   if (req.method == "GET") {
     if (req.query.id) {
-      const result = await prisma.savedWordsList.findMany({
+      const list = await prisma.savedWordsList.findUnique({
         where: {
           id: Number(req.query.id),
         },
@@ -22,7 +22,7 @@ export default async function handle(
           words: true,
         },
       });
-      res.status(200).json({ savedList: result[0] });
+      res.status(200).json({ list });
     } else {
       const savedLists = await prisma.savedWordsList.findMany({
         where: {
@@ -34,47 +34,59 @@ export default async function handle(
           words: true,
         },
       });
-      res.status(200).json({
-        savedLists,
-      });
+      res.status(200).json({ savedLists });
     }
   }
 
   // POST - add a word to a saved List
   if (req.method == "POST") {
-    const { listId, word } = req.body;
-    console.log("index");
+    const { word, meaning, romaji, furigana, level } = req.body;
     const result = await prisma.savedWordsList.update({
       where: {
-        id: listId,
+        id: Number(req.query.id),
       },
       data: {
         words: {
           create: {
-            word: word.word,
-            meaning: word.meaning,
-            furigana: word.furigana,
-            romaji: word.romaji,
-            level: word.level,
+            word,
+            meaning,
+            furigana,
+            romaji,
+            level,
           },
         },
       },
     });
+    // TODO : success
     res.status(200).json(result);
+  }
+
+  // PATCH - rename list
+  if (req.method == "PATCH") {
+    const result = await prisma.savedWordsList.update({
+      where: {
+        id: Number(req.query.id),
+      },
+      data: {
+        name: req.body,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      list: result,
+    });
   }
 
   // DELETE
   if (req.method == "DELETE") {
-    if (req.query.id) {
-      const result = await prisma.savedWordsList.delete({
-        where: {
-          id: Number(req.query.id),
-        },
-        select: {
-          name: true,
-        },
-      });
-      res.status(200).json({ name: result.name });
-    }
+    const result = await prisma.savedWordsList.delete({
+      where: {
+        id: Number(req.query.id),
+      },
+      select: {
+        name: true,
+      },
+    });
+    res.status(200).json({ success: true, name: result.name });
   }
 }

@@ -14,7 +14,6 @@ export default async function handle(
   // POST - add a word to a new saved List
   if (req.method == "POST") {
     const { listName, word } = req.body;
-    console.log("new");
     const result = await prisma.user.update({
       where: {
         email: session.user.email,
