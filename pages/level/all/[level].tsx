@@ -40,7 +40,9 @@ const BrowseLevel = () => {
   if (status == "pending")
     return (
       <Layout>
-        <div className="text-center">Loading...</div>
+        <div className="flex justify-center">
+          <div className="loading loading-spinner loading-lg" />
+        </div>
       </Layout>
     );
 
