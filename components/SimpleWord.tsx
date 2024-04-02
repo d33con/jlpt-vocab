@@ -9,6 +9,14 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
 }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 
+  // TODO: make a custom hook for this
+  const handleShowModal = () => {
+    const modal = document.getElementById(
+      "addToListModal"
+    ) as HTMLDialogElement | null;
+    if (modal) modal.showModal();
+  };
+
   return (
     <div
       key={key}
@@ -32,7 +40,7 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
           : word.meaning}
       </div>
       <button
-        onClick={() => document.getElementById("addToListModal").showModal()}
+        onClick={handleShowModal}
         className="btn btn-neutral btn-outline mr-2"
       >
         Add to list

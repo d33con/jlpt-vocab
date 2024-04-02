@@ -48,12 +48,20 @@ const AddToListModal: React.FC<{
     try {
       if (autoRefetch) {
         await addWordToSavedList({ listId, word })
-          .then(document.getElementById("addToListModal").close())
+          .then(() => {
+            const modal = document.getElementById(
+              "addToListModal"
+            ) as HTMLDialogElement | null;
+            if (modal) modal.close();
+          })
           .then(() => refetch());
       } else {
-        await addWordToSavedList({ listId, word }).then(
-          document.getElementById("addToListModal").close()
-        );
+        await addWordToSavedList({ listId, word }).then(() => {
+          const modal = document.getElementById(
+            "addToListModal"
+          ) as HTMLDialogElement | null;
+          if (modal) modal.close();
+        });
       }
     } catch (error) {
       let errMsg: string;
@@ -117,11 +125,11 @@ const AddToListModal: React.FC<{
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">Add to a saved list</h3>
+        <h3 className="font-bold text-lg">Add to saved list</h3>
         <ul className="p-4">
           {data &&
             data.savedLists.map((list) => (
-              <li key={list.id} className="flex justify-between">
+              <li key={list.id} className="flex justify-between mb-4">
                 {list.name}
                 <button
                   onClick={() => handleAddWordToSavedList(list.id)}

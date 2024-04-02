@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import AddToListModal from "../../../components/AddToListModal";
 import Layout from "../../../components/Layout";
 import Word from "../../../components/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
-import { useAddToMyWordsMutation } from "../../../redux/services/wordsApi";
-import AddToListModal from "../../../components/AddToListModal";
 
 const Level = () => {
   const router = useRouter();
@@ -17,7 +16,13 @@ const Level = () => {
     isFetching,
     refetch,
   } = useGetNewWordByLevelQuery({ level: router.query.level as string });
-  const [addToMyWords, { isLoading: isAdding }] = useAddToMyWordsMutation();
+
+  const handleShowModal = () => {
+    const modal = document.getElementById(
+      "addToListModal"
+    ) as HTMLDialogElement | null;
+    if (modal) modal.showModal();
+  };
 
   if (postError) return <div>Sorry something went wrong: {postError}</div>;
 
@@ -37,9 +42,7 @@ const Level = () => {
                 Next word
               </button>
               <button
-                onClick={() =>
-                  document.getElementById("addToListModal").showModal()
-                }
+                onClick={handleShowModal}
                 className="btn btn-neutral btn-outline"
               >
                 Add to list
