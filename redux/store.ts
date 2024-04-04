@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import furiganaReducer from "./features/furiganaSlice";
 import wordstestReducer from "./features/wordsTestSlice";
+import addWordToListReducer from "./features/addWordToListSlice";
 import { vocabApi } from "./services/vocabApi";
 import { wordsApi } from "./services/wordsApi";
 import { listsApi } from "./services/listsApi";
@@ -9,6 +10,7 @@ export const store = configureStore({
   reducer: {
     furiganaReducer,
     wordstestReducer,
+    addWordToListReducer,
     [vocabApi.reducerPath]: vocabApi.reducer,
     [wordsApi.reducerPath]: wordsApi.reducer,
     [listsApi.reducerPath]: listsApi.reducer,
