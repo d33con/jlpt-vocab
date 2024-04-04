@@ -138,11 +138,11 @@ const SavedList = () => {
     );
   }
 
-  if (data.total === 0) {
+  if (data.list.words.length === 0) {
     return (
       <Layout>
-        <p className="text-center text-2xl mb-8">My Saved Words</p>
-        <div className="text-center">You don't have any saved words</div>
+        <p className="text-center text-2xl mb-8">{data.list.name}</p>
+        <div className="text-center">This list is empty</div>
       </Layout>
     );
   }
