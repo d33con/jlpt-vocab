@@ -33,15 +33,17 @@ const Word: React.FC<{ word: WordProps; loading: boolean }> = ({
             {word?.furigana}
           </p>
           <p className="text-5xl text-gray-900 mb-8">
-            {word?.word
-              .split("")
-              .map((w) =>
-                kanjiRegex.test(w) ? (
-                  <span className="kanji">{w}</span>
-                ) : (
-                  <span className="no-kanji">{w}</span>
-                )
-              )}
+            {word?.word.split("").map((w) =>
+              kanjiRegex.test(w) ? (
+                <span className="kanji" key={word.id}>
+                  {w}
+                </span>
+              ) : (
+                <span className="no-kanji" key={word.id}>
+                  {w}
+                </span>
+              )
+            )}
           </p>
           <MeaningWithToggle meaning={word?.meaning} />
         </>
