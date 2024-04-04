@@ -3,13 +3,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import AddToListModal from "../../../components/AddToListModal";
 import Layout from "../../../components/Layout";
 import SimpleWord from "../../../components/SimpleWord";
 import { WordProps } from "../../../components/Word";
+import { setWord } from "../../../redux/features/addWordToListSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { showModal } from "../../../utils/modalControl";
 
 const BrowseLevel = () => {
   const router = useRouter();
   const { ref, inView } = useInView();
+  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word);
+  const dispatch = useAppDispatch();
 
   const fetchWords = async ({ pageParam }) => {
     const response = await fetch(
@@ -33,6 +39,11 @@ const BrowseLevel = () => {
       fetchNextPage();
     }
   }, [inView, router.query.level, fetchNextPage]);
+
+  const handleAddToList = (word: WordProps) => {
+    dispatch(setWord(word));
+    showModal("addToListModal");
+  };
 
   if (status == "error")
     return <div>Sorry something went wrong: {error.message}</div>;
@@ -62,12 +73,17 @@ const BrowseLevel = () => {
           {data?.pages.map((group, i) => (
             <Fragment key={i}>
               {group.words.map((word: WordProps) => (
-                <SimpleWord word={word} key={word.id} />
+                <SimpleWord
+                  word={word}
+                  key={word.id}
+                  handleAddToList={handleAddToList}
+                />
               ))}
             </Fragment>
           ))}
           <div ref={ref} className="h-1"></div>
         </section>
+        <AddToListModal word={wordToAdd} />
       </main>
     </Layout>
   );

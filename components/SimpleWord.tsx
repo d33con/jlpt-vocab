@@ -1,21 +1,13 @@
 import React from "react";
 import { useAppSelector } from "../redux/hooks";
-import AddToListModal from "./AddToListModal";
 import { WordProps } from "./Word";
 
-const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
-  word,
-  key,
-}) => {
+const SimpleWord: React.FC<{
+  word: WordProps;
+  key: number;
+  handleAddToList: (word: WordProps) => void;
+}> = ({ word, key, handleAddToList }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
-
-  // TODO: make a custom hook for this
-  const handleShowModal = () => {
-    const modal = document.getElementById(
-      "addToListModal"
-    ) as HTMLDialogElement | null;
-    if (modal) modal.showModal();
-  };
 
   return (
     <div
@@ -40,12 +32,11 @@ const SimpleWord: React.FC<{ word: WordProps; key: number }> = ({
           : word.meaning}
       </div>
       <button
-        onClick={handleShowModal}
+        onClick={() => handleAddToList(word)}
         className="btn btn-neutral btn-outline mr-2"
       >
         Add to list
       </button>
-      <AddToListModal word={word} autoRefetch={false} />
     </div>
   );
 };
