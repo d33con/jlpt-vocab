@@ -13,6 +13,7 @@ import {
   useGetMyListsQuery,
 } from "../redux/services/listsApi";
 import { WordProps } from "./Word";
+import { closeModal } from "../utils/modalControl";
 
 const AddToListModal: React.FC<{
   word: WordProps;
@@ -33,11 +34,11 @@ const AddToListModal: React.FC<{
       "vocabApi"
     >
   >;
-  autoRefetch: boolean;
+  autoRefetch?: boolean;
 }> = ({ word, refetch, autoRefetch }) => {
   const [postError, setPostError] = useState("");
   const [newListName, setNewListName] = useState("");
-  const [inputError, setInputError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string>("");
   const { isLoading, error, data, isFetching } = useGetMyListsQuery();
   const [addWordToSavedList, { isLoading: isAdding }] =
     useAddWordToSavedListMutation();
@@ -46,23 +47,11 @@ const AddToListModal: React.FC<{
 
   const handleAddWordToSavedList = async (listId: number) => {
     try {
-      if (autoRefetch) {
-        await addWordToSavedList({ listId, word })
-          .then(() => {
-            const modal = document.getElementById(
-              "addToListModal"
-            ) as HTMLDialogElement | null;
-            if (modal) modal.close();
-          })
-          .then(() => refetch());
-      } else {
-        await addWordToSavedList({ listId, word }).then(() => {
-          const modal = document.getElementById(
-            "addToListModal"
-          ) as HTMLDialogElement | null;
-          if (modal) modal.close();
+      await addWordToSavedList({ listId, word })
+        .then(() => closeModal("addToListModal"))
+        .then(() => {
+          if (autoRefetch) refetch();
         });
-      }
     } catch (error) {
       let errMsg: string;
 
@@ -91,8 +80,8 @@ const AddToListModal: React.FC<{
       try {
         await addWordToNewList({ listName: newListName, word })
           .then(() => refetch())
-          .then(document.getElementById("addToListModal").close());
-        setInputError(null);
+          .then(() => closeModal("addToListModal"));
+        setInputError("");
       } catch (error) {
         let errMsg: string;
 
