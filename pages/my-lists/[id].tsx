@@ -10,6 +10,8 @@ import SavedWord from "../../components/SavedWord";
 import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
 import {
+  LevelCounts,
+  SavedListsResponse,
   useDeleteListMutation,
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
@@ -20,27 +22,78 @@ const SavedList = () => {
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
+  const [selectedSort, setSelectedSort] = useState<string>("");
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
     listId: router.query.id as string,
   });
-  const selectFilteredWords = useMemo(() => {
+  const selectFilteredSortedWords = useMemo(() => {
     // Return a unique selector instance for this page so that
-    // the filtered results are correctly memoized
+    // the filtered and / or sorted results are correctly memoized
     return createSelector(
-      (res) => res,
-      (res, selectedLevels) => selectedLevels,
-      (data, selectedLevels) =>
-        data?.list.words.filter((word: WordProps) =>
-          selectedLevels.length ? selectedLevels.includes(word.level) : word
-        ) ?? data
+      [
+        (res: { list: SavedListsResponse; levelCounts: LevelCounts[] }) => res,
+        (
+          res: { list: SavedListsResponse; levelCounts: LevelCounts[] },
+          selectedLevels: number[]
+        ) => selectedLevels,
+        (
+          res: { list: SavedListsResponse; levelCounts: LevelCounts[] },
+          selectedLevels: number[],
+          selectedSort: string
+        ) => selectedSort,
+      ],
+      (data, selectedLevels, selectedSort) => {
+        const filtered =
+          (data?.list.words.filter((word: WordProps) =>
+            selectedLevels.length ? selectedLevels.includes(word.level) : word
+          ) as WordProps[]) ?? data.list.words;
+        switch (selectedSort) {
+          case "date-asc": {
+            filtered.sort(
+              (a, b) =>
+                new Date(a.dateAdded).getTime() -
+                new Date(b.dateAdded).getTime()
+            );
+            break;
+          }
+          case "date-desc": {
+            filtered.sort(
+              (a, b) =>
+                new Date(a.dateAdded).getTime() +
+                new Date(b.dateAdded).getTime()
+            );
+            break;
+          }
+          case "level-asc":
+            filtered.sort((a, b) => a.level - b.level);
+            break;
+          case "level-desc":
+            filtered.sort((a, b) => b.level - a.level);
+            break;
+          case "meaning-asc":
+            filtered.sort((a, b) => a.meaning.localeCompare(b.meaning));
+            break;
+          case "meaning-desc":
+            filtered.sort((a, b) => b.meaning.localeCompare(a.meaning));
+            break;
+          default:
+            break;
+        }
+        return filtered ?? data.list.words;
+      }
     );
-  }, [selectedLevels]);
-  const { filteredWords } = useGetSavedListQuery(
+  }, [selectedLevels, selectedSort]);
+
+  const { filteredSortedWords } = useGetSavedListQuery(
     { listId: router.query.id as string },
     {
       selectFromResult: ({ data }) => ({
         ...data,
-        filteredWords: selectFilteredWords(data, selectedLevels),
+        filteredSortedWords: selectFilteredSortedWords(
+          data,
+          selectedLevels,
+          selectedSort
+        ),
       }),
     }
   );
@@ -72,51 +125,6 @@ const SavedList = () => {
     levels.map((level) => selectedOptions.push(level.value));
     setSelectedLevels(selectedOptions);
   };
-
-  function sortWordList(e: { label: string; value: string }) {
-    switch (e.value) {
-      case "date-asc":
-        const sortedDateAsc = [...data.list.words].sort(
-          (a, b) =>
-            new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
-        );
-        setFilteredWords(sortedDateAsc);
-        break;
-      case "date-desc":
-        const sortedDateDesc = [...data.list.words].sort(
-          (a, b) =>
-            new Date(a.dateAdded).getTime() + new Date(b.dateAdded).getTime()
-        );
-        setFilteredWords(sortedDateDesc);
-        break;
-      case "level-asc":
-        const sortedLevelAsc = [...data.list.words].sort(
-          (a, b) => a.level - b.level
-        );
-        setFilteredWords(sortedLevelAsc);
-        break;
-      case "level-desc":
-        const sortedLevelDesc = [...data.list.words].sort(
-          (a, b) => a.level + b.level
-        );
-        setFilteredWords(sortedLevelDesc);
-        break;
-      case "meaning-asc":
-        const sortedMeaningAsc = [...data.list.words].sort((a, b) =>
-          a.meaning.localeCompare(b.meaning)
-        );
-        setFilteredWords(sortedMeaningAsc);
-        break;
-      case "meaning-desc":
-        const sortedMeaningDesc = [...data.list.words].sort((a, b) =>
-          b.meaning.localeCompare(a.meaning)
-        );
-        setFilteredWords(sortedMeaningDesc);
-        break;
-      default:
-        break;
-    }
-  }
 
   if (!session) {
     return (
@@ -198,11 +206,11 @@ const SavedList = () => {
             levelCounts={data.levelCounts}
             selectedLevels={selectedLevels}
           />
-          <WordSort sortWordList={sortWordList} />
+          <WordSort setSelectedSort={setSelectedSort} />
         </section>
         <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
-          {selectedLevels && filteredWords
-            ? filteredWords.map((word) => (
+          {filteredSortedWords
+            ? filteredSortedWords.map((word: WordProps) => (
                 <SavedWord
                   word={word}
                   key={word.id}

@@ -1,10 +1,10 @@
 import Select from "react-select";
 
 interface WordSortProps {
-  sortWordList: (option: { label: string; value: string }) => void;
+  setSelectedSort: (value: string) => void;
 }
 
-const WordSort: React.FC<WordSortProps> = ({ sortWordList }) => {
+const WordSort: React.FC<WordSortProps> = ({ setSelectedSort }) => {
   const options = [
     {
       value: "date-asc",
@@ -40,7 +40,7 @@ const WordSort: React.FC<WordSortProps> = ({ sortWordList }) => {
         defaultValue={options[0]}
         className="basic-multi-select"
         classNamePrefix="select"
-        onChange={(option) => sortWordList(option)}
+        onChange={(option) => setSelectedSort(option.value)}
         placeholder="Sort by..."
       />
     </>
