@@ -1,21 +1,42 @@
+import { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
+import { LevelCounts } from "../redux/services/listsApi";
 import JLPTLevels from "../utils/levels";
 
 interface LevelSelectProps {
   filterWordList: (value: MultiValue<{}>) => void;
-  totalLevelWordCount: Array<{ _count: { word: number }; level: number }>;
+  levelCounts: LevelCounts[];
+  selectedLevels: number[];
 }
 
 const LevelSelect: React.FC<LevelSelectProps> = ({
   filterWordList,
-  totalLevelWordCount,
+  levelCounts,
+  selectedLevels,
 }) => {
-  function wordLevelCount(level: number) {
-    const levelObject = totalLevelWordCount?.find(
+  const [value, setValue] = useState<{ value: number; label: string }[]>([]);
+  useEffect(() => {
+    setValue(
+      selectOptions.filter((option) => selectedLevels.includes(option.value))
+    );
+  }, [levelCounts]);
+
+  const handleOnChange = (e: MultiValue<{ value: number; label: string }>) => {
+    setValue(e as { value: number; label: string }[]);
+    filterWordList(e);
+  };
+
+  const wordLevelCount = (level: number) => {
+    const levelObject = levelCounts?.find(
       (levelObj) => level === levelObj.level
     );
     return levelObject ? levelObject._count.word : 0;
-  }
+  };
+
+  const selectOptions = JLPTLevels.map((level) => ({
+    value: level,
+    label: `Level ${String(level)} (${wordLevelCount(level)})`,
+  }));
 
   return (
     <>
@@ -23,14 +44,12 @@ const LevelSelect: React.FC<LevelSelectProps> = ({
       <Select
         isMulti
         name="levels"
-        options={JLPTLevels.map((level) => ({
-          value: level,
-          label: `Level ${String(level)} (${wordLevelCount(level)})`,
-        }))}
+        options={selectOptions}
         className="basic-multi-select"
         classNamePrefix="select"
-        onChange={(value) => filterWordList(value)}
+        onChange={(value) => handleOnChange(value)}
         placeholder="Select levels"
+        value={value}
       />
     </>
   );

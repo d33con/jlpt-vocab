@@ -1,7 +1,8 @@
+import { createSelector } from "@reduxjs/toolkit";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";
 import LevelSelect from "../../components/LevelSelect";
@@ -13,17 +14,36 @@ import {
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
-import { useGetMyFilteredWordsQuery } from "../../redux/services/wordsApi";
 
 const SavedList = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [selectedLevels, setSelectedLevels] = useState<Array<number>>([]);
+  const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
     listId: router.query.id as string,
   });
-  const { data: filteredWords } = useGetMyFilteredWordsQuery(selectedLevels);
+  const selectFilteredWords = useMemo(() => {
+    // Return a unique selector instance for this page so that
+    // the filtered results are correctly memoized
+    return createSelector(
+      (res) => res,
+      (res, selectedLevels) => selectedLevels,
+      (data, selectedLevels) =>
+        data?.list.words.filter((word: WordProps) =>
+          selectedLevels.length ? selectedLevels.includes(word.level) : word
+        ) ?? data
+    );
+  }, [selectedLevels]);
+  const { filteredWords } = useGetSavedListQuery(
+    { listId: router.query.id as string },
+    {
+      selectFromResult: ({ data }) => ({
+        ...data,
+        filteredWords: selectFilteredWords(data, selectedLevels),
+      }),
+    }
+  );
   const [removewordFromList, { isLoading: isDeletingWord }] =
     useRemoveWordFromListMutation();
   const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
@@ -45,50 +65,50 @@ const SavedList = () => {
     }
   };
 
-  async function filterWordList(
+  const filterWordList = (
     levels: MultiValue<{ value: number; level: string }>
-  ) {
+  ) => {
     const selectedOptions = [] as number[];
     levels.map((level) => selectedOptions.push(level.value));
     setSelectedLevels(selectedOptions);
-  }
+  };
 
   function sortWordList(e: { label: string; value: string }) {
     switch (e.value) {
       case "date-asc":
-        const sortedDateAsc = [...data.words].sort(
+        const sortedDateAsc = [...data.list.words].sort(
           (a, b) =>
             new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
         );
         setFilteredWords(sortedDateAsc);
         break;
       case "date-desc":
-        const sortedDateDesc = [...data.words].sort(
+        const sortedDateDesc = [...data.list.words].sort(
           (a, b) =>
             new Date(a.dateAdded).getTime() + new Date(b.dateAdded).getTime()
         );
         setFilteredWords(sortedDateDesc);
         break;
       case "level-asc":
-        const sortedLevelAsc = [...data.words].sort(
+        const sortedLevelAsc = [...data.list.words].sort(
           (a, b) => a.level - b.level
         );
         setFilteredWords(sortedLevelAsc);
         break;
       case "level-desc":
-        const sortedLevelDesc = [...data.words].sort(
+        const sortedLevelDesc = [...data.list.words].sort(
           (a, b) => a.level + b.level
         );
         setFilteredWords(sortedLevelDesc);
         break;
       case "meaning-asc":
-        const sortedMeaningAsc = [...data.words].sort((a, b) =>
+        const sortedMeaningAsc = [...data.list.words].sort((a, b) =>
           a.meaning.localeCompare(b.meaning)
         );
         setFilteredWords(sortedMeaningAsc);
         break;
       case "meaning-desc":
-        const sortedMeaningDesc = [...data.words].sort((a, b) =>
+        const sortedMeaningDesc = [...data.list.words].sort((a, b) =>
           b.meaning.localeCompare(a.meaning)
         );
         setFilteredWords(sortedMeaningDesc);
@@ -107,7 +127,7 @@ const SavedList = () => {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || isDeletingList) {
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
@@ -175,18 +195,27 @@ const SavedList = () => {
         <section className="mb-8 flex justify-center items-center">
           <LevelSelect
             filterWordList={filterWordList}
-            totalLevelWordCount={data.levels}
+            levelCounts={data.levelCounts}
+            selectedLevels={selectedLevels}
           />
           <WordSort sortWordList={sortWordList} />
         </section>
         <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
-          {data.list?.words.map((word) => (
-            <SavedWord
-              word={word}
-              key={word.id}
-              removeWordFromList={handleRemoveWordFromList}
-            />
-          ))}
+          {selectedLevels && filteredWords
+            ? filteredWords.map((word) => (
+                <SavedWord
+                  word={word}
+                  key={word.id}
+                  removeWordFromList={handleRemoveWordFromList}
+                />
+              ))
+            : data.list?.words.map((word) => (
+                <SavedWord
+                  word={word}
+                  key={word.id}
+                  removeWordFromList={handleRemoveWordFromList}
+                />
+              ))}
         </section>
       </main>
     </Layout>
