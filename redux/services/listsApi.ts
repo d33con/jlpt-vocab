@@ -9,6 +9,13 @@ export interface SavedListsResponse {
   words: WordProps[];
 }
 
+export interface LevelCounts {
+  _count: {
+    word: number;
+  };
+  level: number;
+}
+
 export const listsApi = createApi({
   reducerPath: "listsApi",
   baseQuery: fetchBaseQuery({
@@ -39,11 +46,12 @@ export const listsApi = createApi({
     getSavedList: build.query<
       {
         list: SavedListsResponse;
+        levelCounts: LevelCounts[];
       },
       { listId: string }
     >({
       query: ({ listId }) => `lists?id=${listId}`,
-      providesTags: (result, error, id) => [{ type: "Lists", id: "LIST" }],
+      providesTags: (result, error, id) => [{ type: "Lists", id: id.listId }],
     }),
     renameList: build.mutation<
       { success: boolean; list: SavedListsResponse },
@@ -57,7 +65,9 @@ export const listsApi = createApi({
           body: JSON.stringify(newName),
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "Lists", id: "LIST" }],
+      invalidatesTags: (result, error, id) => [
+        { type: "Lists", id: id.listId },
+      ],
     }),
     deleteList: build.mutation<{ success: Boolean; name: string }, number>({
       query(listId) {
@@ -81,7 +91,9 @@ export const listsApi = createApi({
           body: JSON.stringify(word),
         };
       },
-      invalidatesTags: ["Lists"],
+      invalidatesTags: (result, error, arg) => [
+        { type: "Lists", id: arg.listId },
+      ],
     }),
     addWordToNewList: build.mutation<
       WordProps,
@@ -95,7 +107,9 @@ export const listsApi = createApi({
           body: JSON.stringify({ listName, word }),
         };
       },
-      invalidatesTags: ["Lists"],
+      invalidatesTags: (result, error, arg) => [
+        { type: "Lists", name: arg.listName },
+      ],
     }),
     removeWordFromList: build.mutation<
       { success: boolean; word: WordProps },
@@ -109,7 +123,9 @@ export const listsApi = createApi({
           body: JSON.stringify(word),
         };
       },
-      invalidatesTags: ["Lists"],
+      invalidatesTags: (result, error, arg) => [
+        { type: "Lists", id: arg.listId },
+      ],
     }),
   }),
 });
