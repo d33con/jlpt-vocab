@@ -22,7 +22,16 @@ export default async function handle(
           words: true,
         },
       });
-      res.status(200).json({ list });
+
+      const levelCounts = await prisma.word.groupBy({
+        where: { savedWordsListId: Number(req.query.id) },
+        by: "level",
+        _count: {
+          word: true,
+        },
+      });
+
+      res.status(200).json({ list, levelCounts });
     } else {
       const savedLists = await prisma.savedWordsList.findMany({
         where: {
