@@ -10,8 +10,7 @@ import SavedWord from "../../components/SavedWord";
 import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
 import {
-  LevelCounts,
-  SavedListsResponse,
+  SavedListResponse,
   useDeleteListMutation,
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
@@ -31,39 +30,34 @@ const SavedList = () => {
     // the filtered and / or sorted results are correctly memoized
     return createSelector(
       [
-        (res: { list: SavedListsResponse; levelCounts: LevelCounts[] }) => res,
+        (res: SavedListResponse) => res,
+        (res: SavedListResponse, selectedLevels: number[]) => selectedLevels,
         (
-          res: { list: SavedListsResponse; levelCounts: LevelCounts[] },
-          selectedLevels: number[]
-        ) => selectedLevels,
-        (
-          res: { list: SavedListsResponse; levelCounts: LevelCounts[] },
+          res: SavedListResponse,
           selectedLevels: number[],
           selectedSort: string
         ) => selectedSort,
       ],
       (data, selectedLevels, selectedSort) => {
-        const filtered =
-          (data?.list.words.filter((word: WordProps) =>
-            selectedLevels.length ? selectedLevels.includes(word.level) : word
-          ) as WordProps[]) ?? data.list.words;
+        const filtered = data?.list.words.filter((word: WordProps) =>
+          selectedLevels.length ? selectedLevels.includes(word.level) : word
+        );
+
         switch (selectedSort) {
-          case "date-asc": {
+          case "date-asc":
             filtered.sort(
               (a, b) =>
                 new Date(a.dateAdded).getTime() -
                 new Date(b.dateAdded).getTime()
             );
             break;
-          }
-          case "date-desc": {
+          case "date-desc":
             filtered.sort(
               (a, b) =>
                 new Date(a.dateAdded).getTime() +
                 new Date(b.dateAdded).getTime()
             );
             break;
-          }
           case "level-asc":
             filtered.sort((a, b) => a.level - b.level);
             break;
@@ -79,7 +73,7 @@ const SavedList = () => {
           default:
             break;
         }
-        return filtered ?? data.list.words;
+        return filtered ?? [];
       }
     );
   }, [selectedLevels, selectedSort]);
@@ -209,7 +203,7 @@ const SavedList = () => {
           <WordSort setSelectedSort={setSelectedSort} />
         </section>
         <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
-          {filteredSortedWords
+          {(selectedLevels || selectedSort) && filteredSortedWords
             ? filteredSortedWords.map((word: WordProps) => (
                 <SavedWord
                   word={word}
