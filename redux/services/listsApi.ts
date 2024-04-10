@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { WordProps } from "../../components/Word";
-import { LevelsCounts } from "./wordsApi";
 
-export interface SavedListsResponse {
+export interface SavedList {
   id: number;
   name: string;
   dateAdded: Date;
@@ -16,6 +15,11 @@ export interface LevelCounts {
   level: number;
 }
 
+export interface SavedListResponse {
+  list: SavedList;
+  levelCounts: LevelCounts[];
+}
+
 export const listsApi = createApi({
   reducerPath: "listsApi",
   baseQuery: fetchBaseQuery({
@@ -25,7 +29,7 @@ export const listsApi = createApi({
   endpoints: (build) => ({
     getMyLists: build.query<
       {
-        savedLists: SavedListsResponse[];
+        savedLists: SavedList[];
       },
       void
     >({
@@ -43,18 +47,12 @@ export const listsApi = createApi({
           : // an error occurred, but we still want to refetch this query when `{ type: 'Words', id: 'LIST' }` is invalidated
             [{ type: "Lists", id: "LIST" }],
     }),
-    getSavedList: build.query<
-      {
-        list: SavedListsResponse;
-        levelCounts: LevelCounts[];
-      },
-      { listId: string }
-    >({
+    getSavedList: build.query<SavedListResponse, { listId: string }>({
       query: ({ listId }) => `lists?id=${listId}`,
       providesTags: (result, error, id) => [{ type: "Lists", id: id.listId }],
     }),
     renameList: build.mutation<
-      { success: boolean; list: SavedListsResponse },
+      { success: boolean; list: SavedList },
       { listId: number; newName: string }
     >({
       query({ listId, newName }) {
