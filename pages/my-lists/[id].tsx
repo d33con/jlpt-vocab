@@ -15,15 +15,16 @@ import {
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
+import { GetServerSidePropsContext } from "next";
 
-const SavedList = () => {
+const SavedList = ({ id }: { id: string }) => {
   const { data: session } = useSession();
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("");
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
-    listId: router.query.id as string,
+    listId: id,
   });
   const selectFilteredSortedWords = useMemo(() => {
     // Return a unique selector instance for this page so that
@@ -79,7 +80,7 @@ const SavedList = () => {
   }, [selectedLevels, selectedSort]);
 
   const { filteredSortedWords } = useGetSavedListQuery(
-    { listId: router.query.id as string },
+    { listId: id },
     {
       selectFromResult: ({ data }) => ({
         ...data,
@@ -223,5 +224,16 @@ const SavedList = () => {
     </Layout>
   );
 };
+
+// https://github.com/vercel/next.js/discussions/11484#discussioncomment-143163
+// using router.query.id caused double fetching as router.query.id is initially undefined
+// better to use getServerSideProps in this case
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      id: context.query.id,
+    },
+  };
+}
 
 export default SavedList;
