@@ -185,8 +185,8 @@ const SavedList = ({ id }: { id: string }) => {
           {`${data.list.words.length} words`}
         </p>
         <div className="flex justify-center mb-8">
-          <Link href={`/test`} legacyBehavior>
-            <button className="btn btn-accent mr-2">Study these words</button>
+          <Link href={`/my-lists/${id}/test`} legacyBehavior>
+            <button className="btn btn-accent mr-2">Test list</button>
           </Link>
           <button
             onClick={handleDeleteList}

@@ -5,17 +5,12 @@ const TestCompleted = ({ restartTest }) => {
     <>
       <p className="text-center text-2xl mb-8">Test Completed</p>
       <div className="flex justify-around mt-12 w-1/4">
-        <button
-          onClick={() => restartTest()}
-          className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow"
-        >
+        <button onClick={restartTest} className="btn btn-accent btn-outline">
           Test again
         </button>
-        <Link href="/my-words" legacyBehavior>
+        <Link href="/my-lists" legacyBehavior>
           <button className="mr-2">
-            <a className="bg-white hover:bg-sky-100 text-sky-800 font-semibold py-2 px-4 border border-sky-400 rounded shadow">
-              Go to My words
-            </a>
+            <a className="btn btn-neutral btn-outline">Go to My lists</a>
           </button>
         </Link>
       </div>

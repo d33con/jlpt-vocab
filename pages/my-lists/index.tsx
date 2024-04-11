@@ -145,12 +145,17 @@ const MySavedLists = () => {
                           />
                           <button
                             onClick={() => handleRenameList(list.id)}
-                            className="btn btn-neutral btn-outline btn-sm"
+                            className="btn btn-neutral btn-outline btn-sm mr-2"
                           >
                             {isRenaming ? "Renaming..." : "Rename"}
                           </button>
                         </div>
                       )}
+                      <Link href={`/my-lists/${list.id}/test`} legacyBehavior>
+                        <button className="btn btn-accent btn-outline btn-sm">
+                          Test
+                        </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
