@@ -15,7 +15,7 @@ import { showModal } from "../../../utils/modalControl";
 const BrowseLevel = () => {
   const router = useRouter();
   const { ref, inView } = useInView();
-  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word);
+  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word); // useState not redux?
   const dispatch = useAppDispatch();
 
   const fetchWords = async ({ pageParam }) => {
