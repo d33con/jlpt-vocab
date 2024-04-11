@@ -78,7 +78,7 @@ const Test = ({ id }: { id: string }) => {
 
   return (
     <Layout>
-      <main className="text-center">
+      <div className="text-center">
         <p className="text-center text-2xl mb-8">Test - {data.list.name}</p>
         <div className="flex flex-col items-center justify-center w-full h-max">
           {dontKnowWords.length === 0 ? (
@@ -116,7 +116,7 @@ const Test = ({ id }: { id: string }) => {
             </>
           )}
         </div>
-      </main>
+      </div>
     </Layout>
   );
 };

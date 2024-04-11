@@ -94,7 +94,7 @@ const MySavedLists = () => {
 
   return (
     <Layout>
-      <main>
+      <div>
         <p className="text-center text-2xl mb-8">My Saved Lists</p>
         <div className="overflow-x-auto w-1/2 m-auto">
           <table className="table">
@@ -162,7 +162,7 @@ const MySavedLists = () => {
             </tbody>
           </table>
         </div>
-      </main>
+      </div>
     </Layout>
   );
 };

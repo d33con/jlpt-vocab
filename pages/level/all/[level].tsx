@@ -59,7 +59,7 @@ const BrowseLevel = () => {
 
   return (
     <Layout>
-      <main className="flex flex-col items-center justify-center w-full h-max">
+      <div className="flex flex-col items-center justify-center w-full h-max">
         <section className="mb-4 text-2xl">
           JLPT Level {router.query.level}
         </section>
@@ -84,7 +84,7 @@ const BrowseLevel = () => {
           <div ref={ref} className="h-1"></div>
         </section>
         <AddToListModal word={wordToAdd} />
-      </main>
+      </div>
     </Layout>
   );
 };

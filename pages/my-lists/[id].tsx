@@ -172,7 +172,7 @@ const SavedList = ({ id }: { id: string }) => {
 
   return (
     <Layout>
-      <main>
+      <div>
         <div className="text-center mb-4">
           <Link href="/my-lists/" legacyBehavior>
             <button className="btn btn-ghost btn-sm">
@@ -220,7 +220,7 @@ const SavedList = ({ id }: { id: string }) => {
                 />
               ))}
         </section>
-      </main>
+      </div>
     </Layout>
   );
 };

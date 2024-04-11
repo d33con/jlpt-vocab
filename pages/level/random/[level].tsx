@@ -22,7 +22,7 @@ const Level = () => {
 
   return (
     <Layout>
-      <main className="flex flex-col items-center justify-center w-full h-max">
+      <div className="flex flex-col items-center justify-center w-full h-max">
         {error ? (
           <div>Sorry something went wrong when getting a new word</div>
         ) : word ? (
@@ -45,7 +45,7 @@ const Level = () => {
             <AddToListModal word={word} refetch={refetch} autoRefetch />
           </>
         ) : null}
-      </main>
+      </div>
     </Layout>
   );
 };

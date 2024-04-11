@@ -11,7 +11,7 @@ module.exports = {
         secondary: "#00FF00",
       },
       fontFamily: {
-        sans: ["Roboto", "Arial", "sans-serif"],
+        sans: ["var(--font-raleway)"],
       },
     },
   },
@@ -20,6 +20,6 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["acid"],
+    themes: ["winter"],
   },
 };
