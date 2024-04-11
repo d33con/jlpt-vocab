@@ -64,7 +64,7 @@ const Header: React.FC = () => {
     right = (
       <div className="ms-auto">
         <div className="flex justify-center items-center pr-4 text-gray-800">
-          <span>Welcome {session.user.name}</span>
+          <span>Welcome, {session.user.name}</span>
           <Image
             src={session.user.image}
             alt={session.user.name}
