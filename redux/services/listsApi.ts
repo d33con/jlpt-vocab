@@ -25,7 +25,7 @@ export const listsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "/api/",
   }),
-  tagTypes: ["Lists"],
+  tagTypes: ["List"],
   endpoints: (build) => ({
     getMyLists: build.query<
       {
@@ -39,17 +39,18 @@ export const listsApi = createApi({
         result
           ? // successful query
             [
-              ...result.savedLists.map(
-                ({ id }) => ({ type: "Lists", id } as const)
-              ),
-              { type: "Lists", id: "LIST" },
+              ...result.savedLists.map(({ id }) => ({
+                type: "List" as const,
+                id,
+              })),
+              "List",
             ]
-          : // an error occurred, but we still want to refetch this query when `{ type: 'Words', id: 'LIST' }` is invalidated
-            [{ type: "Lists", id: "LIST" }],
+          : // an error occurred, but we still want to refetch this query when "Lists" is invalidated
+            ["List"],
     }),
     getSavedList: build.query<SavedListResponse, { listId: string }>({
       query: ({ listId }) => `lists?id=${listId}`,
-      providesTags: (result, error, id) => [{ type: "Lists", id: id.listId }],
+      providesTags: (result, error, arg) => [{ type: "List", id: arg.listId }],
     }),
     renameList: build.mutation<
       { success: boolean; list: SavedList },
@@ -63,8 +64,8 @@ export const listsApi = createApi({
           body: JSON.stringify(newName),
         };
       },
-      invalidatesTags: (result, error, id) => [
-        { type: "Lists", id: id.listId },
+      invalidatesTags: (result, error, arg) => [
+        { type: "List", id: arg.listId },
       ],
     }),
     deleteList: build.mutation<{ success: Boolean; name: string }, number>({
@@ -75,7 +76,7 @@ export const listsApi = createApi({
           headers: { "Content-Type": "application/json" },
         };
       },
-      invalidatesTags: (result, error, id) => [{ type: "Lists", id }],
+      invalidatesTags: (result, error, arg) => [{ type: "List", id: arg }],
     }),
     addWordToSavedList: build.mutation<
       WordProps,
@@ -90,7 +91,7 @@ export const listsApi = createApi({
         };
       },
       invalidatesTags: (result, error, arg) => [
-        { type: "Lists", id: arg.listId },
+        { type: "List", id: arg.listId },
       ],
     }),
     addWordToNewList: build.mutation<
@@ -105,9 +106,7 @@ export const listsApi = createApi({
           body: JSON.stringify({ listName, word }),
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: "Lists", name: arg.listName },
-      ],
+      invalidatesTags: ["List"],
     }),
     removeWordFromList: build.mutation<
       { success: boolean; word: WordProps },
@@ -122,7 +121,7 @@ export const listsApi = createApi({
         };
       },
       invalidatesTags: (result, error, arg) => [
-        { type: "Lists", id: arg.listId },
+        { type: "List", id: arg.listId },
       ],
     }),
   }),
