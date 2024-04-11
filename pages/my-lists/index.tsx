@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import Layout from "../../components/Layout";
+import LoadingScreen from "../../components/LoadingScreen";
 import {
   useDeleteListMutation,
   useGetMyListsQuery,
@@ -52,16 +53,8 @@ const MySavedLists = () => {
     );
   }
 
-  if (isLoading || isFetching) {
-    return (
-      <Layout>
-        <p className="text-center text-2xl mb-8">My Saved Lists</p>
-        <div className="flex justify-center">
-          <div className="loading loading-spinner loading-lg" />
-        </div>
-      </Layout>
-    );
-  }
+  if (isLoading || isFetching)
+    return <LoadingScreen pageTitle="My Saved Lists" />;
 
   if (error) {
     let errMsg: string;

@@ -1,9 +1,10 @@
+import { GetServerSidePropsContext } from "next";
 import { useEffect, useState } from "react";
 import Layout from "../../../components/Layout";
+import LoadingScreen from "../../../components/LoadingScreen";
 import TestCompleted from "../../../components/TestCompleted";
 import Word, { WordProps } from "../../../components/Word";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
-import { GetServerSidePropsContext } from "next";
 
 const Test = ({ id }: { id: string }) => {
   const { isLoading, error, data } = useGetSavedListQuery({
@@ -45,16 +46,7 @@ const Test = ({ id }: { id: string }) => {
     setKnownWords([]);
   };
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <p className="text-center text-2xl mb-8">Test</p>
-        <div className="flex justify-center">
-          <div className="loading loading-spinner loading-lg" />
-        </div>
-      </Layout>
-    );
-  }
+  if (isLoading) return <LoadingScreen pageTitle="Test" />;
 
   if (error) {
     let errMsg: string;

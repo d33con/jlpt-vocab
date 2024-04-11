@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { GetServerSidePropsContext } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -6,6 +7,7 @@ import { useMemo, useState } from "react";
 import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";
 import LevelSelect from "../../components/LevelSelect";
+import LoadingScreen from "../../components/LoadingScreen";
 import SavedWord from "../../components/SavedWord";
 import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
@@ -15,7 +17,6 @@ import {
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
-import { GetServerSidePropsContext } from "next";
 
 const SavedList = ({ id }: { id: string }) => {
   const { data: session } = useSession();
@@ -130,16 +131,8 @@ const SavedList = ({ id }: { id: string }) => {
     );
   }
 
-  if (isLoading || isDeletingList) {
-    return (
-      <Layout>
-        <p className="text-center text-2xl mb-8">My Saved Words</p>
-        <div className="flex justify-center">
-          <div className="loading loading-spinner loading-lg" />
-        </div>
-      </Layout>
-    );
-  }
+  if (isLoading || isDeletingList)
+    return <LoadingScreen pageTitle="My Saved Words" />;
 
   if (error) {
     let errMsg: string;

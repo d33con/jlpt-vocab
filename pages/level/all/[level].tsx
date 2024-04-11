@@ -5,6 +5,7 @@ import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import AddToListModal from "../../../components/AddToListModal";
 import Layout from "../../../components/Layout";
+import LoadingScreen from "../../../components/LoadingScreen";
 import SimpleWord from "../../../components/SimpleWord";
 import { WordProps } from "../../../components/Word";
 import { setWord } from "../../../redux/features/addWordToListSlice";
@@ -48,14 +49,7 @@ const BrowseLevel = () => {
   if (status == "error")
     return <div>Sorry something went wrong: {error.message}</div>;
 
-  if (status == "pending")
-    return (
-      <Layout>
-        <div className="flex justify-center">
-          <div className="loading loading-spinner loading-lg" />
-        </div>
-      </Layout>
-    );
+  if (status == "pending") return <LoadingScreen />;
 
   return (
     <Layout>
