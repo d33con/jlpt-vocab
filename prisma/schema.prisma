@@ -7,15 +7,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model Account {
   id                 Int     @id @default(autoincrement())
   userId             Int     @map("user_id")
@@ -56,7 +47,6 @@ model User {
   image           String?
   createdAt       DateTime         @default(now()) @map(name: "created_at")
   updatedAt       DateTime         @updatedAt @map(name: "updated_at")
-  posts           Post[]
   accounts        Account[]
   sessions        Session[]
   words           Word[]
