@@ -10,7 +10,7 @@ const MeaningWithToggle = ({ meaning }: MeaningWithToggleProps) => {
   return (
     <div>
       <p
-        className={`text-xl text-gray-700 mb-4 h-16 ${
+        className={`text-lg text-gray-600 mb-4 h-16 ${
           showMeaning ? "visible" : "invisible"
         }`}
         title={meaning}
@@ -22,7 +22,7 @@ const MeaningWithToggle = ({ meaning }: MeaningWithToggleProps) => {
         <input
           id="furiganaToggle"
           type="checkbox"
-          className="toggle"
+          className="toggle toggle-sm"
           checked={showMeaning}
           onChange={() => setShowMeaning(!showMeaning)}
         />

@@ -17,14 +17,14 @@ const SimpleWord: React.FC<{
       <div className="flex flex-col w-1/3 items-start">
         {word.furigana && (
           <div
-            className={`text-sm text-gray-700 ${
+            className={`text-base text-gray-700 ${
               furiganaStatus ? "visible" : "invisible"
             } ${!word.furigana && "p-4"}`}
           >
             {word?.furigana}
           </div>
         )}
-        <div className="text-3xl text-gray-900">{word?.word}</div>
+        <div className="text-5xl text-gray-900">{word?.word}</div>
       </div>
       <div className="text-xl text-gray-700 me-auto" title={word?.meaning}>
         {word?.meaning.length > 35

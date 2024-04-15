@@ -17,13 +17,13 @@ const SavedWord: React.FC<{
         <div className="badge badge-neutral">{word?.level}</div>
         <button
           onClick={() => removeWordFromList(word)}
-          className="btn btn-sm btn-circle text-lg text-red-700"
+          className="btn btn-sm btn-circle text-md text-red-700"
         >
           X
         </button>
       </div>
       <p
-        className={`text-lg text-gray-700 mb-2 ${
+        className={`text-base text-gray-700 mb-2 ${
           furiganaStatus ? "visible" : "invisible"
         } ${!word.furigana && "p-4"}`}
       >
@@ -31,7 +31,7 @@ const SavedWord: React.FC<{
       </p>
       <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
       <MeaningWithToggle meaning={word?.meaning} />
-      <p className="text-sm text-gray-600 mt-4">
+      <p className="text-xs text-gray-600 mt-4">
         Added on: {dateAddedString.toLocaleString().slice(0, 10)}
       </p>
     </div>

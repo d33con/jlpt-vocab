@@ -145,6 +145,7 @@ const MySavedLists = () => {
                         </div>
                       )}
                       <Link href={`/my-lists/${list.id}/test`} legacyBehavior>
+                        {/* <Test words={list.words} > */}
                         <button className="btn btn-accent btn-outline btn-sm">
                           Test
                         </button>

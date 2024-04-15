@@ -26,7 +26,7 @@ const Word: React.FC<{ word: WordProps; loading?: boolean }> = ({
       ) : (
         <>
           <p
-            className={`text-lg text-gray-700 mb-2 ${
+            className={`text-base text-gray-700 mb-2 ${
               furiganaStatus ? "visible" : "invisible"
             } ${!word.furigana && "p-4"}`}
           >

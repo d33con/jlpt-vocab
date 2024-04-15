@@ -13,27 +13,24 @@ const Header: React.FC = () => {
 
   const { data: session, status } = useSession();
 
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
+
   let left = null;
 
   let right = null;
 
   if (status === "loading") {
     right = (
-      <div className="ms-auto">
+      <div className="ml-auto">
         <div className="text-center loading loading-spinner loading-lg" />
       </div>
     );
   }
 
-  if (!session) {
-    right = (
-      <div className="ms-auto">
-        <Link href="/api/auth/signin" legacyBehavior>
-          <button className="btn btn-neutral text-lg">Log In</button>
-        </Link>
-      </div>
-    );
-  }
+  if (!session) return null;
 
   if (session) {
     left = (
@@ -50,7 +47,7 @@ const Header: React.FC = () => {
         {JLPTLevels.map((level) => (
           <Link href={`/level/all/${level}`} legacyBehavior key={level}>
             <button
-              className={`btn btn-neutral btn-outline mr-2 ${
+              className={`btn btn-neutral btn-outline mr-2 last-of-type:mr-4 ${
                 isActive(`/level/all/${level}`) && "btn-active"
               }`}
             >
@@ -62,8 +59,8 @@ const Header: React.FC = () => {
       </div>
     );
     right = (
-      <div className="ms-auto">
-        <div className="flex justify-center items-center pr-4 text-gray-800">
+      <div className="ml-auto">
+        <div className="flex justify-center items-center pr-4 text-gray-600">
           <span>Welcome, {session.user.name}</span>
           <Image
             src={session.user.image}
@@ -81,7 +78,7 @@ const Header: React.FC = () => {
               My lists
             </button>
           </Link>
-          <button onClick={() => signOut()} className="btn btn-neutral">
+          <button onClick={() => handleSignOut()} className="btn btn-neutral">
             Log out
           </button>
         </div>
@@ -90,9 +87,35 @@ const Header: React.FC = () => {
   }
 
   return (
-    <nav className="flex p-8 items-center sticky top-0 z-10 bg-gray-100 shadow-sm">
-      {left}
-      {right}
+    <nav className="sticky top-0 z-10 bg-gray-100/80 backdrop-blur-sm shadow-sm">
+      <div className="hidden 2xl:flex p-8 items-center ">
+        {left}
+        {right}
+      </div>
+      <div className="flex items-center 2xl:hidden p-8">
+        <label
+          htmlFor="drawer-menu"
+          aria-label="open sidebar"
+          className="btn btn-square btn-ghost"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="inline-block w-6 h-6 stroke-sky-800"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </label>
+        <span className="text-3xl font-bold text-sky-800 m-auto">
+          JLPT Vocab
+        </span>
+      </div>
     </nav>
   );
 };

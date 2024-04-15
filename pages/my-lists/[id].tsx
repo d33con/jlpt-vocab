@@ -174,7 +174,7 @@ const SavedList = ({ id }: { id: string }) => {
           </Link>
         </div>
         <p className="text-center text-2xl mb-4">{data.list.name}</p>
-        <p className="text-center text-xl italic mb-8">
+        <p className="text-center text-xl italic mb-8 text-gray-500">
           {`${data.list.words.length} words`}
         </p>
         <div className="flex justify-center mb-8">

@@ -6,7 +6,7 @@ const FuriganaToggle = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="flex justify-between items-center ms-4">
+    <div className="flex justify-between items-center">
       <span className="me-2">Furigana</span>
       <input
         id="furiganaToggle"

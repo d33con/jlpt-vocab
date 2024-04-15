@@ -77,13 +77,11 @@ const Test = ({ id }: { id: string }) => {
             <TestCompleted restartTest={restartTest} />
           ) : (
             <>
-              <p className="mb-4">
-                Words left in this test: {dontKnowWords.length}
-              </p>
+              <p className="mb-4">Remaining: {dontKnowWords.length}</p>
               <Word word={dontKnowWords[0]} />
               <div className="flex justify-around mt-12 w-1/4">
                 <div className="flex flex-col">
-                  <div className="pb-2 italic text-green-600">
+                  <div className="pb-2 italic text-emerald-500">
                     {knownWords.length}
                   </div>
                   <button
@@ -94,7 +92,7 @@ const Test = ({ id }: { id: string }) => {
                   </button>
                 </div>
                 <div className="flex flex-col">
-                  <div className="pb-2 italic text-red-600">
+                  <div className="pb-2 italic text-red-600/70">
                     {dontKnowWords.length}
                   </div>
                   <button
