@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import AddToListModal from "../../../components/AddToListModal";
@@ -12,23 +12,20 @@ import { setWord } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { showModal } from "../../../utils/modalControl";
 
-const BrowseLevel = () => {
-  const router = useRouter();
+const BrowseLevel = ({ level }: { level: number }) => {
   const { ref, inView } = useInView();
   const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word); // useState not redux?
   const dispatch = useAppDispatch();
 
   const fetchWords = async ({ pageParam }) => {
     const response = await fetch(
-      `https://jlpt-vocab-api.vercel.app/api/words?level=${parseInt(
-        router.query.level as string
-      )}&offset=${pageParam}&limit=10`
+      `https://jlpt-vocab-api.vercel.app/api/words?level=${level}&offset=${pageParam}&limit=10`
     );
     return await response.json();
   };
 
   const { data, error, fetchNextPage, status } = useInfiniteQuery({
-    queryKey: ["words", router.query.level],
+    queryKey: ["words", level],
     queryFn: fetchWords,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.offset + 1,
@@ -39,7 +36,7 @@ const BrowseLevel = () => {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView, router.query.level, fetchNextPage]);
+  }, [inView, level, fetchNextPage]);
 
   const handleAddToList = (word: WordProps) => {
     dispatch(setWord(word));
@@ -54,11 +51,9 @@ const BrowseLevel = () => {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center w-full h-max">
-        <section className="mb-4 text-2xl">
-          JLPT Level {router.query.level}
-        </section>
+        <section className="mb-4 text-2xl">JLPT Level {level}</section>
         <section className="mb-8 text-lg">{data?.pages[0].total} words</section>
-        <Link href={`/level/random/${router.query.level}`} legacyBehavior>
+        <Link href={`/level/random/${level}`} legacyBehavior>
           <button className="btn btn-neutral btn-outline mr-2">
             Random word
           </button>
@@ -82,5 +77,13 @@ const BrowseLevel = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      level: context.query.level,
+    },
+  };
+}
 
 export default BrowseLevel;

@@ -1,24 +1,18 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { GetServerSidePropsContext } from "next";
 import AddToListModal from "../../../components/AddToListModal";
 import Layout from "../../../components/Layout";
 import Word from "../../../components/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
 import { showModal } from "../../../utils/modalControl";
 
-const Level = () => {
-  const router = useRouter();
-
-  const [postError, setPostError] = useState("");
+const Level = ({ level }: { level: string }) => {
   const {
     isLoading,
     error,
     data: word,
     isFetching,
     refetch,
-  } = useGetNewWordByLevelQuery({ level: router.query.level as string });
-
-  if (postError) return <div>Sorry something went wrong: {postError}</div>;
+  } = useGetNewWordByLevelQuery({ level });
 
   return (
     <Layout>
@@ -27,11 +21,14 @@ const Level = () => {
           <div>Sorry something went wrong when getting a new word</div>
         ) : word ? (
           <>
+            <section className="mb-4 text-2xl">
+              Random level {level} word
+            </section>
             <Word word={word} loading={isLoading || isFetching} />
-            <div className="flex justify-around mt-12 w-1/4">
+            <div className="flex flex-col xl:flex-row justify-around mt-12 w-1/4">
               <button
                 onClick={() => refetch()}
-                className="btn btn-neutral btn-outline"
+                className="btn btn-neutral btn-outline mb-4 xl:mb-0"
               >
                 Next word
               </button>
@@ -49,5 +46,13 @@ const Level = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      level: context.query.level,
+    },
+  };
+}
 
 export default Level;
