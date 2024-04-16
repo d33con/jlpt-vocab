@@ -13,7 +13,7 @@ type Props = {
 };
 
 const Layout: React.FC<Props> = (props) => (
-  <main className={`${sora.variable} font-sans h-screen bg-teal-50`}>
+  <main className={`${sora.variable} font-sans h-full min-h-screen bg-teal-50`}>
     <div className="drawer">
       <input id="drawer-menu" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
