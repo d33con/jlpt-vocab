@@ -2,7 +2,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { GetServerSidePropsContext } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";

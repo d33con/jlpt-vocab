@@ -1,21 +1,15 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import JLPTLevels from "../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
 const DrawerMenu: React.FC = () => {
-  const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
-    router.asPath === pathname;
+    usePathname() === pathname;
 
   const { data: session } = useSession();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
-  };
 
   const handleCloseMenu = () => {
     document.getElementById("drawer-menu").click();
@@ -68,7 +62,7 @@ const DrawerMenu: React.FC = () => {
         ))}
       </ul>
       <div className="divider"></div>
-      <button onClick={() => handleSignOut()} className="btn btn-neutral">
+      <button onClick={() => signOut()} className="btn btn-neutral">
         Log out
       </button>
     </div>

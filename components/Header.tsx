@@ -1,22 +1,16 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import React from "react";
 import JLPTLevels from "../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
 const Header: React.FC = () => {
-  const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
-    router.asPath === pathname;
+    usePathname() === pathname;
 
   const { data: session, status } = useSession();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
-  };
 
   let left = null;
 
@@ -78,7 +72,7 @@ const Header: React.FC = () => {
               My lists
             </button>
           </Link>
-          <button onClick={() => handleSignOut()} className="btn btn-neutral">
+          <button onClick={() => signOut()} className="btn btn-neutral">
             Log out
           </button>
         </div>
