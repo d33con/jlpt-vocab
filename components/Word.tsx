@@ -20,7 +20,7 @@ const Word: React.FC<{ word: WordProps; loading?: boolean }> = ({
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 
   return (
-    <div className="w-1/5 h-1/4 rounded overflow-hidden shadow-md p-16 text-center bg-slate-200">
+    <div className="w-1/2 md:w-1/4 xl:w-1/5 rounded overflow-hidden shadow-md p-16 text-center bg-slate-200">
       {loading ? (
         <div className="text-center loading loading-spinner loading-lg" />
       ) : (

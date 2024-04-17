@@ -21,7 +21,7 @@ const Level = ({ level }: { level: string }) => {
           <div>Sorry something went wrong when getting a new word</div>
         ) : word ? (
           <>
-            <section className="mb-4 text-2xl">
+            <section className="mb-8 text-2xl">
               Random level {level} word
             </section>
             <Word word={word} loading={isLoading || isFetching} />

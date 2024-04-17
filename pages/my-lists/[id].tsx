@@ -188,7 +188,7 @@ const SavedList = ({ id }: { id: string }) => {
             Delete list
           </button>
         </div>
-        <section className="mb-8 flex justify-center items-center">
+        <section className="mb-8 flex flex-col lg:flex-row gap-6 justify-center items-center">
           <LevelSelect
             filterWordList={filterWordList}
             levelCounts={data.levelCounts}
@@ -196,7 +196,7 @@ const SavedList = ({ id }: { id: string }) => {
           />
           <WordSort setSelectedSort={setSelectedSort} />
         </section>
-        <section className="container mx-auto grid lg:grid-cols-4 sm:grid-cols-2 gap-4">
+        <section className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {(selectedLevels || selectedSort) && filteredSortedWords
             ? filteredSortedWords.map((word: WordProps) => (
                 <SavedWord

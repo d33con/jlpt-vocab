@@ -28,6 +28,7 @@ const Test = ({ id }: { id: string }) => {
     }
 
     setDontKnowWords(shuffled);
+    setKnownWords([]);
   };
 
   const handleKnownWord = () => {
@@ -81,7 +82,7 @@ const Test = ({ id }: { id: string }) => {
               <Word word={dontKnowWords[0]} />
               <div className="flex justify-around mt-12 w-1/4">
                 <div className="flex flex-col">
-                  <div className="pb-2 italic text-emerald-500">
+                  <div className="pb-2 italic text-green-500">
                     {knownWords.length}
                   </div>
                   <button
@@ -92,7 +93,7 @@ const Test = ({ id }: { id: string }) => {
                   </button>
                 </div>
                 <div className="flex flex-col">
-                  <div className="pb-2 italic text-red-600/70">
+                  <div className="pb-2 italic text-red-400">
                     {dontKnowWords.length}
                   </div>
                   <button

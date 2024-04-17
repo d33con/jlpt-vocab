@@ -89,15 +89,27 @@ const MySavedLists = () => {
     <Layout>
       <div>
         <p className="text-center text-2xl mb-8">My Saved Lists</p>
-        <div className="overflow-x-auto w-1/2 m-auto">
-          <table className="table">
-            <tbody>
-              {data.savedLists &&
-                data.savedLists.map((list) => (
-                  <tr key={list.id}>
-                    <td>{list.name}</td>
-                    <td>{list.words.length} words</td>
-                    <td className="flex">
+        <div className="w-5/6 md:w-2/3 xl:w-1/2 mx-auto">
+          {data.savedLists &&
+            data.savedLists.map((list) => (
+              <>
+                <div key={list.id} className="flex flex-wrap items-center mb-4">
+                  <div className="flex flex-col md:flex-row w-full items-center justify-center md:justify-between px-8 mb-2 md:mb-0">
+                    <div className="mb-2 md:mb-4 text-xl font-semibold">
+                      {list.name}
+                    </div>
+                    <div className="mb-4 font-light">
+                      {list.words.length > 1
+                        ? `${list.words.length} words`
+                        : "1 word"}
+                    </div>
+                  </div>
+                  <div className="flex flex-grow px-8 justify-center md:justify-start">
+                    <div
+                      className={`${
+                        showRenameInput === list.id ? "hidden" : "flex"
+                      }`}
+                    >
                       <Link href={`/my-lists/${list.id}`} legacyBehavior>
                         <button className="btn btn-neutral btn-outline btn-sm mr-4">
                           Open
@@ -109,52 +121,57 @@ const MySavedLists = () => {
                       >
                         {isDeleting ? "Deleting..." : "Delete"}
                       </button>
-                      {showRenameInput === list.id ? (
+                    </div>
+                    {showRenameInput === list.id ? (
+                      <button
+                        onClick={() => setShowRenameInput(null)}
+                        className="btn btn-info btn-outline btn-sm mr-4"
+                      >
+                        Cancel
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setShowRenameInput(list.id)}
+                        className="btn btn-info btn-outline btn-sm mr-4"
+                      >
+                        Rename
+                      </button>
+                    )}
+                    {showRenameInput === list.id && (
+                      <div className="flex justify-between">
+                        <input
+                          id={`list-${list.id}`}
+                          type="text"
+                          placeholder="Enter new list name"
+                          className="input input-bordered input-sm w-full max-w-xs mr-4"
+                          value={newListName}
+                          onChange={(e) =>
+                            setNewListName(e.currentTarget.value)
+                          }
+                        />
                         <button
-                          onClick={() => setShowRenameInput(null)}
-                          className="btn btn-info btn-outline btn-sm mr-2"
+                          onClick={() => handleRenameList(list.id)}
+                          className="btn btn-neutral btn-outline btn-sm"
                         >
-                          Close
+                          {isRenaming ? "Renaming..." : "Rename"}
                         </button>
-                      ) : (
-                        <button
-                          onClick={() => setShowRenameInput(list.id)}
-                          className="btn btn-info btn-outline btn-sm mr-2"
-                        >
-                          Rename
-                        </button>
-                      )}
-                      {showRenameInput === list.id && (
-                        <div className="flex justify-between">
-                          <input
-                            id={`list-${list.id}`}
-                            type="text"
-                            placeholder="Enter new list name"
-                            className="input input-bordered input-sm w-full max-w-xs mr-2"
-                            value={newListName}
-                            onChange={(e) =>
-                              setNewListName(e.currentTarget.value)
-                            }
-                          />
-                          <button
-                            onClick={() => handleRenameList(list.id)}
-                            className="btn btn-neutral btn-outline btn-sm mr-2"
-                          >
-                            {isRenaming ? "Renaming..." : "Rename"}
-                          </button>
-                        </div>
-                      )}
-                      <Link href={`/my-lists/${list.id}/test`} legacyBehavior>
-                        {/* <Test words={list.words} > */}
-                        <button className="btn btn-accent btn-outline btn-sm">
-                          Test
-                        </button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                      </div>
+                    )}
+                    <Link href={`/my-lists/${list.id}/test`} legacyBehavior>
+                      {/* <Test words={list.words} > */}
+                      <button
+                        className={`btn btn-accent btn-outline btn-sm ${
+                          showRenameInput === list.id ? "hidden" : ""
+                        }`}
+                      >
+                        Test
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="divider" />
+              </>
+            ))}
         </div>
       </div>
     </Layout>

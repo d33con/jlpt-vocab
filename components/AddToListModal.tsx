@@ -114,6 +114,7 @@ const AddToListModal: React.FC<{
             ✕
           </button>
         </form>
+        {/* TODO: return link to login page if no session */}
         <h3 className="font-bold text-lg">Add to saved list</h3>
         <ul className="p-4">
           {data &&
@@ -124,7 +125,7 @@ const AddToListModal: React.FC<{
                   onClick={() => handleAddWordToSavedList(list.id)}
                   className="btn btn-neutral btn-outline btn-sm"
                 >
-                  Add
+                  {isAdding ? "Adding" : "Add"}
                 </button>
               </li>
             ))}
@@ -142,7 +143,7 @@ const AddToListModal: React.FC<{
             onClick={handleAddWordToNewList}
             className="btn btn-neutral btn-outline btn-sm"
           >
-            Create
+            {isAddingToNewList ? "Creating" : "Create"}
           </button>
         </div>
         {inputError && (

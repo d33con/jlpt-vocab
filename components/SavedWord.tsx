@@ -17,7 +17,7 @@ const SavedWord: React.FC<{
         <div className="badge badge-neutral">{word?.level}</div>
         <button
           onClick={() => removeWordFromList(word)}
-          className="btn btn-sm btn-circle text-md text-red-700"
+          className="btn btn-sm btn-error btn-outline font-bold"
         >
           X
         </button>

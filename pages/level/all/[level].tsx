@@ -58,7 +58,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
             Random word
           </button>
         </Link>
-        <section className="mt-8 w-3/4">
+        <section className="mt-8 w-2/3">
           {data?.pages.map((group, i) => (
             <Fragment key={i}>
               {group.words.map((word: WordProps) => (

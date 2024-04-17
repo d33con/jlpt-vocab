@@ -33,7 +33,7 @@ const WordSort: React.FC<WordSortProps> = ({ setSelectedSort }) => {
   ];
   return (
     <>
-      <div className="mr-4 ml-4">Sort by</div>
+      <div>Sort by</div>
       <Select
         name="sort"
         options={options}

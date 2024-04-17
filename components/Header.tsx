@@ -106,9 +106,11 @@ const Header: React.FC = () => {
             ></path>
           </svg>
         </label>
-        <span className="text-3xl font-bold text-sky-800 m-auto">
-          JLPT Vocab
-        </span>
+        <Link href="/" legacyBehavior>
+          <span className="text-3xl font-bold text-sky-800 m-auto cursor-pointer hover:text-sky-900">
+            JLPT Vocab
+          </span>
+        </Link>
       </div>
     </nav>
   );
