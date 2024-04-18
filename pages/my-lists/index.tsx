@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Layout from "../../components/Layout";
 import LoadingScreen from "../../components/LoadingScreen";
+import NotAuthorised from "../../components/NotAuthorised";
 import {
   useDeleteListMutation,
   useGetMyListsQuery,
@@ -43,15 +44,7 @@ const MySavedLists = () => {
     }
   };
 
-  if (!session) {
-    return (
-      <Layout>
-        <div className="text-center text-error">
-          You need to login to view this page.
-        </div>
-      </Layout>
-    );
-  }
+  if (!session) return <NotAuthorised pageTitle="My Saved Lists" />;
 
   if (isLoading || isFetching)
     return <LoadingScreen pageTitle="My Saved Lists" />;

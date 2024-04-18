@@ -1,12 +1,15 @@
 import { GetServerSidePropsContext } from "next";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Layout from "../../../components/Layout";
 import LoadingScreen from "../../../components/LoadingScreen";
+import NotAuthorised from "../../../components/NotAuthorised";
 import TestCompleted from "../../../components/TestCompleted";
 import Word, { WordProps } from "../../../components/Word";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 
 const Test = ({ id }: { id: string }) => {
+  const { data: session } = useSession();
   const { isLoading, error, data } = useGetSavedListQuery({
     listId: id,
   });
@@ -46,6 +49,8 @@ const Test = ({ id }: { id: string }) => {
     setTestWords();
     setKnownWords([]);
   };
+
+  if (!session) return <NotAuthorised pageTitle="Test" />;
 
   if (isLoading) return <LoadingScreen pageTitle="Test" />;
 

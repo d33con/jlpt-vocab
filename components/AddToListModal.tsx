@@ -6,14 +6,16 @@ import {
   QueryActionCreatorResult,
   QueryDefinition,
 } from "@reduxjs/toolkit/query";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useState } from "react";
 import {
   useAddWordToNewListMutation,
   useAddWordToSavedListMutation,
   useGetMyListsQuery,
 } from "../redux/services/listsApi";
-import { WordProps } from "./Word";
 import { closeModal } from "../utils/modalControl";
+import { WordProps } from "./Word";
 
 const AddToListModal: React.FC<{
   word: WordProps;
@@ -36,6 +38,7 @@ const AddToListModal: React.FC<{
   >;
   autoRefetch?: boolean;
 }> = ({ word, refetch, autoRefetch }) => {
+  const { data: session } = useSession();
   const [postError, setPostError] = useState("");
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
@@ -114,40 +117,56 @@ const AddToListModal: React.FC<{
             ✕
           </button>
         </form>
-        {/* TODO: return link to login page if no session */}
-        <h3 className="font-bold text-lg">Add to saved list</h3>
-        <ul className="p-4">
-          {data &&
-            data.savedLists.map((list) => (
-              <li key={list.id} className="flex justify-between mb-4">
-                {list.name}
-                <button
-                  onClick={() => handleAddWordToSavedList(list.id)}
-                  className="btn btn-neutral btn-outline btn-sm"
-                >
-                  {isAdding ? "Adding" : "Add"}
+        {!session ? (
+          <>
+            <div className="text-center text-xl text-error my-16">
+              You need to login to save words.
+            </div>
+            <div className="text-center">
+              <Link href="/api/auth/signin" legacyBehavior>
+                <button className="btn btn-neutral btn-lg text-lg">
+                  Log In
                 </button>
-              </li>
-            ))}
-        </ul>
-        <div className="font-bold text-lg">Create a new list</div>
-        <div className="flex justify-between p-4">
-          <input
-            type="text"
-            placeholder="Enter new list name"
-            className="input input-bordered input-sm w-full max-w-xs"
-            value={newListName}
-            onChange={(e) => setNewListName(e.currentTarget.value)}
-          />
-          <button
-            onClick={handleAddWordToNewList}
-            className="btn btn-neutral btn-outline btn-sm"
-          >
-            {isAddingToNewList ? "Creating" : "Create"}
-          </button>
-        </div>
-        {inputError && (
-          <div className="text-error text-sm px-4">{inputError}</div>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <h3 className="font-bold text-lg">Add to saved list</h3>
+            <ul className="p-4">
+              {data &&
+                data.savedLists.map((list) => (
+                  <li key={list.id} className="flex justify-between mb-4">
+                    {list.name}
+                    <button
+                      onClick={() => handleAddWordToSavedList(list.id)}
+                      className="btn btn-neutral btn-outline btn-sm"
+                    >
+                      Add
+                    </button>
+                  </li>
+                ))}
+            </ul>
+            <div className="font-bold text-lg">Create a new list</div>
+            <div className="flex justify-between p-4">
+              <input
+                type="text"
+                placeholder="Enter new list name"
+                className="input input-bordered input-sm w-full max-w-xs"
+                value={newListName}
+                onChange={(e) => setNewListName(e.currentTarget.value)}
+              />
+              <button
+                onClick={handleAddWordToNewList}
+                className="btn btn-neutral btn-outline btn-sm"
+              >
+                Create
+              </button>
+            </div>
+            {inputError && (
+              <div className="text-error text-sm px-4">{inputError}</div>
+            )}
+          </>
         )}
       </div>
     </dialog>

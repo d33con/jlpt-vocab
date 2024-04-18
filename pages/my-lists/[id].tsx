@@ -8,6 +8,7 @@ import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";
 import LevelSelect from "../../components/LevelSelect";
 import LoadingScreen from "../../components/LoadingScreen";
+import NotAuthorised from "../../components/NotAuthorised";
 import SavedWord from "../../components/SavedWord";
 import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
@@ -122,17 +123,9 @@ const SavedList = ({ id }: { id: string }) => {
     setSelectedLevels(selectedOptions);
   };
 
-  if (!session) {
-    return (
-      <Layout>
-        <p className="text-center text-2xl">My Saved Words</p>
-        <div>You need to login to view this page.</div>
-      </Layout>
-    );
-  }
+  if (!session) return <NotAuthorised pageTitle="Saved List" />;
 
-  if (isLoading || isDeletingList)
-    return <LoadingScreen pageTitle="My Saved Words" />;
+  if (isLoading || isDeletingList) return <LoadingScreen />;
 
   if (error) {
     let errMsg: string;

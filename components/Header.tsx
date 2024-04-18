@@ -7,24 +7,25 @@ import JLPTLevels from "../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
 const Header: React.FC = () => {
+  const { data: session } = useSession();
   const isActive: (pathname: string) => boolean = (pathname) =>
     usePathname() === pathname;
-
-  const { data: session, status } = useSession();
 
   let left = null;
 
   let right = null;
 
-  if (status === "loading") {
-    right = (
-      <div className="ml-auto">
-        <div className="text-center loading loading-spinner loading-lg" />
-      </div>
+  if (!session) {
+    return (
+      <nav className="sticky top-0 z-10 p-8 text-center bg-gray-100/80 backdrop-blur-sm shadow-sm">
+        <Link href="/" legacyBehavior>
+          <span className="text-3xl font-bold text-sky-800 m-auto cursor-pointer hover:text-sky-900">
+            JLPT Vocab
+          </span>
+        </Link>
+      </nav>
     );
   }
-
-  if (!session) return null;
 
   if (session) {
     left = (
