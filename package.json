@@ -28,6 +28,7 @@
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-normalize": "^10.0.1",
     "postcss-preset-env": "^9.3.0",
+    "prisma": "^5.12.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-intersection-observer": "^9.5.3",
@@ -41,7 +42,6 @@
     "@types/node": "20.10.0",
     "@types/react": "18.2.38",
     "daisyui": "^4.7.2",
-    "prisma": "^5.11.0",
     "ts-node": "10.9.1",
     "typescript": "5.3.2"
   },
