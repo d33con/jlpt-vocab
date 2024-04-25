@@ -6,6 +6,9 @@ export interface SavedList {
   name: string;
   dateAdded: Date;
   words: WordProps[];
+  user: {
+    email: string;
+  };
 }
 
 export interface LevelCounts {

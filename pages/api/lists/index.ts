@@ -20,6 +20,11 @@ export default async function handle(
         },
         include: {
           words: true,
+          user: {
+            select: {
+              email: true,
+            },
+          },
         },
       });
 
@@ -31,7 +36,7 @@ export default async function handle(
         },
       });
 
-      res.status(200).json({ list, levelCounts });
+      return res.status(200).json({ list, levelCounts });
     } else {
       const savedLists = await prisma.savedWordsList.findMany({
         where: {

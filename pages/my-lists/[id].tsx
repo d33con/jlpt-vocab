@@ -123,7 +123,10 @@ const SavedList = ({ id }: { id: string }) => {
     setSelectedLevels(selectedOptions);
   };
 
-  if (!session) return <NotAuthorised pageTitle="Saved List" />;
+  const listBelongsToUser = session?.user?.email === data?.list?.user?.email;
+
+  if (!session || !listBelongsToUser)
+    return <NotAuthorised pageTitle="Saved List" />;
 
   if (isLoading || isDeletingList) return <LoadingScreen />;
 
