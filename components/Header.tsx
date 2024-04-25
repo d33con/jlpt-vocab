@@ -2,14 +2,14 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
 import JLPTLevels from "../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
-const Header: React.FC = () => {
+const Header = () => {
   const { data: session } = useSession();
-  const isActive: (pathname: string) => boolean = (pathname) =>
-    usePathname() === pathname;
+  const pathname = usePathname();
+
+  const isActive = (link: string) => link === pathname;
 
   let left = null;
 

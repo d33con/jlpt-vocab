@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import JLPTLevels from "../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
-const DrawerMenu: React.FC = () => {
-  const isActive: (pathname: string) => boolean = (pathname) =>
-    usePathname() === pathname;
-
+const DrawerMenu = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  const isActive = (link: string) => link === pathname;
 
   const handleCloseMenu = () => {
     document.getElementById("drawer-menu").click();
@@ -68,4 +68,5 @@ const DrawerMenu: React.FC = () => {
     </div>
   );
 };
+
 export default DrawerMenu;
