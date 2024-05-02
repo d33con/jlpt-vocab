@@ -14,11 +14,11 @@ import {
   useAddWordToSavedListMutation,
   useGetMyListsQuery,
 } from "../redux/services/listsApi";
+import { WordType } from "../types";
 import { closeModal } from "../utils/modalControl";
-import { WordProps } from "./Word";
 
 const AddToListModal: React.FC<{
-  word: WordProps;
+  word: WordType;
   refetch?: () => QueryActionCreatorResult<
     QueryDefinition<
       {
@@ -32,7 +32,7 @@ const AddToListModal: React.FC<{
         FetchBaseQueryMeta
       >,
       never,
-      WordProps,
+      WordType,
       "vocabApi"
     >
   >;

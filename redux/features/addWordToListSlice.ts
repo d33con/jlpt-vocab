@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { WordProps } from "../../components/Word";
+import { WordType } from "../../types";
 
 type AddWordState = {
-  word: WordProps | null;
+  word: WordType | null;
 };
 
 const initialState = {
@@ -13,7 +13,7 @@ export const addWordToList = createSlice({
   name: "addWordToList",
   initialState,
   reducers: {
-    setWord: (state, action: { payload: WordProps }) => {
+    setWord: (state, action: { payload: WordType }) => {
       state.word = action.payload;
     },
   },

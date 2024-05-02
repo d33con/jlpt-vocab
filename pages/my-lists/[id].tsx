@@ -10,14 +10,13 @@ import LevelSelect from "../../components/LevelSelect";
 import LoadingScreen from "../../components/LoadingScreen";
 import NotAuthorised from "../../components/NotAuthorised";
 import SavedWord from "../../components/SavedWord";
-import { WordProps } from "../../components/Word";
 import WordSort from "../../components/WordSort";
 import {
-  SavedListResponse,
   useDeleteListMutation,
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
+import { SavedListResponse, WordType } from "../../types";
 
 const SavedList = ({ id }: { id: string }) => {
   const { data: session } = useSession();
@@ -42,7 +41,7 @@ const SavedList = ({ id }: { id: string }) => {
         ) => selectedSort,
       ],
       (data, selectedLevels, selectedSort) => {
-        const filtered = data?.list.words.filter((word: WordProps) =>
+        const filtered = data?.list.words.filter((word: WordType) =>
           selectedLevels.length ? selectedLevels.includes(word.level) : word
         );
 
@@ -107,7 +106,7 @@ const SavedList = ({ id }: { id: string }) => {
     }
   };
 
-  const handleRemoveWordFromList = async (word: WordProps) => {
+  const handleRemoveWordFromList = async (word: WordType) => {
     try {
       await removewordFromList({ listId: data.list.id, word }); //.unwrap();
     } catch (error) {
@@ -194,7 +193,7 @@ const SavedList = ({ id }: { id: string }) => {
         </section>
         <section className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {(selectedLevels || selectedSort) && filteredSortedWords
-            ? filteredSortedWords.map((word: WordProps) => (
+            ? filteredSortedWords.map((word: WordType) => (
                 <SavedWord
                   word={word}
                   key={word.id}

@@ -7,9 +7,9 @@ import AddToListModal from "../../../components/AddToListModal";
 import Layout from "../../../components/Layout";
 import LoadingScreen from "../../../components/LoadingScreen";
 import SimpleWord from "../../../components/SimpleWord";
-import { WordProps } from "../../../components/Word";
 import { setWord } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { WordType } from "../../../types";
 import { showModal } from "../../../utils/modalControl";
 
 const BrowseLevel = ({ level }: { level: number }) => {
@@ -38,7 +38,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
     }
   }, [inView, level, fetchNextPage]);
 
-  const handleAddToList = (word: WordProps) => {
+  const handleAddToList = (word: WordType) => {
     dispatch(setWord(word));
     showModal("addToListModal");
   };
@@ -61,7 +61,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
         <section className="mt-8 w-2/3">
           {data?.pages.map((group, i) => (
             <Fragment key={i}>
-              {group.words.map((word: WordProps) => (
+              {group.words.map((word: WordType) => (
                 <SimpleWord
                   word={word}
                   key={word.id}

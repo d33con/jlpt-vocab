@@ -1,11 +1,11 @@
 import React from "react";
 import { useAppSelector } from "../redux/hooks";
-import { WordProps } from "./Word";
+import { WordType } from "../types";
 
 const SimpleWord: React.FC<{
-  word: WordProps;
+  word: WordType;
   key: number;
-  handleAddToList: (word: WordProps) => void;
+  handleAddToList: (word: WordType) => void;
 }> = ({ word, key, handleAddToList }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 

@@ -1,19 +1,9 @@
 import React from "react";
 import { useAppSelector } from "../redux/hooks";
-import kanjiRegex from "../utils/kanjiRegex";
+import { WordType } from "../types";
 import MeaningWithToggle from "./MeaningWithToggle";
 
-export type WordProps = {
-  id?: number;
-  word: string;
-  meaning: string;
-  furigana: string;
-  romaji: string;
-  level: number;
-  dateAdded: string;
-};
-
-const Word: React.FC<{ word: WordProps; loading?: boolean }> = ({
+const Word: React.FC<{ word: WordType; loading?: boolean }> = ({
   word,
   loading,
 }) => {

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { WordProps } from "../../components/Word";
+import { WordType } from "../../types";
 
 export const vocabApi = createApi({
   reducerPath: "vocabApi",
@@ -7,7 +7,7 @@ export const vocabApi = createApi({
     baseUrl: "https://jlpt-vocab-api.vercel.app/api/words",
   }),
   endpoints: (build) => ({
-    getNewWordByLevel: build.query<WordProps, { level: string }>({
+    getNewWordByLevel: build.query<WordType, { level: string }>({
       query: ({ level }) => `random?level=${level}`,
     }),
   }),

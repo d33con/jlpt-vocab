@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
-import { LevelCounts } from "../redux/services/listsApi";
+import { LevelCounts } from "../types";
 import JLPTLevels from "../utils/levels";
 
 interface LevelSelectProps {

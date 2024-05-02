@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import Word, { WordProps } from "./Word";
+import { useState } from "react";
+import { WordType } from "../types";
+import Word from "./Word";
 
 type SearchResult = {
   total: number;
   offset: number;
   limit: number;
-  words: WordProps[];
+  words: WordType[];
 };
 
 const Search = () => {

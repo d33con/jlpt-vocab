@@ -1,11 +1,11 @@
 import React from "react";
 import { useAppSelector } from "../redux/hooks";
+import { WordType } from "../types";
 import MeaningWithToggle from "./MeaningWithToggle";
-import { WordProps } from "./Word";
 
 const SavedWord: React.FC<{
-  word: WordProps;
-  removeWordFromList: (word: WordProps) => void;
+  word: WordType;
+  removeWordFromList: (word: WordType) => void;
 }> = ({ word, removeWordFromList }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 

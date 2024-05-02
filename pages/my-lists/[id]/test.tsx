@@ -5,16 +5,17 @@ import Layout from "../../../components/Layout";
 import LoadingScreen from "../../../components/LoadingScreen";
 import NotAuthorised from "../../../components/NotAuthorised";
 import TestCompleted from "../../../components/TestCompleted";
-import Word, { WordProps } from "../../../components/Word";
+import Word from "../../../components/Word";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
+import { WordType } from "../../types";
 
 const Test = ({ id }: { id: string }) => {
   const { data: session } = useSession();
   const { isLoading, error, data } = useGetSavedListQuery({
     listId: id,
   });
-  const [dontKnowWords, setDontKnowWords] = useState<WordProps[]>([]);
-  const [knownWords, setKnownWords] = useState<WordProps[]>([]);
+  const [dontKnowWords, setDontKnowWords] = useState<WordType[]>([]);
+  const [knownWords, setKnownWords] = useState<WordType[]>([]);
 
   useEffect(() => {
     if (data) {

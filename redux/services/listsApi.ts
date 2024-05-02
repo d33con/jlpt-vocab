@@ -1,27 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { WordProps } from "../../components/Word";
-
-export interface SavedList {
-  id: number;
-  name: string;
-  dateAdded: Date;
-  words: WordProps[];
-  user: {
-    email: string;
-  };
-}
-
-export interface LevelCounts {
-  _count: {
-    word: number;
-  };
-  level: number;
-}
-
-export interface SavedListResponse {
-  list: SavedList;
-  levelCounts: LevelCounts[];
-}
+import { SavedList, SavedListResponse, WordType } from "../../types";
 
 export const listsApi = createApi({
   reducerPath: "listsApi",
@@ -82,8 +60,8 @@ export const listsApi = createApi({
       invalidatesTags: (result, error, arg) => [{ type: "List", id: arg }],
     }),
     addWordToSavedList: build.mutation<
-      WordProps,
-      { listId: number; word: WordProps }
+      WordType,
+      { listId: number; word: WordType }
     >({
       query({ listId, word }) {
         return {
@@ -98,8 +76,8 @@ export const listsApi = createApi({
       ],
     }),
     addWordToNewList: build.mutation<
-      WordProps,
-      { listName: string; word: WordProps }
+      WordType,
+      { listName: string; word: WordType }
     >({
       query({ listName, word }) {
         return {
@@ -112,8 +90,8 @@ export const listsApi = createApi({
       invalidatesTags: ["List"],
     }),
     removeWordFromList: build.mutation<
-      { success: boolean; word: WordProps },
-      { listId: number; word: WordProps }
+      { success: boolean; word: WordType },
+      { listId: number; word: WordType }
     >({
       query({ listId, word }) {
         return {
