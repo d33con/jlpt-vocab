@@ -11,7 +11,7 @@ module.exports = {
         secondary: "#00FF00",
       },
       fontFamily: {
-        sans: ["var(--font-raleway)"],
+        sans: ["var(--font-sora)"],
       },
     },
   },

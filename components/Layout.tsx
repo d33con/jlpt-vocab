@@ -5,7 +5,7 @@ import Header from "./Header";
 
 const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-raleway",
+  variable: "--font-sora",
 });
 
 type Props = {
