@@ -6,17 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: "#FF0000",
-        secondary: "#00FF00",
-      },
       fontFamily: {
         sans: ["var(--font-sora)"],
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [require("daisyui")],
   daisyui: {
