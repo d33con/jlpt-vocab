@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { MultiValue } from "react-select";
 import Layout from "../../components/Layout";
 import LevelSelect from "../../components/LevelSelect";
@@ -98,7 +99,8 @@ const SavedList = ({ id }: { id: string }) => {
 
   const handleDeleteList = async () => {
     try {
-      await deleteList(data.list.id); //.unwrap();
+      await deleteList(data.list.id) //.unwrap();
+        .then(() => toast.success("List deleted"));
       router.push("/my-lists");
     } catch (error) {
       console.log(error);
@@ -107,7 +109,8 @@ const SavedList = ({ id }: { id: string }) => {
 
   const handleRemoveWordFromList = async (word: WordType) => {
     try {
-      await removewordFromList({ listId: data.list.id, word }); //.unwrap();
+      await removewordFromList({ listId: data.list.id, word }) //.unwrap();
+        .then(() => toast.success("Word removed from list"));
     } catch (error) {
       console.log(error);
     }
@@ -122,9 +125,9 @@ const SavedList = ({ id }: { id: string }) => {
   };
 
   const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
-  if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
-
   if (isLoading || isDeletingList) return <LoadingScreen />;
+
+  if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
 
   if (error) {
     let errMsg: string;

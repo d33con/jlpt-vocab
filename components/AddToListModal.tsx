@@ -9,6 +9,7 @@ import {
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   useAddWordToNewListMutation,
   useAddWordToSavedListMutation,
@@ -52,6 +53,7 @@ const AddToListModal: React.FC<{
     try {
       await addWordToSavedList({ listId, word })
         .then(() => closeModal("addToListModal"))
+        .then(() => toast.success("Word added to list"))
         .then(() => {
           if (autoRefetch) refetch();
         });
@@ -83,8 +85,10 @@ const AddToListModal: React.FC<{
       try {
         await addWordToNewList({ listName: newListName, word })
           .then(() => refetch())
-          .then(() => closeModal("addToListModal"));
+          .then(() => closeModal("addToListModal"))
+          .then(() => toast.success(`Word added to new list: ${newListName}`));
         setInputError("");
+        setNewListName("");
       } catch (error) {
         let errMsg: string;
 

@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import Layout from "../../components/Layout";
 import LoadingScreen from "../../components/LoadingScreen";
 import NotAuthorised from "../../components/NotAuthorised";
@@ -22,7 +23,32 @@ const MySavedLists = () => {
     try {
       await renameList({ listId, newName: newListName })
         .then(() => setShowRenameInput(null))
-        .then(() => setNewListName(""));
+        .then(() => setNewListName(""))
+        .then(() => toast.success(`Successfully renamed list: ${newListName}`));
+    } catch (error) {
+      let errMsg: string;
+
+      if ("status" in error) {
+        // you can access all properties of `FetchBaseQueryError` here
+        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+      } else {
+        // you can access all properties of `SerializedError` here
+        errMsg = error.message;
+      }
+      // setPostError(errMsg);
+      // toast({
+      //   title: 'An error occurred',
+      //   description: "We couldn't save your post, try again!",
+      //   status: 'error',
+      //   duration: 2000,
+      //   isClosable: true,
+      // })
+    }
+  };
+
+  const handleDeleteList = async (listId: number) => {
+    try {
+      await deleteList(listId).then(() => toast.success("List deleted"));
     } catch (error) {
       let errMsg: string;
 
@@ -109,7 +135,7 @@ const MySavedLists = () => {
                         </button>
                       </Link>
                       <button
-                        onClick={() => deleteList(list.id)}
+                        onClick={() => handleDeleteList(list.id)}
                         className="btn btn-error btn-outline btn-sm mr-4"
                       >
                         {isDeleting ? "Deleting..." : "Delete"}

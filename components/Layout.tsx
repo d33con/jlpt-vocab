@@ -1,5 +1,6 @@
 import { Sora } from "next/font/google";
 import React, { ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 import DrawerMenu from "./DrawerMenu";
 import Header from "./Header";
 
@@ -32,6 +33,10 @@ const Layout: React.FC<Props> = (props) => (
         <DrawerMenu />
       </div>
     </div>
+    <Toaster
+      position="bottom-center"
+      toastOptions={{ success: { duration: 4000 } }}
+    />
   </main>
 );
 
