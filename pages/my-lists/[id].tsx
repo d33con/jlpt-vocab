@@ -1,6 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { GetServerSidePropsContext } from "next";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import NotAuthorised from "../../components/NotAuthorised";
 import SavedWord from "../../components/SavedWord";
 import WordSort from "../../components/WordSort";
+import useCurrentUserIsOwner from "../../hooks/useCurrentUserIsOwner";
 import {
   useDeleteListMutation,
   useGetSavedListQuery,
@@ -19,7 +19,6 @@ import {
 import { SavedListResponse, WordType } from "../../types";
 
 const SavedList = ({ id }: { id: string }) => {
-  const { data: session } = useSession();
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
@@ -122,10 +121,8 @@ const SavedList = ({ id }: { id: string }) => {
     setSelectedLevels(selectedOptions);
   };
 
-  const listBelongsToUser = session?.user?.email === data?.list?.user?.email;
-
-  if (!session || !listBelongsToUser)
-    return <NotAuthorised pageTitle="Saved List" />;
+  const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
+  if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
 
   if (isLoading || isDeletingList) return <LoadingScreen />;
 

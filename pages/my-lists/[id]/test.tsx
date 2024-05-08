@@ -1,16 +1,15 @@
 import { GetServerSidePropsContext } from "next";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Layout from "../../../components/Layout";
 import LoadingScreen from "../../../components/LoadingScreen";
 import NotAuthorised from "../../../components/NotAuthorised";
 import TestCompleted from "../../../components/TestCompleted";
 import Word from "../../../components/Word";
+import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
-import { WordType } from "../../types";
+import { WordType } from "../../../types";
 
 const Test = ({ id }: { id: string }) => {
-  const { data: session } = useSession();
   const { isLoading, error, data } = useGetSavedListQuery({
     listId: id,
   });
@@ -51,7 +50,8 @@ const Test = ({ id }: { id: string }) => {
     setKnownWords([]);
   };
 
-  if (!session) return <NotAuthorised pageTitle="Test" />;
+  const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
+  if (!isListOwner) return <NotAuthorised pageTitle="Test" />;
 
   if (isLoading) return <LoadingScreen pageTitle="Test" />;
 
