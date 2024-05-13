@@ -51,9 +51,8 @@ const Test = ({ id }: { id: string }) => {
   };
 
   const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
-  if (!isListOwner) return <NotAuthorised pageTitle="Test" />;
-
   if (isLoading) return <LoadingScreen pageTitle="Test" />;
+  if (!isListOwner) return <NotAuthorised pageTitle="Test" />;
 
   if (error) {
     let errMsg: string;
