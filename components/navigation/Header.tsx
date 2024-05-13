@@ -2,7 +2,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import JLPTLevels from "../utils/levels";
+import JLPTLevels from "../../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
 
 const Header = () => {

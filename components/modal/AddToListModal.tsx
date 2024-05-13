@@ -14,9 +14,9 @@ import {
   useAddWordToNewListMutation,
   useAddWordToSavedListMutation,
   useGetMyListsQuery,
-} from "../redux/services/listsApi";
-import { WordType } from "../types";
-import { closeModal } from "../utils/modalControl";
+} from "../../redux/services/listsApi";
+import { WordType } from "../../types";
+import { closeModal } from "../../utils/modalControl";
 
 const AddToListModal: React.FC<{
   word: WordType;

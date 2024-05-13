@@ -2,9 +2,9 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Layout from "../../components/Layout";
-import LoadingScreen from "../../components/LoadingScreen";
-import NotAuthorised from "../../components/NotAuthorised";
+import Layout from "../../components/layout/Layout";
+import LoadingScreen from "../../components/layout/LoadingScreen";
+import NotAuthorised from "../../components/layout/NotAuthorised";
 import {
   useDeleteListMutation,
   useGetMyListsQuery,

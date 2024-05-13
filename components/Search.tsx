@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { WordType } from "../types";
-import Word from "./Word";
+import Word from "./word/Word";
 
 type SearchResult = {
   total: number;

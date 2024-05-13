@@ -1,10 +1,10 @@
 import { GetServerSidePropsContext } from "next";
 import { useEffect, useState } from "react";
-import Layout from "../../../components/Layout";
-import LoadingScreen from "../../../components/LoadingScreen";
-import NotAuthorised from "../../../components/NotAuthorised";
-import TestCompleted from "../../../components/TestCompleted";
-import Word from "../../../components/Word";
+import Layout from "../../../components/layout/Layout";
+import LoadingScreen from "../../../components/layout/LoadingScreen";
+import NotAuthorised from "../../../components/layout/NotAuthorised";
+import TestCompleted from "../../../components/test/TestCompleted";
+import Word from "../../../components/word/Word";
 import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 import { WordType } from "../../../types";

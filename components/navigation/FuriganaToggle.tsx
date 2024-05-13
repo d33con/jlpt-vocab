@@ -1,5 +1,5 @@
-import { toggle } from "../redux/features/furiganaSlice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { toggle } from "../../redux/features/furiganaSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 const FuriganaToggle = () => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);

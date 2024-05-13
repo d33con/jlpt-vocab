@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { MultiValue } from "react-select";
-import Layout from "../../components/Layout";
-import LevelSelect from "../../components/LevelSelect";
-import LoadingScreen from "../../components/LoadingScreen";
-import NotAuthorised from "../../components/NotAuthorised";
-import SavedWord from "../../components/SavedWord";
-import WordSort from "../../components/WordSort";
+import Layout from "../../components/layout/Layout";
+import LoadingScreen from "../../components/layout/LoadingScreen";
+import NotAuthorised from "../../components/layout/NotAuthorised";
+import LevelSelect from "../../components/list/LevelSelect";
+import WordSort from "../../components/list/WordSort";
+import SavedWord from "../../components/word/SavedWord";
 import useCurrentUserIsOwner from "../../hooks/useCurrentUserIsOwner";
 import {
   useDeleteListMutation,

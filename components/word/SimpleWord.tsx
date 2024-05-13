@@ -1,6 +1,6 @@
 import React from "react";
-import { useAppSelector } from "../redux/hooks";
-import { WordType } from "../types";
+import { useAppSelector } from "../../redux/hooks";
+import { WordType } from "../../types";
 
 const SimpleWord: React.FC<{
   word: WordType;

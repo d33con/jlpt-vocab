@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
-import { LevelCounts } from "../types";
-import JLPTLevels from "../utils/levels";
+import { LevelCounts } from "../../types";
+import JLPTLevels from "../../utils/levels";
 
 interface LevelSelectProps {
   filterWordList: (value: MultiValue<{}>) => void;

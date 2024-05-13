@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from "next";
-import AddToListModal from "../../../components/AddToListModal";
-import Layout from "../../../components/Layout";
-import Word from "../../../components/Word";
+import AddToListModal from "../../../components/modal/AddToListModal";
+import Layout from "../../../components/layout/Layout";
+import Word from "../../../components/word/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
 import { showModal } from "../../../utils/modalControl";
 

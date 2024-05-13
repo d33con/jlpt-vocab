@@ -1,8 +1,8 @@
 import { Sora } from "next/font/google";
 import React, { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
-import DrawerMenu from "./DrawerMenu";
-import Header from "./Header";
+import DrawerMenu from "../navigation/DrawerMenu";
+import Header from "../navigation/Header";
 
 const sora = Sora({
   subsets: ["latin"],
