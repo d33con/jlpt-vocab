@@ -103,7 +103,15 @@ const SavedList = ({ id }: { id: string }) => {
         .then(() => toast.success("List deleted"));
       router.push("/my-lists");
     } catch (error) {
-      console.log(error);
+      let errMsg: string;
+
+      if ("status" in error) {
+        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+      } else {
+        errMsg = error.message;
+      }
+
+      toast.error(`An error occurred deleting this list: ${errMsg}`);
     }
   };
 
@@ -112,7 +120,15 @@ const SavedList = ({ id }: { id: string }) => {
       await removewordFromList({ listId: data.list.id, word }) //.unwrap();
         .then(() => toast.success("Word removed from list"));
     } catch (error) {
-      console.log(error);
+      let errMsg: string;
+
+      if ("status" in error) {
+        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
+      } else {
+        errMsg = error.message;
+      }
+
+      toast.error(`An error occurred deleting this word: ${errMsg}`);
     }
   };
 
@@ -133,17 +149,15 @@ const SavedList = ({ id }: { id: string }) => {
     let errMsg: string;
 
     if ("status" in error) {
-      // you can access all properties of `FetchBaseQueryError` here
       errMsg = "error" in error ? error.error : JSON.stringify(error.data);
     } else {
-      // you can access all properties of `SerializedError` here
       errMsg = error.message;
     }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
         <div className="text-center">
-          Sorry there was an error fetching your words: {errMsg}
+          An error occurred when fetching this list: {errMsg}
         </div>
       </Layout>
     );

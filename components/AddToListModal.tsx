@@ -40,7 +40,6 @@ const AddToListModal: React.FC<{
   autoRefetch?: boolean;
 }> = ({ word, refetch, autoRefetch }) => {
   const { data: session } = useSession();
-  const [postError, setPostError] = useState("");
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
   const { isLoading, error, data, isFetching } = useGetMyListsQuery();
@@ -61,20 +60,12 @@ const AddToListModal: React.FC<{
       let errMsg: string;
 
       if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
         errMsg = "error" in error ? error.error : JSON.stringify(error.data);
       } else {
-        // you can access all properties of `SerializedError` here
         errMsg = error.message;
       }
-      setPostError(errMsg);
-      // toast({
-      //   title: 'An error occurred',
-      //   description: "We couldn't save your post, try again!",
-      //   status: 'error',
-      //   duration: 2000,
-      //   isClosable: true,
-      // })
+
+      toast.error(`An error occurred when adding this word: ${errMsg}`);
     }
   };
 
@@ -93,25 +84,15 @@ const AddToListModal: React.FC<{
         let errMsg: string;
 
         if ("status" in error) {
-          // you can access all properties of `FetchBaseQueryError` here
           errMsg = "error" in error ? error.error : JSON.stringify(error.data);
         } else {
-          // you can access all properties of `SerializedError` here
           errMsg = error.message;
         }
-        setPostError(errMsg);
-        // toast({
-        //   title: 'An error occurred',
-        //   description: "We couldn't save your post, try again!",
-        //   status: 'error',
-        //   duration: 2000,
-        //   isClosable: true,
-        // })
+
+        toast.error(`An error occurred when creating a new list: ${errMsg}`);
       }
     }
   };
-
-  if (postError) return <div>Sorry something went wrong: {postError}</div>;
 
   return (
     <dialog id="addToListModal" className="modal">

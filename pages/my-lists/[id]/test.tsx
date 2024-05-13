@@ -58,10 +58,8 @@ const Test = ({ id }: { id: string }) => {
     let errMsg: string;
 
     if ("status" in error) {
-      // you can access all properties of `FetchBaseQueryError` here
       errMsg = "error" in error ? error.error : JSON.stringify(error.data);
     } else {
-      // you can access all properties of `SerializedError` here
       errMsg = error.message;
     }
     return (

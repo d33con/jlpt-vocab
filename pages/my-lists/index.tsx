@@ -29,20 +29,12 @@ const MySavedLists = () => {
       let errMsg: string;
 
       if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
         errMsg = "error" in error ? error.error : JSON.stringify(error.data);
       } else {
-        // you can access all properties of `SerializedError` here
         errMsg = error.message;
       }
-      // setPostError(errMsg);
-      // toast({
-      //   title: 'An error occurred',
-      //   description: "We couldn't save your post, try again!",
-      //   status: 'error',
-      //   duration: 2000,
-      //   isClosable: true,
-      // })
+
+      toast.error(`An error occurred when renaming this list: ${errMsg}`);
     }
   };
 
@@ -53,20 +45,12 @@ const MySavedLists = () => {
       let errMsg: string;
 
       if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
         errMsg = "error" in error ? error.error : JSON.stringify(error.data);
       } else {
-        // you can access all properties of `SerializedError` here
         errMsg = error.message;
       }
-      // setPostError(errMsg);
-      // toast({
-      //   title: 'An error occurred',
-      //   description: "We couldn't save your post, try again!",
-      //   status: 'error',
-      //   duration: 2000,
-      //   isClosable: true,
-      // })
+
+      toast.error(`An error occurred when deleting this list: ${errMsg}`);
     }
   };
 
@@ -79,17 +63,15 @@ const MySavedLists = () => {
     let errMsg: string;
 
     if ("status" in error) {
-      // you can access all properties of `FetchBaseQueryError` here
       errMsg = "error" in error ? error.error : JSON.stringify(error.data);
     } else {
-      // you can access all properties of `SerializedError` here
       errMsg = error.message;
     }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Lists</p>
         <div className="text-center">
-          Sorry there was an error fetching your saved lists: {errMsg}
+          An error occurred when fetching this list: {errMsg}
         </div>
       </Layout>
     );
