@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,8 +15,6 @@ const DrawerMenu = () => {
     document.getElementById("drawer-menu").click();
   };
 
-  if (!session) return null;
-
   return (
     <div className="menu p-8 w-80 min-h-full bg-gray-100">
       <div className="flex justify-end mb-2">
@@ -27,26 +25,30 @@ const DrawerMenu = () => {
           ✕
         </button>
       </div>
-      <div className="flex justify-between text-gray-600">
-        <Image
-          src={session.user.image}
-          alt={session.user.name}
-          width={54}
-          height={54}
-          className="rounded"
-        />
-        <Link href="/my-lists" legacyBehavior>
-          <button
-            className={`btn btn-neutral btn-outline ${
-              isActive(`/my-lists`) && "btn-active"
-            }`}
-          >
-            My lists
-          </button>
-        </Link>
-        <FuriganaToggle />
-      </div>
-      <div className="divider"></div>
+      {session && (
+        <>
+          <div className="flex justify-between text-gray-600">
+            <Image
+              src={session.user.image}
+              alt={session.user.name}
+              width={54}
+              height={54}
+              className="rounded"
+            />
+            <Link href="/my-lists" legacyBehavior>
+              <button
+                className={`btn btn-neutral btn-outline ${
+                  isActive(`/my-lists`) && "btn-active"
+                }`}
+              >
+                My lists
+              </button>
+            </Link>
+            <FuriganaToggle />
+          </div>
+          <div className="divider"></div>
+        </>
+      )}
       <ul>
         {JLPTLevels.map((level) => (
           <li
@@ -62,9 +64,15 @@ const DrawerMenu = () => {
         ))}
       </ul>
       <div className="divider"></div>
-      <button onClick={() => signOut()} className="btn btn-neutral">
-        Log out
-      </button>
+      {session ? (
+        <button onClick={() => signOut()} className="btn btn-neutral">
+          Log out
+        </button>
+      ) : (
+        <button onClick={() => signIn()} className="btn btn-neutral">
+          Log in
+        </button>
+      )}
     </div>
   );
 };

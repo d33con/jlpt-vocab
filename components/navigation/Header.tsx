@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,14 +16,34 @@ const Header = () => {
   let right = null;
 
   if (!session) {
-    return (
-      <nav className="sticky top-0 z-10 p-8 text-center bg-gray-100/80 backdrop-blur-sm shadow-sm">
+    left = (
+      <div className="me-auto flex">
+        <div className="ml-auto">
+          {JLPTLevels.map((level) => (
+            <Link href={`/level/all/${level}`} legacyBehavior key={level}>
+              <button
+                className={`btn btn-neutral btn-outline mr-2 last-of-type:mr-4 ${
+                  isActive(`/level/all/${level}`) && "btn-active"
+                }`}
+              >
+                JLPT Level {level}
+              </button>
+            </Link>
+          ))}
+          <button onClick={() => signIn()} className="btn btn-neutral ml-4">
+            Log in
+          </button>
+        </div>
+      </div>
+    );
+    right = (
+      <div className="ml-auto">
         <Link href="/" legacyBehavior>
           <span className="text-3xl font-bold text-sky-800 m-auto cursor-pointer hover:text-sky-900">
             JLPT Vocab
           </span>
         </Link>
-      </nav>
+      </div>
     );
   }
 
