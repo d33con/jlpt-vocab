@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Layout from "../components/layout/Layout";
+import LatestUserLists from "../components/layout/LatestUserLists";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -27,6 +28,7 @@ const Home = () => {
           )}
         </div>
       </div>
+      <LatestUserLists />
     </Layout>
   );
 };
