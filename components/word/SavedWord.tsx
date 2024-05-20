@@ -2,6 +2,7 @@ import React from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { WordType } from "../../types";
 import MeaningWithToggle from "./MeaningWithToggle";
+import formatDate from "../../utils/formatDate";
 
 const SavedWord: React.FC<{
   word: WordType;
@@ -32,7 +33,7 @@ const SavedWord: React.FC<{
       <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
       <MeaningWithToggle meaning={word?.meaning} />
       <p className="text-xs text-gray-600 mt-4">
-        Added on: {dateAddedString.toLocaleString().slice(0, 10)}
+        Added on: {formatDate(word?.dateAdded)}
       </p>
     </div>
   );
