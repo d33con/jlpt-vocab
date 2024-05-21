@@ -42,10 +42,10 @@ const AddToListModal: React.FC<{
   const { data: session } = useSession();
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
-  const { isLoading, error, data, isFetching } = useGetMyListsQuery();
-  const [addWordToSavedList, { isLoading: isAdding }] =
+  const { isLoading, error, data } = useGetMyListsQuery();
+  const [addWordToSavedList, { isLoading: isAddingToSavedList }] =
     useAddWordToSavedListMutation();
-  const [addWordToNewList, { isLoading: isAddingToNewList }] =
+  const [addWordToNewList, { isLoading: isCreatingNewList }] =
     useAddWordToNewListMutation();
 
   const handleAddWordToSavedList = async (listId: number) => {
@@ -118,20 +118,31 @@ const AddToListModal: React.FC<{
         ) : (
           <>
             <h3 className="font-bold text-lg">Add to saved list</h3>
-            <ul className="p-4">
-              {data &&
-                data.savedLists.map((list) => (
-                  <li key={list.id} className="flex justify-between mb-4">
-                    {list.name}
-                    <button
-                      onClick={() => handleAddWordToSavedList(list.id)}
-                      className="btn btn-neutral btn-outline btn-sm"
-                    >
-                      Add
-                    </button>
-                  </li>
-                ))}
-            </ul>
+            {error && (
+              <div className="text-error text-sm px-4">
+                There was an error fetching your saved lists: {error.data}
+              </div>
+            )}
+            {isLoading || isAddingToSavedList ? (
+              <div className="flex justify-center">
+                <div className="loading loading-spinner loading-lg" />
+              </div>
+            ) : (
+              <ul className="p-4">
+                {data &&
+                  data.savedLists.map((list) => (
+                    <li key={list.id} className="flex justify-between mb-4">
+                      {list.name}
+                      <button
+                        onClick={() => handleAddWordToSavedList(list.id)}
+                        className="btn btn-neutral btn-outline btn-sm"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            )}
             <div className="font-bold text-lg">Create a new list</div>
             <div className="flex justify-between p-4">
               <input
@@ -145,7 +156,7 @@ const AddToListModal: React.FC<{
                 onClick={handleAddWordToNewList}
                 className="btn btn-neutral btn-outline btn-sm"
               >
-                Create
+                {isCreatingNewList ? "Creating..." : "Create"}
               </button>
             </div>
             {inputError && (
