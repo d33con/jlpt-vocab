@@ -1,8 +1,9 @@
 import { GetServerSidePropsContext } from "next";
-import AddToListModal from "../../../components/modal/AddToListModal";
 import Layout from "../../../components/layout/Layout";
+import AddToListModal from "../../../components/modal/AddToListModal";
 import Word from "../../../components/word/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
+import handleFetchErrors from "../../../utils/handleFetchErrors";
 import { showModal } from "../../../utils/modalControl";
 
 const Level = ({ level }: { level: string }) => {
@@ -18,7 +19,10 @@ const Level = ({ level }: { level: string }) => {
     <Layout>
       <div className="flex flex-col items-center justify-center w-full h-max">
         {error ? (
-          <div>Sorry something went wrong when getting a new word</div>
+          <div>
+            Sorry something went wrong when getting a new word:{" "}
+            {handleFetchErrors(error)}
+          </div>
         ) : word ? (
           <>
             <section className="mb-8 text-2xl">

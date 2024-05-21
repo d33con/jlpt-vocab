@@ -18,6 +18,7 @@ import {
   useRemoveWordFromListMutation,
 } from "../../redux/services/listsApi";
 import { SavedListResponse, WordType } from "../../types";
+import handleFetchErrors from "../../utils/handleFetchErrors";
 
 const SavedList = ({ id }: { id: string }) => {
   const router = useRouter();
@@ -103,15 +104,9 @@ const SavedList = ({ id }: { id: string }) => {
         .then(() => toast.success("List deleted"));
       router.push("/my-lists");
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred deleting this list: ${errMsg}`);
+      toast.error(
+        `An error occurred deleting this list: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -120,15 +115,9 @@ const SavedList = ({ id }: { id: string }) => {
       await removewordFromList({ listId: data.list.id, word }) //.unwrap();
         .then(() => toast.success("Word removed from list"));
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred deleting this word: ${errMsg}`);
+      toast.error(
+        `An error occurred deleting this word: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -146,18 +135,11 @@ const SavedList = ({ id }: { id: string }) => {
   if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
 
   if (error) {
-    let errMsg: string;
-
-    if ("status" in error) {
-      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-    } else {
-      errMsg = error.message;
-    }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
         <div className="text-center">
-          An error occurred when fetching this list: {errMsg}
+          An error occurred when fetching this list: {handleFetchErrors(error)}
         </div>
       </Layout>
     );

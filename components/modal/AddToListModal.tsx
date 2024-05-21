@@ -16,6 +16,7 @@ import {
   useGetMyListsQuery,
 } from "../../redux/services/listsApi";
 import { WordType } from "../../types";
+import handleFetchErrors from "../../utils/handleFetchErrors";
 import { closeModal } from "../../utils/modalControl";
 
 const AddToListModal: React.FC<{
@@ -57,15 +58,9 @@ const AddToListModal: React.FC<{
           if (autoRefetch) refetch();
         });
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred when adding this word: ${errMsg}`);
+      toast.error(
+        `An error occurred when adding this word: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -81,15 +76,11 @@ const AddToListModal: React.FC<{
         setInputError("");
         setNewListName("");
       } catch (error) {
-        let errMsg: string;
-
-        if ("status" in error) {
-          errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-        } else {
-          errMsg = error.message;
-        }
-
-        toast.error(`An error occurred when creating a new list: ${errMsg}`);
+        toast.error(
+          `An error occurred when creating a new list: ${handleFetchErrors(
+            error
+          )}`
+        );
       }
     }
   };
@@ -120,7 +111,8 @@ const AddToListModal: React.FC<{
             <h3 className="font-bold text-lg">Add to saved list</h3>
             {error && (
               <div className="text-error text-sm px-4">
-                There was an error fetching your saved lists: {error.data}
+                There was an error fetching your saved lists:{" "}
+                {handleFetchErrors(error)}
               </div>
             )}
             {isLoading || isAddingToSavedList ? (

@@ -11,6 +11,7 @@ import {
   useRenameListMutation,
 } from "../../redux/services/listsApi";
 import formatDate from "../../utils/formatDate";
+import handleFetchErrors from "../../utils/handleFetchErrors";
 
 const MySavedLists = () => {
   const { data: session } = useSession();
@@ -27,15 +28,9 @@ const MySavedLists = () => {
         .then(() => setNewListName(""))
         .then(() => toast.success(`Successfully renamed list: ${newListName}`));
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred when renaming this list: ${errMsg}`);
+      toast.error(
+        `An error occurred when renaming this list: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -43,15 +38,9 @@ const MySavedLists = () => {
     try {
       await deleteList(listId).then(() => toast.success("List deleted"));
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred when deleting this list: ${errMsg}`);
+      toast.error(
+        `An error occurred when deleting this list: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -61,18 +50,11 @@ const MySavedLists = () => {
     return <LoadingScreen pageTitle="My Saved Lists" />;
 
   if (error) {
-    let errMsg: string;
-
-    if ("status" in error) {
-      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-    } else {
-      errMsg = error.message;
-    }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Lists</p>
         <div className="text-center">
-          An error occurred when fetching this list: {errMsg}
+          An error occurred when fetching this list: {handleFetchErrors(error)}
         </div>
       </Layout>
     );
