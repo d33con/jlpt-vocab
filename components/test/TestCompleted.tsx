@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const TestCompleted = ({ restartTest }) => {
+const TestCompleted = ({ restartTest }: { restartTest: () => void }) => {
   return (
     <>
       <p className="text-center text-2xl mb-8">Test Completed</p>
