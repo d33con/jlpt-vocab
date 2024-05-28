@@ -17,7 +17,7 @@ import {
 } from "../../redux/services/listsApi";
 import { WordType } from "../../types";
 import handleFetchErrors from "../../utils/handleFetchErrors";
-import { closeModal } from "../../utils/modalControl";
+import { toggleModal } from "../../utils/toggleModal";
 
 interface AddToListModalProps {
   word: WordType;
@@ -58,7 +58,7 @@ const AddToListModal = ({
   const handleAddWordToSavedList = async (listId: number) => {
     try {
       await addWordToSavedList({ listId, word })
-        .then(() => closeModal("addToListModal"))
+        .then(() => toggleModal("addToListModal"))
         .then(() => toast.success("Word added to list"))
         .then(() => {
           if (autoRefetch) refetch();
@@ -77,7 +77,7 @@ const AddToListModal = ({
       try {
         await addWordToNewList({ listName: newListName, word })
           .then(() => refetch())
-          .then(() => closeModal("addToListModal"))
+          .then(() => toggleModal("addToListModal"))
           .then(() => toast.success(`Word added to new list: ${newListName}`));
         setInputError("");
         setNewListName("");

@@ -10,7 +10,7 @@ import SimpleWord from "../../../components/word/SimpleWord";
 import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
-import { showModal } from "../../../utils/modalControl";
+import { toggleModal } from "../../../utils/toggleModal";
 
 const BrowseLevel = ({ level }: { level: number }) => {
   const { ref, inView } = useInView();
@@ -40,7 +40,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
 
   const handleAddToList = (word: WordType) => {
     dispatch(setWordToAdd(word));
-    showModal("addToListModal");
+    toggleModal("addToListModal");
   };
 
   if (status == "error")

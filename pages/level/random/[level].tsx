@@ -4,7 +4,7 @@ import AddToListModal from "../../../components/modal/AddToListModal";
 import Word from "../../../components/word/Word";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
-import { showModal } from "../../../utils/modalControl";
+import { toggleModal } from "../../../utils/toggleModal";
 
 const Level = ({ level }: { level: string }) => {
   const {
@@ -37,7 +37,7 @@ const Level = ({ level }: { level: string }) => {
                 Next word
               </button>
               <button
-                onClick={() => showModal("addToListModal")}
+                onClick={() => toggleModal("addToListModal")}
                 className="btn btn-neutral btn-outline"
               >
                 Add to list
