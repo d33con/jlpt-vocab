@@ -19,7 +19,7 @@ import { WordType } from "../../types";
 import handleFetchErrors from "../../utils/handleFetchErrors";
 import { closeModal } from "../../utils/modalControl";
 
-const AddToListModal: React.FC<{
+interface AddToListModalProps {
   word: WordType;
   refetch?: () => QueryActionCreatorResult<
     QueryDefinition<
@@ -39,7 +39,13 @@ const AddToListModal: React.FC<{
     >
   >;
   autoRefetch?: boolean;
-}> = ({ word, refetch, autoRefetch }) => {
+}
+
+const AddToListModal = ({
+  word,
+  refetch,
+  autoRefetch,
+}: AddToListModalProps) => {
   const { data: session } = useSession();
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
