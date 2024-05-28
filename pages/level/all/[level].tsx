@@ -7,7 +7,7 @@ import AddToListModal from "../../../components/modal/AddToListModal";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
 import SimpleWord from "../../../components/word/SimpleWord";
-import { setWord } from "../../../redux/features/addWordToListSlice";
+import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
 import { showModal } from "../../../utils/modalControl";
@@ -39,7 +39,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
   }, [inView, level, fetchNextPage]);
 
   const handleAddToList = (word: WordType) => {
-    dispatch(setWord(word));
+    dispatch(setWordToAdd(word));
     showModal("addToListModal");
   };
 

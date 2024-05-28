@@ -13,11 +13,11 @@ export const addWordToList = createSlice({
   name: "addWordToList",
   initialState,
   reducers: {
-    setWord: (state, action: { payload: WordType }) => {
+    setWordToAdd: (state, action: { payload: WordType }) => {
       state.word = action.payload;
     },
   },
 });
 
-export const { setWord } = addWordToList.actions;
+export const { setWordToAdd } = addWordToList.actions;
 export default addWordToList.reducer;
