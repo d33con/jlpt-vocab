@@ -1,7 +1,13 @@
 type ModalIdOptions = "addToListModal";
 
-export const toggleModal = (elementId: ModalIdOptions) => {
+export const showModal = (elementId: ModalIdOptions) => {
   const modal = document.getElementById(elementId) as HTMLDialogElement | null;
 
-  return modal && modal.open ? modal.close() : modal.showModal();
+  if (modal) modal.showModal();
+};
+
+export const closeModal = (elementId: ModalIdOptions) => {
+  const modal = document.getElementById(elementId) as HTMLDialogElement | null;
+
+  if (modal) modal.close();
 };

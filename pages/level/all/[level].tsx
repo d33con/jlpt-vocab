@@ -10,11 +10,11 @@ import SimpleWord from "../../../components/word/SimpleWord";
 import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
-import { toggleModal } from "../../../utils/toggleModal";
+import { showModal } from "../../../utils/toggleModal";
 
 const BrowseLevel = ({ level }: { level: number }) => {
   const { ref, inView } = useInView();
-  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word); // useState not redux?
+  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word);
   const dispatch = useAppDispatch();
 
   const fetchWords = async ({ pageParam }) => {
@@ -40,7 +40,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
 
   const handleAddToList = (word: WordType) => {
     dispatch(setWordToAdd(word));
-    toggleModal("addToListModal");
+    showModal("addToListModal");
   };
 
   if (status == "error")
