@@ -11,6 +11,7 @@ import NotAuthorised from "../../components/layout/NotAuthorised";
 import LevelSelect from "../../components/list/LevelSelect";
 import WordSort from "../../components/list/WordSort";
 import SavedWord from "../../components/word/SavedWord";
+import { useConfirm } from "../../hooks/useConfirm";
 import useCurrentUserIsOwner from "../../hooks/useCurrentUserIsOwner";
 import {
   useDeleteListMutation,
@@ -28,6 +29,8 @@ const SavedList = ({ id }: { id: string }) => {
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
     listId: id,
   });
+  const { ask } = useConfirm();
+
   const selectFilteredSortedWords = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered and / or sorted results are correctly memoized
@@ -94,26 +97,31 @@ const SavedList = ({ id }: { id: string }) => {
       }),
     }
   );
-  const [removewordFromList, { isLoading: isDeletingWord }] =
-    useRemoveWordFromListMutation();
+  const [removewordFromList] = useRemoveWordFromListMutation();
   const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
 
   const handleDeleteList = async () => {
     try {
-      await deleteList(data.list.id) //.unwrap();
-        .then(() => toast.success("List deleted"));
+      const okToDelete = await ask("Are you sure?");
+      if (!okToDelete) return;
+
+      await deleteList(Number(id)).then(() => toast.success("List deleted"));
       router.push("/my-lists");
     } catch (error) {
       toast.error(
-        `An error occurred deleting this list: ${handleFetchErrors(error)}`
+        `An error occurred when deleting this list: ${handleFetchErrors(error)}`
       );
     }
   };
 
   const handleRemoveWordFromList = async (word: WordType) => {
     try {
-      await removewordFromList({ listId: data.list.id, word }) //.unwrap();
-        .then(() => toast.success("Word removed from list"));
+      const okToDelete = await ask("Are you sure?");
+      if (!okToDelete) return;
+
+      await removewordFromList({ listId: data.list.id, word }).then(() =>
+        toast.success("Word removed from list")
+      );
     } catch (error) {
       toast.error(
         `An error occurred deleting this word: ${handleFetchErrors(error)}`

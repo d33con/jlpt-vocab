@@ -5,6 +5,8 @@ import { useState } from "react";
 import "tailwindcss/tailwind.css";
 import { Providers } from "../redux/provider";
 import "../styles/globals.css";
+import DeleteConfirmationModal from "../components/modal/DeleteConfirmationModal";
+import { ConfirmContextProvider } from "../hooks/useConfirm";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [queryClient] = useState(
@@ -22,7 +24,10 @@ const App = ({ Component, pageProps }: AppProps) => {
     <Providers>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={pageProps.session}>
-          <Component {...pageProps} />
+          <ConfirmContextProvider>
+            <DeleteConfirmationModal />
+            <Component {...pageProps} />
+          </ConfirmContextProvider>
         </SessionProvider>
       </QueryClientProvider>
     </Providers>

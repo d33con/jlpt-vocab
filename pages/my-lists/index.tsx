@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Layout from "../../components/layout/Layout";
 import LoadingScreen from "../../components/layout/LoadingScreen";
 import NotAuthorised from "../../components/layout/NotAuthorised";
+import { useConfirm } from "../../hooks/useConfirm";
 import {
   useDeleteListMutation,
   useGetMyListsQuery,
@@ -20,6 +21,7 @@ const MySavedLists = () => {
   const { isLoading, error, data, isFetching } = useGetMyListsQuery();
   const [deleteList] = useDeleteListMutation();
   const [renameList, { isLoading: isRenaming }] = useRenameListMutation();
+  const { ask } = useConfirm();
 
   const handleRenameList = async (listId: number) => {
     try {
@@ -36,6 +38,9 @@ const MySavedLists = () => {
 
   const handleDeleteList = async (listId: number) => {
     try {
+      const okToDelete = await ask("Are you sure?");
+      if (!okToDelete) return;
+
       await deleteList(listId).then(() => toast.success("List deleted"));
     } catch (error) {
       toast.error(
