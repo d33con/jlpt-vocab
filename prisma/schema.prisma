@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Account {
@@ -23,8 +23,7 @@ model Account {
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId], name: "provider_providerAccountId")
   @@map("accounts")
@@ -46,14 +45,14 @@ model User {
   email           String?          @unique
   emailVerified   DateTime?        @map("email_verified")
   image           String?
-  createdAt       DateTime         @default(now()) @map(name: "created_at")
-  updatedAt       DateTime         @updatedAt @map(name: "updated_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  savedWordsLists SavedWordsList[]
+  words           Word[]
   accounts        Account[]
   sessions        Session[]
-  words           Word[]
-  savedWordsLists SavedWordsList[]
 
-  @@map(name: "users")
+  @@map("users")
 }
 
 model VerificationToken {
@@ -72,18 +71,18 @@ model Word {
   furigana         String
   romaji           String
   level            Int
-  user             User?           @relation(fields: [userId], references: [id])
   userId           Int?
-  dateAdded        DateTime        @default(now()) @map(name: "date_added")
-  SavedWordsList   SavedWordsList? @relation(fields: [savedWordsListId], references: [id])
+  dateAdded        DateTime        @default(now()) @map("date_added")
   savedWordsListId Int?
+  SavedWordsList   SavedWordsList? @relation(fields: [savedWordsListId], references: [id])
+  user             User?           @relation(fields: [userId], references: [id])
 }
 
 model SavedWordsList {
   id        Int      @id @default(autoincrement())
   name      String
-  words     Word[]
-  user      User?    @relation(fields: [userId], references: [id])
   userId    Int?
-  dateAdded DateTime @default(now()) @map(name: "date_added")
+  dateAdded DateTime @default(now()) @map("date_added")
+  user      User?    @relation(fields: [userId], references: [id])
+  words     Word[]
 }
