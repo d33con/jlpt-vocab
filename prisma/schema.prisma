@@ -80,6 +80,7 @@ model Word {
 
 model SavedWordsList {
   id        Int      @id @default(autoincrement())
+  slug      String?   @unique
   name      String
   userId    Int?
   dateAdded DateTime @default(now()) @map("date_added")
