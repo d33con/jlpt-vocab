@@ -10,6 +10,7 @@ export type WordType = {
 
 export type SavedList = {
   id: number;
+  slug: string;
   name: string;
   dateAdded: Date;
   words: WordType[];

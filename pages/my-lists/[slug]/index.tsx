@@ -5,29 +5,29 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { MultiValue } from "react-select";
-import Layout from "../../components/layout/Layout";
-import LoadingScreen from "../../components/layout/LoadingScreen";
-import NotAuthorised from "../../components/layout/NotAuthorised";
-import LevelSelect from "../../components/list/LevelSelect";
-import WordSort from "../../components/list/WordSort";
-import SavedWord from "../../components/word/SavedWord";
-import { useConfirm } from "../../hooks/useConfirm";
-import useCurrentUserIsOwner from "../../hooks/useCurrentUserIsOwner";
+import Layout from "../../../components/layout/Layout";
+import LoadingScreen from "../../../components/layout/LoadingScreen";
+import NotAuthorised from "../../../components/layout/NotAuthorised";
+import LevelSelect from "../../../components/list/LevelSelect";
+import WordSort from "../../../components/list/WordSort";
+import SavedWord from "../../../components/word/SavedWord";
+import { useConfirm } from "../../../hooks/useConfirm";
+import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import {
   useDeleteListMutation,
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
-} from "../../redux/services/listsApi";
-import { SavedListResponse, WordType } from "../../types";
-import handleFetchErrors from "../../utils/handleFetchErrors";
+} from "../../../redux/services/listsApi";
+import { SavedListResponse, WordType } from "../../../types";
+import handleFetchErrors from "../../../utils/handleFetchErrors";
 
-const SavedList = ({ id }: { id: string }) => {
+const SavedList = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("");
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
-    listId: id,
+    slug,
   });
   const { ask } = useConfirm();
 
@@ -85,7 +85,7 @@ const SavedList = ({ id }: { id: string }) => {
   }, [selectedLevels, selectedSort]);
 
   const { filteredSortedWords } = useGetSavedListQuery(
-    { listId: id },
+    { slug },
     {
       selectFromResult: ({ data }) => ({
         ...data,
@@ -105,7 +105,9 @@ const SavedList = ({ id }: { id: string }) => {
       const okToDelete = await ask("Are you sure?");
       if (!okToDelete) return;
 
-      await deleteList(Number(id)).then(() => toast.success("List deleted"));
+      await deleteList(Number(data.list.id)).then(() =>
+        toast.success("List deleted")
+      );
       router.push("/my-lists");
     } catch (error) {
       toast.error(
@@ -177,7 +179,7 @@ const SavedList = ({ id }: { id: string }) => {
           {`${data.list.words.length} words`}
         </p>
         <div className="flex justify-center mb-8">
-          <Link href={`/my-lists/${id}/test`} legacyBehavior>
+          <Link href={`/my-lists/${slug}/test`} legacyBehavior>
             <button className="btn btn-accent mr-2">Test list</button>
           </Link>
           <button
@@ -223,7 +225,7 @@ const SavedList = ({ id }: { id: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      id: context.query.id,
+      slug: context.query.slug,
     },
   };
 }

@@ -10,9 +10,9 @@ import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 import { WordType } from "../../../types";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
 
-const Test = ({ id }: { id: string }) => {
+const Test = ({ slug }: { slug: string }) => {
   const { isLoading, error, data } = useGetSavedListQuery({
-    listId: id,
+    slug,
   });
   const [dontKnowWords, setDontKnowWords] = useState<WordType[]>([]);
   const [knownWords, setKnownWords] = useState<WordType[]>([]);
@@ -112,7 +112,7 @@ const Test = ({ id }: { id: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      id: context.query.id,
+      slug: context.query.slug,
     },
   };
 }

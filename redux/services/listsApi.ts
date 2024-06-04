@@ -29,9 +29,9 @@ export const listsApi = createApi({
           : // an error occurred, but we still want to refetch this query when "Lists" is invalidated
             ["List"],
     }),
-    getSavedList: build.query<SavedListResponse, { listId: string }>({
-      query: ({ listId }) => `lists?id=${listId}`,
-      providesTags: (result, error, arg) => [{ type: "List", id: arg.listId }],
+    getSavedList: build.query<SavedListResponse, { slug: string }>({
+      query: ({ slug }) => `lists/${slug}`,
+      providesTags: (result, error, arg) => [{ type: "List", slug: arg.slug }],
     }),
     renameList: build.mutation<
       { success: boolean; list: SavedList },

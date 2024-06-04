@@ -99,7 +99,7 @@ const MySavedLists = () => {
                         showRenameInput === list.id ? "hidden" : "flex"
                       }`}
                     >
-                      <Link href={`/my-lists/${list.id}`} legacyBehavior>
+                      <Link href={`/my-lists/${list.slug}`} legacyBehavior>
                         <button className="btn btn-neutral btn-outline btn-sm mr-4">
                           Open
                         </button>
@@ -148,7 +148,7 @@ const MySavedLists = () => {
                         </button>
                       </div>
                     )}
-                    <Link href={`/my-lists/${list.id}/test`} legacyBehavior>
+                    <Link href={`/my-lists/${list.slug}/test`} legacyBehavior>
                       <button
                         className={`btn btn-accent btn-outline btn-sm mr-2 ${
                           showRenameInput === list.id ? "hidden" : ""
