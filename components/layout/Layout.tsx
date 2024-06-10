@@ -13,14 +13,14 @@ type Props = {
   children: ReactNode;
 };
 
-const Layout: React.FC<Props> = (props) => (
+const Layout = (props: Props) => (
   <main className={`${sora.variable} font-sans h-full min-h-screen bg-teal-50`}>
     <div className="drawer">
       <input id="drawer-menu" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         {/* Navbar */}
         <Header />
-        {/* Page content here */}
+        {/* Page content */}
         <div className="p-8">{props.children}</div>
       </div>
       <div className="drawer-side z-20">

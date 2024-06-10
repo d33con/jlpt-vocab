@@ -1,10 +1,10 @@
 import Select from "react-select";
 
-interface WordSortProps {
+const WordSort = ({
+  setSelectedSort,
+}: {
   setSelectedSort: (value: string) => void;
-}
-
-const WordSort: React.FC<WordSortProps> = ({ setSelectedSort }) => {
+}) => {
   const options = [
     {
       value: "date-asc",

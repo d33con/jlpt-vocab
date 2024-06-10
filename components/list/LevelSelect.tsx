@@ -9,11 +9,11 @@ interface LevelSelectProps {
   selectedLevels: number[];
 }
 
-const LevelSelect: React.FC<LevelSelectProps> = ({
+const LevelSelect = ({
   filterWordList,
   levelCounts,
   selectedLevels,
-}) => {
+}: LevelSelectProps) => {
   const [value, setValue] = useState<{ value: number; label: string }[]>([]);
   useEffect(() => {
     setValue(

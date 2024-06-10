@@ -1,10 +1,6 @@
 import { useState } from "react";
 
-type MeaningWithToggleProps = {
-  meaning: string;
-};
-
-const MeaningWithToggle = ({ meaning }: MeaningWithToggleProps) => {
+const MeaningWithToggle = ({ meaning }: { meaning: string }) => {
   const [showMeaning, setShowMeaning] = useState(false);
 
   return (

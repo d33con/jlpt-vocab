@@ -5,28 +5,32 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { MultiValue } from "react-select";
-import Layout from "../../components/layout/Layout";
-import LoadingScreen from "../../components/layout/LoadingScreen";
-import NotAuthorised from "../../components/layout/NotAuthorised";
-import LevelSelect from "../../components/list/LevelSelect";
-import WordSort from "../../components/list/WordSort";
-import SavedWord from "../../components/word/SavedWord";
-import useCurrentUserIsOwner from "../../hooks/useCurrentUserIsOwner";
+import Layout from "../../../components/layout/Layout";
+import LoadingScreen from "../../../components/layout/LoadingScreen";
+import NotAuthorised from "../../../components/layout/NotAuthorised";
+import LevelSelect from "../../../components/list/LevelSelect";
+import WordSort from "../../../components/list/WordSort";
+import SavedWord from "../../../components/word/SavedWord";
+import { useConfirm } from "../../../hooks/useConfirm";
+import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import {
   useDeleteListMutation,
   useGetSavedListQuery,
   useRemoveWordFromListMutation,
-} from "../../redux/services/listsApi";
-import { SavedListResponse, WordType } from "../../types";
+} from "../../../redux/services/listsApi";
+import { SavedListResponse, WordType } from "../../../types";
+import handleFetchErrors from "../../../utils/handleFetchErrors";
 
-const SavedList = ({ id }: { id: string }) => {
+const SavedList = ({ slug }: { slug: string }) => {
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("");
   const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
-    listId: id,
+    slug,
   });
+  const { ask } = useConfirm();
+
   const selectFilteredSortedWords = useMemo(() => {
     // Return a unique selector instance for this page so that
     // the filtered and / or sorted results are correctly memoized
@@ -81,7 +85,7 @@ const SavedList = ({ id }: { id: string }) => {
   }, [selectedLevels, selectedSort]);
 
   const { filteredSortedWords } = useGetSavedListQuery(
-    { listId: id },
+    { slug },
     {
       selectFromResult: ({ data }) => ({
         ...data,
@@ -93,42 +97,37 @@ const SavedList = ({ id }: { id: string }) => {
       }),
     }
   );
-  const [removewordFromList, { isLoading: isDeletingWord }] =
-    useRemoveWordFromListMutation();
+  const [removewordFromList] = useRemoveWordFromListMutation();
   const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
 
   const handleDeleteList = async () => {
     try {
-      await deleteList(data.list.id) //.unwrap();
-        .then(() => toast.success("List deleted"));
+      const okToDelete = await ask("Are you sure?");
+      if (!okToDelete) return;
+
+      await deleteList(Number(data.list.id)).then(() =>
+        toast.success("List deleted")
+      );
       router.push("/my-lists");
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred deleting this list: ${errMsg}`);
+      toast.error(
+        `An error occurred when deleting this list: ${handleFetchErrors(error)}`
+      );
     }
   };
 
   const handleRemoveWordFromList = async (word: WordType) => {
     try {
-      await removewordFromList({ listId: data.list.id, word }) //.unwrap();
-        .then(() => toast.success("Word removed from list"));
+      const okToDelete = await ask("Are you sure?");
+      if (!okToDelete) return;
+
+      await removewordFromList({ listId: data.list.id, word }).then(() =>
+        toast.success("Word removed from list")
+      );
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred deleting this word: ${errMsg}`);
+      toast.error(
+        `An error occurred deleting this word: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -146,18 +145,11 @@ const SavedList = ({ id }: { id: string }) => {
   if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
 
   if (error) {
-    let errMsg: string;
-
-    if ("status" in error) {
-      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-    } else {
-      errMsg = error.message;
-    }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">My Saved Words</p>
         <div className="text-center">
-          An error occurred when fetching this list: {errMsg}
+          An error occurred when fetching this list: {handleFetchErrors(error)}
         </div>
       </Layout>
     );
@@ -187,7 +179,7 @@ const SavedList = ({ id }: { id: string }) => {
           {`${data.list.words.length} words`}
         </p>
         <div className="flex justify-center mb-8">
-          <Link href={`/my-lists/${id}/test`} legacyBehavior>
+          <Link href={`/my-lists/${slug}/test`} legacyBehavior>
             <button className="btn btn-accent mr-2">Test list</button>
           </Link>
           <button
@@ -233,7 +225,7 @@ const SavedList = ({ id }: { id: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      id: context.query.id,
+      slug: context.query.slug,
     },
   };
 }

@@ -8,10 +8,11 @@ import Word from "../../../components/word/Word";
 import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 import { WordType } from "../../../types";
+import handleFetchErrors from "../../../utils/handleFetchErrors";
 
-const Test = ({ id }: { id: string }) => {
+const Test = ({ slug }: { slug: string }) => {
   const { isLoading, error, data } = useGetSavedListQuery({
-    listId: id,
+    slug,
   });
   const [dontKnowWords, setDontKnowWords] = useState<WordType[]>([]);
   const [knownWords, setKnownWords] = useState<WordType[]>([]);
@@ -55,18 +56,11 @@ const Test = ({ id }: { id: string }) => {
   if (!isListOwner) return <NotAuthorised pageTitle="Test" />;
 
   if (error) {
-    let errMsg: string;
-
-    if ("status" in error) {
-      errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-    } else {
-      errMsg = error.message;
-    }
     return (
       <Layout>
         <p className="text-center text-2xl mb-8">Test</p>
         <div className="text-center">
-          Sorry there was an error with this test: {errMsg}
+          Sorry there was an error with this test: {handleFetchErrors(error)}
         </div>
       </Layout>
     );
@@ -118,7 +112,7 @@ const Test = ({ id }: { id: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
-      id: context.query.id,
+      slug: context.query.slug,
     },
   };
 }

@@ -7,14 +7,14 @@ import AddToListModal from "../../../components/modal/AddToListModal";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
 import SimpleWord from "../../../components/word/SimpleWord";
-import { setWord } from "../../../redux/features/addWordToListSlice";
+import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
-import { showModal } from "../../../utils/modalControl";
+import { showModal } from "../../../utils/toggleModal";
 
 const BrowseLevel = ({ level }: { level: number }) => {
   const { ref, inView } = useInView();
-  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word); // useState not redux?
+  const wordToAdd = useAppSelector((state) => state.addWordToListReducer.word);
   const dispatch = useAppDispatch();
 
   const fetchWords = async ({ pageParam }) => {
@@ -39,7 +39,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
   }, [inView, level, fetchNextPage]);
 
   const handleAddToList = (word: WordType) => {
-    dispatch(setWord(word));
+    dispatch(setWordToAdd(word));
     showModal("addToListModal");
   };
 

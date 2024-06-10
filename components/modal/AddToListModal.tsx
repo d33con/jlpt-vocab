@@ -16,9 +16,10 @@ import {
   useGetMyListsQuery,
 } from "../../redux/services/listsApi";
 import { WordType } from "../../types";
-import { closeModal } from "../../utils/modalControl";
+import handleFetchErrors from "../../utils/handleFetchErrors";
+import { closeModal } from "../../utils/toggleModal";
 
-const AddToListModal: React.FC<{
+interface AddToListModalProps {
   word: WordType;
   refetch?: () => QueryActionCreatorResult<
     QueryDefinition<
@@ -38,14 +39,20 @@ const AddToListModal: React.FC<{
     >
   >;
   autoRefetch?: boolean;
-}> = ({ word, refetch, autoRefetch }) => {
+}
+
+const AddToListModal = ({
+  word,
+  refetch,
+  autoRefetch,
+}: AddToListModalProps) => {
   const { data: session } = useSession();
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
-  const { isLoading, error, data, isFetching } = useGetMyListsQuery();
-  const [addWordToSavedList, { isLoading: isAdding }] =
+  const { isLoading, error, data } = useGetMyListsQuery();
+  const [addWordToSavedList, { isLoading: isAddingToSavedList }] =
     useAddWordToSavedListMutation();
-  const [addWordToNewList, { isLoading: isAddingToNewList }] =
+  const [addWordToNewList, { isLoading: isCreatingNewList }] =
     useAddWordToNewListMutation();
 
   const handleAddWordToSavedList = async (listId: number) => {
@@ -57,15 +64,9 @@ const AddToListModal: React.FC<{
           if (autoRefetch) refetch();
         });
     } catch (error) {
-      let errMsg: string;
-
-      if ("status" in error) {
-        errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-      } else {
-        errMsg = error.message;
-      }
-
-      toast.error(`An error occurred when adding this word: ${errMsg}`);
+      toast.error(
+        `An error occurred when adding this word: ${handleFetchErrors(error)}`
+      );
     }
   };
 
@@ -81,15 +82,11 @@ const AddToListModal: React.FC<{
         setInputError("");
         setNewListName("");
       } catch (error) {
-        let errMsg: string;
-
-        if ("status" in error) {
-          errMsg = "error" in error ? error.error : JSON.stringify(error.data);
-        } else {
-          errMsg = error.message;
-        }
-
-        toast.error(`An error occurred when creating a new list: ${errMsg}`);
+        toast.error(
+          `An error occurred when creating a new list: ${handleFetchErrors(
+            error
+          )}`
+        );
       }
     }
   };
@@ -118,20 +115,32 @@ const AddToListModal: React.FC<{
         ) : (
           <>
             <h3 className="font-bold text-lg">Add to saved list</h3>
-            <ul className="p-4">
-              {data &&
-                data.savedLists.map((list) => (
-                  <li key={list.id} className="flex justify-between mb-4">
-                    {list.name}
-                    <button
-                      onClick={() => handleAddWordToSavedList(list.id)}
-                      className="btn btn-neutral btn-outline btn-sm"
-                    >
-                      Add
-                    </button>
-                  </li>
-                ))}
-            </ul>
+            {error && (
+              <div className="text-error text-sm px-4">
+                There was an error fetching your saved lists:{" "}
+                {handleFetchErrors(error)}
+              </div>
+            )}
+            {isLoading || isAddingToSavedList ? (
+              <div className="flex justify-center">
+                <div className="loading loading-spinner loading-lg" />
+              </div>
+            ) : (
+              <ul className="p-4">
+                {data &&
+                  data.savedLists.map((list) => (
+                    <li key={list.id} className="flex justify-between mb-4">
+                      {list.name}
+                      <button
+                        onClick={() => handleAddWordToSavedList(list.id)}
+                        className="btn btn-neutral btn-outline btn-sm"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            )}
             <div className="font-bold text-lg">Create a new list</div>
             <div className="flex justify-between p-4">
               <input
@@ -145,7 +154,7 @@ const AddToListModal: React.FC<{
                 onClick={handleAddWordToNewList}
                 className="btn btn-neutral btn-outline btn-sm"
               >
-                Create
+                {isCreatingNewList ? "Creating..." : "Create"}
               </button>
             </div>
             {inputError && (

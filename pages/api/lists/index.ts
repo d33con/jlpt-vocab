@@ -13,43 +13,17 @@ export default async function handle(
 
   // GET
   if (req.method == "GET") {
-    if (req.query.id) {
-      const list = await prisma.savedWordsList.findUnique({
-        where: {
-          id: Number(req.query.id),
+    const savedLists = await prisma.savedWordsList.findMany({
+      where: {
+        user: {
+          email: session.user.email,
         },
-        include: {
-          words: true,
-          user: {
-            select: {
-              email: true,
-            },
-          },
-        },
-      });
-
-      const levelCounts = await prisma.word.groupBy({
-        where: { savedWordsListId: Number(req.query.id) },
-        by: "level",
-        _count: {
-          word: true,
-        },
-      });
-
-      return res.status(200).json({ list, levelCounts });
-    } else {
-      const savedLists = await prisma.savedWordsList.findMany({
-        where: {
-          user: {
-            email: session.user.email,
-          },
-        },
-        include: {
-          words: true,
-        },
-      });
-      res.status(200).json({ savedLists });
-    }
+      },
+      include: {
+        words: true,
+      },
+    });
+    res.status(200).json({ savedLists });
   }
 
   // POST - add a word to a saved List
