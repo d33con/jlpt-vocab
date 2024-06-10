@@ -5,7 +5,7 @@ type FuriganaState = {
 };
 
 const initialState = {
-  value: true,
+  value: null,
 } as FuriganaState;
 
 export const furigana = createSlice({
