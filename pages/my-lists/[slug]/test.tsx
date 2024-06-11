@@ -2,10 +2,8 @@ import { GetServerSidePropsContext } from "next";
 import { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
-import NotAuthorised from "../../../components/layout/NotAuthorised";
 import TestCompleted from "../../../components/test/TestCompleted";
 import Word from "../../../components/word/Word";
-import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 import { WordType } from "../../../types";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
@@ -51,9 +49,7 @@ const Test = ({ slug }: { slug: string }) => {
     setKnownWords([]);
   };
 
-  const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
   if (isLoading) return <LoadingScreen pageTitle="Test" />;
-  if (!isListOwner) return <NotAuthorised pageTitle="Test" />;
 
   if (error) {
     return (

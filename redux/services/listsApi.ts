@@ -8,6 +8,14 @@ export const listsApi = createApi({
   }),
   tagTypes: ["List"],
   endpoints: (build) => ({
+    getAllLists: build.query<
+      {
+        allLists: SavedList[];
+      },
+      void
+    >({
+      query: () => "lists/all",
+    }),
     getMyLists: build.query<
       {
         savedLists: SavedList[];
@@ -109,6 +117,7 @@ export const listsApi = createApi({
 });
 
 export const {
+  useGetAllListsQuery,
   useGetMyListsQuery,
   useGetSavedListQuery,
   useDeleteListMutation,

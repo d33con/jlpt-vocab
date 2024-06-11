@@ -16,6 +16,7 @@ export type SavedList = {
   words: WordType[];
   user: {
     email: string;
+    name: string;
   };
 };
 

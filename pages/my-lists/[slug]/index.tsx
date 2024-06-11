@@ -1,5 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { GetServerSidePropsContext } from "next";
+import { Session } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -20,8 +22,9 @@ import {
 } from "../../../redux/services/listsApi";
 import { SavedListResponse, WordType } from "../../../types";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
-const SavedList = ({ slug }: { slug: string }) => {
+const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
   const router = useRouter();
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
@@ -142,7 +145,7 @@ const SavedList = ({ slug }: { slug: string }) => {
   const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
   if (isLoading || isDeletingList) return <LoadingScreen />;
 
-  if (!isListOwner) return <NotAuthorised pageTitle="Saved List" />;
+  if (!session) return <NotAuthorised pageTitle="Saved List" />;
 
   if (error) {
     return (
@@ -168,11 +171,19 @@ const SavedList = ({ slug }: { slug: string }) => {
     <Layout>
       <div>
         <div className="text-center mb-4">
-          <Link href="/my-lists/" legacyBehavior>
-            <button className="btn btn-ghost btn-sm">
-              &lt;- Back to my lists
-            </button>
-          </Link>
+          {isListOwner ? (
+            <Link href="/my-lists/" legacyBehavior>
+              <button className="btn btn-ghost btn-sm">
+                &lt;- Back to my lists
+              </button>
+            </Link>
+          ) : (
+            <Link href="/" legacyBehavior>
+              <button className="btn btn-ghost btn-sm">
+                &lt;- Back to lists
+              </button>
+            </Link>
+          )}
         </div>
         <p className="text-center text-2xl mb-4">{data.list.name}</p>
         <p className="text-center text-xl italic mb-8 text-gray-500">
@@ -182,12 +193,14 @@ const SavedList = ({ slug }: { slug: string }) => {
           <Link href={`/my-lists/${slug}/test`} legacyBehavior>
             <button className="btn btn-accent mr-2">Test list</button>
           </Link>
-          <button
-            onClick={handleDeleteList}
-            className="btn btn-error btn-outline"
-          >
-            Delete list
-          </button>
+          {isListOwner && (
+            <button
+              onClick={handleDeleteList}
+              className="btn btn-error btn-outline"
+            >
+              Delete list
+            </button>
+          )}
         </div>
         <section className="mb-8 flex flex-col lg:flex-row gap-6 justify-center items-center">
           <LevelSelect
@@ -204,6 +217,7 @@ const SavedList = ({ slug }: { slug: string }) => {
                   word={word}
                   key={word.id}
                   removeWordFromList={handleRemoveWordFromList}
+                  isListOwner={isListOwner}
                 />
               ))
             : data.list?.words.map((word) => (
@@ -211,6 +225,7 @@ const SavedList = ({ slug }: { slug: string }) => {
                   word={word}
                   key={word.id}
                   removeWordFromList={handleRemoveWordFromList}
+                  isListOwner={isListOwner}
                 />
               ))}
         </section>
@@ -226,6 +241,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       slug: context.query.slug,
+      session: await getServerSession(context.req, context.res, authOptions),
     },
   };
 }
