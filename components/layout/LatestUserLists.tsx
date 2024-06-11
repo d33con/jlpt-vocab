@@ -1,9 +1,17 @@
 import Link from "next/link";
 import { useGetAllListsQuery } from "../../redux/services/listsApi";
+import { SavedList } from "../../types";
 import formatDate from "../../utils/formatDate";
 
 const LatestUserLists = () => {
   const { isLoading, error, data, isFetching } = useGetAllListsQuery();
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center mt-8">
+        <div className="loading loading-spinner loading-lg" />
+      </div>
+    );
 
   return (
     <div className="flex flex-col justify-center">
@@ -12,12 +20,12 @@ const LatestUserLists = () => {
       </p>
       <div className="w-5/6 md:w-2/3 xl:w-1/2 mx-auto">
         {data?.allLists &&
-          data.allLists?.map((list) => (
-            <>
-              <div key={list.id} className="flex flex-wrap items-center mb-4">
+          data.allLists?.map((list: SavedList) => (
+            <div key={list.id}>
+              <div className="flex flex-wrap items-center mb-4">
                 <div className="flex flex-col md:flex-row w-full items-center justify-center md:justify-between px-8 mb-2 md:mb-0">
                   <div className="mb-2 md:mb-4 text-xl font-semibold hover:text-sky-600">
-                    <Link href={`/my-lists/${list.id}`} legacyBehavior>
+                    <Link href={`/my-lists/${list.slug}`} legacyBehavior>
                       {list.name}
                     </Link>
                   </div>
@@ -35,7 +43,7 @@ const LatestUserLists = () => {
                 </div>
               </div>
               <div className="divider" />
-            </>
+            </div>
           ))}
       </div>
     </div>
