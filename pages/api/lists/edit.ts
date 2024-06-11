@@ -30,13 +30,16 @@ export default async function handle(
         words: true,
       },
     });
-    // TODO : Delete Word instance to clean them up too
-    // const totalWordCount = await totalWords();
-    // const levelsCount = await groupByCount();
+
+    const wordToDelete = await prisma.word.delete({
+      where: {
+        id: req.body.id,
+      },
+    });
+
     res.status(200).json({
       list: result,
-      // total: totalWordCount,
-      // levels: levelsCount,
+      deletedWord: wordToDelete,
     });
   }
 }
