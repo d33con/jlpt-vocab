@@ -15,6 +15,19 @@ export const listsApi = createApi({
       void
     >({
       query: () => "lists/all",
+      providesTags: (result) =>
+        // is result available?
+        result
+          ? // successful query
+            [
+              ...result.allLists.map(({ id }) => ({
+                type: "List" as const,
+                id,
+              })),
+              "List",
+            ]
+          : // an error occurred, but we still want to refetch this query when "Lists" is invalidated
+            ["List"],
     }),
     getMyLists: build.query<
       {
@@ -24,22 +37,28 @@ export const listsApi = createApi({
     >({
       query: () => "lists",
       providesTags: (result) =>
-        // is result available?
         result
-          ? // successful query
-            [
+          ? [
               ...result.savedLists.map(({ id }) => ({
                 type: "List" as const,
                 id,
               })),
               "List",
             ]
-          : // an error occurred, but we still want to refetch this query when "Lists" is invalidated
-            ["List"],
+          : ["List"],
     }),
     getSavedList: build.query<SavedListResponse, { slug: string }>({
       query: ({ slug }) => `lists/${slug}`,
-      providesTags: (result, error, arg) => [{ type: "List", slug: arg.slug }],
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              {
+                type: "List" as const,
+                slug: arg.slug,
+              },
+              "List",
+            ]
+          : ["List"],
     }),
     renameList: build.mutation<
       { success: boolean; list: SavedList },
@@ -109,9 +128,7 @@ export const listsApi = createApi({
           body: JSON.stringify(word),
         };
       },
-      invalidatesTags: (result, error, arg) => [
-        { type: "List", id: arg.listId },
-      ],
+      invalidatesTags: ["List"],
     }),
   }),
 });
