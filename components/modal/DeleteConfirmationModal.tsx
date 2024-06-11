@@ -15,7 +15,7 @@ const DeleteConfirmationModal = () => {
         sora.variable
       } font-sans`}
     >
-      <div className="modal-box p-6">
+      <div className="modal-box h-32 my-auto p-6">
         <h3 className="font-bold text-xl text-center">{message}</h3>
         <div className="flex justify-center mt-8">
           <button onClick={confirm} className="btn btn-error btn-outline mr-8">
