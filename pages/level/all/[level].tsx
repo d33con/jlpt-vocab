@@ -62,11 +62,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
           {data?.pages.map((group, i) => (
             <Fragment key={i}>
               {group.words.map((word: WordType) => (
-                <SimpleWord
-                  word={word}
-                  key={word.id}
-                  handleAddToList={handleAddToList}
-                />
+                <SimpleWord word={word} handleAddToList={handleAddToList} />
               ))}
             </Fragment>
           ))}

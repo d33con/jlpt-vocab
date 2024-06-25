@@ -4,14 +4,13 @@ import { WordType } from "../../types";
 
 const SimpleWord: React.FC<{
   word: WordType;
-  key: number;
   handleAddToList: (word: WordType) => void;
-}> = ({ word, key, handleAddToList }) => {
+}> = ({ word, handleAddToList }) => {
   const furiganaStatus = useAppSelector((state) => state.furiganaReducer.value);
 
   return (
     <div
-      key={key}
+      key={word.id}
       className="rounded shadow-md mb-4 p-8 text-center bg-slate-200 flex flex-col lg:flex-row gap-8 lg:gap-0 items-center"
     >
       <div className="flex flex-col w-full lg:w-1/3 lg:text-start">
