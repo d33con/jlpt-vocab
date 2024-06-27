@@ -76,9 +76,11 @@ const AddToListModal = ({
     } else {
       try {
         await addWordToNewList({ listName: newListName, word })
-          .then(() => refetch())
           .then(() => closeModal("addToListModal"))
-          .then(() => toast.success(`Word added to new list: ${newListName}`));
+          .then(() => toast.success(`Word added to new list: ${newListName}`))
+          .then(() => {
+            if (autoRefetch) refetch();
+          });
         setInputError("");
         setNewListName("");
       } catch (error) {

@@ -14,6 +14,13 @@ export default async function handle(
   // POST - add a word to a new saved List
   if (req.method == "POST") {
     const { listName, word } = req.body;
+
+    const savingUser = await prisma.user.findFirst({
+      where: {
+        email: session.user.email,
+      },
+    });
+
     const result = await prisma.user.update({
       where: {
         email: session.user.email,
@@ -22,6 +29,11 @@ export default async function handle(
         savedWordsLists: {
           create: {
             name: listName,
+            slug: listName
+              .toLowerCase()
+              .replace(/ /g, "-")
+              .replace(/_/g, "-")
+              .concat(`-${savingUser.id}`),
             words: {
               create: {
                 word: word.word,
@@ -33,6 +45,9 @@ export default async function handle(
             },
           },
         },
+      },
+      include: {
+        savedWordsLists: true,
       },
     });
     res.status(200).json(result);
