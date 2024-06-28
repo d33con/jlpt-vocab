@@ -49,7 +49,9 @@ const AddToListModal = ({
   const { data: session } = useSession();
   const [newListName, setNewListName] = useState("");
   const [inputError, setInputError] = useState<string>("");
-  const { isLoading, error, data } = useGetMyListsQuery();
+  const { isLoading, error, data } = useGetMyListsQuery(null, {
+    skip: !session,
+  });
   const [addWordToSavedList, { isLoading: isAddingToSavedList }] =
     useAddWordToSavedListMutation();
   const [addWordToNewList, { isLoading: isCreatingNewList }] =
