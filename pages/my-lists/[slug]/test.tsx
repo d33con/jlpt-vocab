@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
 import TestCompleted from "../../../components/test/TestCompleted";
-import Word from "../../../components/word/Word";
+import WordCard from "../../../components/word/WordCard";
 import { useGetSavedListQuery } from "../../../redux/services/listsApi";
 import { WordType } from "../../../types";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
@@ -72,7 +72,7 @@ const Test = ({ slug }: { slug: string }) => {
           ) : (
             <>
               <p className="mb-4">Remaining: {dontKnowWords.length}</p>
-              <Word word={dontKnowWords[0]} />
+              <WordCard word={dontKnowWords[0]} />
               <div className="flex justify-around mt-12 w-1/4">
                 <div className="flex flex-col">
                   <div className="pb-2 italic text-green-500">

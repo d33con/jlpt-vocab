@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 import Layout from "../../../components/layout/Layout";
 import AddToListModal from "../../../components/modal/AddToListModal";
-import Word from "../../../components/word/Word";
+import WordCard from "../../../components/word/WordCard";
 import { useGetNewWordByLevelQuery } from "../../../redux/services/vocabApi";
 import handleFetchErrors from "../../../utils/handleFetchErrors";
 import { showModal } from "../../../utils/toggleModal";
@@ -28,7 +28,7 @@ const Level = ({ level }: { level: string }) => {
             <section className="mb-8 text-2xl">
               Random level {level} word
             </section>
-            <Word word={word} loading={isLoading || isFetching} />
+            <WordCard word={word} loading={isLoading || isFetching} />
             <div className="flex flex-col xl:flex-row justify-around mt-12 w-1/4">
               <button
                 onClick={() => refetch()}

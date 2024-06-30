@@ -3,8 +3,10 @@ import { useAppSelector } from "../../redux/hooks";
 import { WordType } from "../../types";
 import formatDate from "../../utils/formatDate";
 import MeaningWithToggle from "./MeaningWithToggle";
+import JapaneseWord from "./JapaneseWord";
+import KanjiDetail from "./KanjiDetail";
 
-const SavedWord: React.FC<{
+const SavedWordCard: React.FC<{
   word: WordType;
   removeWordFromList: (word: WordType) => void;
   isListOwner: boolean;
@@ -31,7 +33,8 @@ const SavedWord: React.FC<{
       >
         {word?.furigana}
       </p>
-      <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
+      <JapaneseWord word={word.word} />
+      <KanjiDetail />
       <MeaningWithToggle meaning={word?.meaning} />
       <p className="text-xs text-gray-600 mt-4">
         Added on: {formatDate(word?.dateAdded)}
@@ -40,4 +43,4 @@ const SavedWord: React.FC<{
   );
 };
 
-export default SavedWord;
+export default SavedWordCard;

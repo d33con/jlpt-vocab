@@ -1,9 +1,11 @@
 import React from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { WordType } from "../../types";
+import JapaneseWord from "./JapaneseWord";
+import KanjiDetail from "./KanjiDetail";
 import MeaningWithToggle from "./MeaningWithToggle";
 
-const Word: React.FC<{ word: WordType; loading?: boolean }> = ({
+const WordCard: React.FC<{ word: WordType; loading?: boolean }> = ({
   word,
   loading,
 }) => {
@@ -22,7 +24,8 @@ const Word: React.FC<{ word: WordType; loading?: boolean }> = ({
           >
             {word?.furigana}
           </p>
-          <p className="text-5xl text-gray-900 mb-8">{word?.word}</p>
+          <JapaneseWord word={word.word} />
+          <KanjiDetail />
           <MeaningWithToggle meaning={word?.meaning} />
         </>
       )}
@@ -30,4 +33,4 @@ const Word: React.FC<{ word: WordType; loading?: boolean }> = ({
   );
 };
 
-export default Word;
+export default WordCard;

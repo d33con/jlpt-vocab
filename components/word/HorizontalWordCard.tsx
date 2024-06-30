@@ -1,8 +1,10 @@
 import React from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { WordType } from "../../types";
+import JapaneseWord from "./JapaneseWord";
+import KanjiDetail from "./KanjiDetail";
 
-const SimpleWord: React.FC<{
+const HorizontalWordCard: React.FC<{
   word: WordType;
   handleAddToList: (word: WordType) => void;
 }> = ({ word, handleAddToList }) => {
@@ -23,8 +25,9 @@ const SimpleWord: React.FC<{
             {word?.furigana}
           </div>
         )}
-        <div className="text-4xl text-gray-900">{word?.word}</div>
+        <JapaneseWord word={word.word} horizontal />
       </div>
+      <KanjiDetail />
       <div className="text-xl text-gray-700 lg:me-auto" title={word?.meaning}>
         {word?.meaning.length > 35
           ? word.meaning.slice(0, 35).concat("...")
@@ -40,4 +43,4 @@ const SimpleWord: React.FC<{
   );
 };
 
-export default SimpleWord;
+export default HorizontalWordCard;
