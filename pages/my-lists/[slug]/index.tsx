@@ -12,7 +12,7 @@ import LoadingScreen from "../../../components/layout/LoadingScreen";
 import NotAuthorised from "../../../components/layout/NotAuthorised";
 import LevelSelect from "../../../components/list/LevelSelect";
 import WordSort from "../../../components/list/WordSort";
-import SavedWord from "../../../components/word/SavedWord";
+import SavedWordCard from "../../../components/word/SavedWordCard";
 import { useConfirm } from "../../../hooks/useConfirm";
 import useCurrentUserIsOwner from "../../../hooks/useCurrentUserIsOwner";
 import {
@@ -213,7 +213,7 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
         <section className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {(selectedLevels || selectedSort) && filteredSortedWords
             ? filteredSortedWords.map((word: WordType) => (
-                <SavedWord
+                <SavedWordCard
                   word={word}
                   key={word.id}
                   removeWordFromList={handleRemoveWordFromList}
@@ -221,7 +221,7 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
                 />
               ))
             : data.list?.words.map((word) => (
-                <SavedWord
+                <SavedWordCard
                   word={word}
                   key={word.id}
                   removeWordFromList={handleRemoveWordFromList}

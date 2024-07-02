@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import AddToListModal from "../../../components/modal/AddToListModal";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
-import SimpleWord from "../../../components/word/SimpleWord";
+import HorizontalWordCard from "../../../components/word/HorizontalWordCard";
 import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
@@ -62,7 +62,10 @@ const BrowseLevel = ({ level }: { level: number }) => {
           {data?.pages.map((group, i) => (
             <Fragment key={i}>
               {group.words.map((word: WordType) => (
-                <SimpleWord word={word} handleAddToList={handleAddToList} />
+                <HorizontalWordCard
+                  word={word}
+                  handleAddToList={handleAddToList}
+                />
               ))}
             </Fragment>
           ))}
