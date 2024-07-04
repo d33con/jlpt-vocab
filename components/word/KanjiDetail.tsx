@@ -7,6 +7,11 @@ const KanjiDetail = () => {
   const kanjiCharacter = useAppSelector(
     (state) => state.setKanjiCharacterReducer.kanjiCharacter
   );
+  const kanjiToggleActive = useAppSelector(
+    (state) => state.showKanjiReducer.value
+  );
+  const skipShowingKanjiTooltip = !kanjiCharacter || !kanjiToggleActive;
+
   const {
     isLoading,
     isFetching,
@@ -14,11 +19,12 @@ const KanjiDetail = () => {
     data: kanjiDetail,
   } = useGetKanjiDetailsQuery(
     { kanji: kanjiCharacter },
-    { skip: !kanjiCharacter }
+    { skip: skipShowingKanjiTooltip }
   );
 
   return (
-    kanjiDetail && (
+    kanjiDetail &&
+    !skipShowingKanjiTooltip && (
       <Tooltip anchorSelect=".kanji">
         <div className="p-4">
           {error && (

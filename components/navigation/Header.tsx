@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import JLPTLevels from "../../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
+import ShowKanjiToggle from "./ShowKanjiToggle";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -23,7 +24,9 @@ const Header = () => {
             <Link href={`/level/all/${level}`} legacyBehavior key={level}>
               <button
                 className={`btn btn-neutral btn-outline mr-2 last-of-type:mr-4 ${
-                  isActive(`/level/all/${level}`) && "btn-active"
+                  (isActive(`/level/all/${level}`) ||
+                    isActive(`/level/random/${level}`)) &&
+                  "btn-active"
                 }`}
               >
                 JLPT Level {level}
@@ -63,7 +66,9 @@ const Header = () => {
           <Link href={`/level/all/${level}`} legacyBehavior key={level}>
             <button
               className={`btn btn-neutral btn-outline mr-2 last-of-type:mr-4 ${
-                isActive(`/level/all/${level}`) && "btn-active"
+                (isActive(`/level/all/${level}`) ||
+                  isActive(`/level/random/${level}`)) &&
+                "btn-active"
               }`}
             >
               JLPT Level {level}
@@ -71,18 +76,19 @@ const Header = () => {
           </Link>
         ))}
         <FuriganaToggle />
+        <ShowKanjiToggle />
       </div>
     );
     right = (
       <div className="ml-auto">
-        <div className="flex justify-center items-center pr-4 text-gray-600">
-          <span>Welcome, {session.user.name}</span>
+        <div className="flex justify-center items-center pr-4 text-gray-500">
+          <span>{session.user.name}</span>
           <Image
             src={session.user.image}
             alt={session.user.name}
             width={54}
             height={54}
-            className="rounded mx-4"
+            className="rounded mx-2"
           />
           <Link href="/my-lists" legacyBehavior>
             <button

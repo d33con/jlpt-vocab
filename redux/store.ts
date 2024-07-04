@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import furiganaReducer from "./features/furiganaSlice";
 import addWordToListReducer from "./features/addWordToListSlice";
 import setKanjiCharacterReducer from "./features/setKanjiCharacterSlice";
+import showKanjiReducer from "./features/showKanjiSlice";
 import { vocabApi } from "./services/vocabApi";
 import { listsApi } from "./services/listsApi";
 import { kanjiApi } from "./services/kanjiApi";
@@ -11,6 +12,7 @@ export const store = configureStore({
     furiganaReducer,
     addWordToListReducer,
     setKanjiCharacterReducer,
+    showKanjiReducer,
     [vocabApi.reducerPath]: vocabApi.reducer,
     [listsApi.reducerPath]: listsApi.reducer,
     [kanjiApi.reducerPath]: kanjiApi.reducer,

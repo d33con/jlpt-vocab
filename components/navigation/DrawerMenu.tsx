@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import JLPTLevels from "../../utils/levels";
 import FuriganaToggle from "./FuriganaToggle";
+import ShowKanjiToggle from "./ShowKanjiToggle";
 
 const DrawerMenu = () => {
   const { data: session } = useSession();
@@ -27,7 +28,7 @@ const DrawerMenu = () => {
       </div>
       {session && (
         <>
-          <div className="flex justify-between text-gray-600">
+          <div className="flex justify-between items-center text-gray-600">
             <Image
               src={session.user.image}
               alt={session.user.name}
@@ -35,6 +36,7 @@ const DrawerMenu = () => {
               height={54}
               className="rounded"
             />
+            <span>{session.user.name}</span>
             <Link href="/my-lists" legacyBehavior>
               <button
                 className={`btn btn-neutral btn-outline ${
@@ -44,7 +46,10 @@ const DrawerMenu = () => {
                 My lists
               </button>
             </Link>
+          </div>
+          <div className="flex justify-between text-gray-600 mt-8">
             <FuriganaToggle />
+            <ShowKanjiToggle />
           </div>
           <div className="divider"></div>
         </>
@@ -53,7 +58,9 @@ const DrawerMenu = () => {
         {JLPTLevels.map((level) => (
           <li
             className={`text-xl mb-2 text-gray-600 hover:text-gray-800 cursor-pointer ${
-              isActive(`/level/all/${level}`) && "btn-active"
+              (isActive(`/level/all/${level}`) ||
+                isActive(`/level/random/${level}`)) &&
+              "btn-active"
             }`}
             key={level}
           >
