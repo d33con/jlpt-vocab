@@ -11,6 +11,7 @@ import { setWordToAdd } from "../../../redux/features/addWordToListSlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { WordType } from "../../../types";
 import { showModal } from "../../../utils/toggleModal";
+import ScrollToTopButton from "../../../components/navigation/ScrollToTopButton";
 
 const BrowseLevel = ({ level }: { level: number }) => {
   const { ref, inView } = useInView();
@@ -72,6 +73,7 @@ const BrowseLevel = ({ level }: { level: number }) => {
           <div ref={ref} className="h-1"></div>
         </section>
         <AddToListModal word={wordToAdd} />
+        <ScrollToTopButton />
       </div>
     </Layout>
   );
