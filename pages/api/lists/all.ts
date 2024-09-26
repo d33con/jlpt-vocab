@@ -16,6 +16,9 @@ export default async function handle(
           },
         },
       },
+      orderBy: {
+        dateAdded: "desc",
+      },
     });
     res.status(200).json({ allLists });
   }
