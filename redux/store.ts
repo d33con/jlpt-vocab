@@ -1,13 +1,34 @@
 import { configureStore } from "@reduxjs/toolkit";
-import furiganaReducer from "./features/furiganaSlice";
 import addWordToListReducer from "./features/addWordToListSlice";
+import furiganaReducer from "./features/furiganaSlice";
 import setKanjiCharacterReducer from "./features/setKanjiCharacterSlice";
 import showKanjiReducer from "./features/showKanjiSlice";
-import { vocabApi } from "./services/vocabApi";
-import { listsApi } from "./services/listsApi";
+import { listenerMiddleware } from "./middleware";
 import { kanjiApi } from "./services/kanjiApi";
+import { listsApi } from "./services/listsApi";
+import { vocabApi } from "./services/vocabApi";
+
+const localStorageFuriganaState =
+  typeof window !== "undefined"
+    ? JSON.parse(localStorage.getItem("furigana") || "null")
+    : null;
+
+const localStorageKanjiState =
+  typeof window !== "undefined"
+    ? JSON.parse(localStorage.getItem("kanji") || "null")
+    : null;
 
 export const store = configureStore({
+  preloadedState: {
+    furiganaReducer:
+      localStorageFuriganaState === null
+        ? { value: true }
+        : localStorageFuriganaState,
+    showKanjiReducer:
+      localStorageKanjiState === null
+        ? { value: true }
+        : localStorageKanjiState,
+  },
   reducer: {
     furiganaReducer,
     addWordToListReducer,
@@ -23,6 +44,7 @@ export const store = configureStore({
       vocabApi.middleware,
       listsApi.middleware,
       kanjiApi.middleware,
+      listenerMiddleware.middleware,
     ]),
 });
 
