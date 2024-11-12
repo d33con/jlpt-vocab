@@ -11,15 +11,13 @@ export default async function handle(
 
   if (!session) return res.status(401).send({ message: "Unauthorized" });
 
-  const slug = Array.isArray(req.query.slug)
-    ? req.query.slug[0]
-    : req.query.slug;
+  const { slug, page, limit } = req.query;
 
   // GET
   if (req.method == "GET") {
     const list = await prisma.savedWordsList.findUnique({
       where: {
-        slug,
+        slug: slug as string,
       },
       include: {
         words: true,
@@ -31,6 +29,14 @@ export default async function handle(
       },
     });
 
+    const wordList = await prisma.word.findMany({
+      where: {
+        savedWordsListId: list.id,
+      },
+      take: Number(limit),
+      skip: (Number(page) - 1) * Number(limit),
+    });
+
     const levelCounts = await prisma.word.groupBy({
       where: { savedWordsListId: list.id },
       by: "level",
@@ -39,6 +45,6 @@ export default async function handle(
       },
     });
 
-    return res.status(200).json({ list, levelCounts });
+    return res.status(200).json({ list, levelCounts, wordList });
   }
 }

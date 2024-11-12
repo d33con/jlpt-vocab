@@ -35,6 +35,7 @@ export type SavedList = {
 
 export type SavedListResponse = {
   list: SavedList;
+  wordList: WordType[];
   levelCounts: LevelCounts[];
 };
 

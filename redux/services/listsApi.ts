@@ -47,18 +47,22 @@ export const listsApi = createApi({
             ]
           : ["List"],
     }),
-    getSavedList: build.query<SavedListResponse, { slug: string }>({
-      query: ({ slug }) => `lists/${slug}`,
+    getSavedList: build.query<
+      SavedListResponse,
+      { slug: string; page: number; limit: number }
+    >({
+      query: ({ slug, page = 1, limit = 8 }) =>
+        `lists/${slug}?page=${page}&limit=${limit}`,
       providesTags: (result, error, arg) =>
         result
           ? [
-              {
+              ...result.wordList.map(({ id }) => ({
                 type: "List" as const,
-                slug: arg.slug,
-              },
-              "List",
+                id,
+              })),
+              { type: "List", id: "PARTIAL-LIST" },
             ]
-          : ["List"],
+          : [{ type: "List", id: "PARTIAL-LIST" }],
     }),
     renameList: build.mutation<
       { success: boolean; list: SavedList },
@@ -128,7 +132,10 @@ export const listsApi = createApi({
           body: JSON.stringify(word),
         };
       },
-      invalidatesTags: ["List"],
+      invalidatesTags: (result, error, id) => [
+        { type: "List", id: id.listId },
+        { type: "List", id: "PARTIAL-LIST" },
+      ],
     }),
   }),
 });

@@ -26,11 +26,15 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 
 const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
   const router = useRouter();
+  const PER_PAGE = 8;
 
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [selectedSort, setSelectedSort] = useState<string>("");
-  const { isLoading, error, data, isFetching, refetch } = useGetSavedListQuery({
+  const { isLoading, error, data, isFetching } = useGetSavedListQuery({
     slug,
+    page,
+    limit: PER_PAGE,
   });
   const { ask } = useConfirm();
 
@@ -48,7 +52,7 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
         ) => selectedSort,
       ],
       (data, selectedLevels, selectedSort) => {
-        const filtered = data?.list.words.filter((word: WordType) =>
+        const filtered = data?.wordList.filter((word: WordType) =>
           selectedLevels.length ? selectedLevels.includes(word.level) : word
         );
 
@@ -85,10 +89,10 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
         return filtered ?? [];
       }
     );
-  }, [selectedLevels, selectedSort]);
+  }, [selectedLevels, selectedSort, page]);
 
   const { filteredSortedWords } = useGetSavedListQuery(
-    { slug },
+    { slug, page, limit: PER_PAGE },
     {
       selectFromResult: ({ data }) => ({
         ...data,
@@ -100,6 +104,7 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
       }),
     }
   );
+
   const [removewordFromList] = useRemoveWordFromListMutation();
   const [deleteList, { isLoading: isDeletingList }] = useDeleteListMutation();
 
@@ -143,7 +148,7 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
   };
 
   const isListOwner = useCurrentUserIsOwner(data?.list?.user?.email);
-  if (isLoading || isDeletingList) return <LoadingScreen />;
+  if (isLoading || isDeletingList || isFetching) return <LoadingScreen />;
 
   if (!session) return <NotAuthorised pageTitle="Saved List" />;
 
@@ -229,6 +234,29 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
                 />
               ))}
         </section>
+        {filteredSortedWords.length > PER_PAGE ||
+          (data.list.words.length > PER_PAGE && (
+            <section>
+              <div className="join grid grid-cols-2 w-1/4 mx-auto mt-8">
+                <button
+                  className={`join-item btn btn-outline ${
+                    page === 1 && "btn-disabled"
+                  }`}
+                  onClick={() => setPage((prev) => prev - 1)}
+                >
+                  Previous
+                </button>
+                <button
+                  className={`join-item btn btn-outline ${
+                    page > data.list.words.length / PER_PAGE && "btn-disabled"
+                  }`}
+                  onClick={() => setPage((prev) => prev + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            </section>
+          ))}
       </div>
     </Layout>
   );
