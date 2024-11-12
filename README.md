@@ -19,6 +19,5 @@ TODO
 Pagination of words on saved list page
 Card flip animations
 Copy other user list to your lists
-local storage for furigana / kanji / theme state
 change my-lists/ to lists/[user.id]/[slug]
 dark/light mode
