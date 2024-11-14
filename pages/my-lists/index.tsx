@@ -159,7 +159,7 @@ const MySavedLists = () => {
                     </Link>
                   </div>
                   <div className="flex flex-grow items-center justify-center md:justify-end mt-4 lg:mt-0 pe-8 font-light text-xs">
-                    Added on: {formatDate(list.dateAdded)}
+                    Created on: {formatDate(list.dateAdded)}
                   </div>
                 </div>
                 <div className="divider" />
