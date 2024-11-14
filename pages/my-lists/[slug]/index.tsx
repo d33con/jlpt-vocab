@@ -63,8 +63,8 @@ const SavedList = ({ slug, session }: { slug: string; session: Session }) => {
           case "date-desc":
             filtered.sort(
               (a, b) =>
-                new Date(a.dateAdded).getTime() +
-                new Date(b.dateAdded).getTime()
+                new Date(b.dateAdded).getTime() -
+                new Date(a.dateAdded).getTime()
             );
             break;
           case "level-asc":
