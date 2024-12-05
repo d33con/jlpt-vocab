@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "../../../lib/prisma";
 import { authOptions } from "../auth/[...nextauth]";
+import urlSafeString from "../../../utils/urlSafeString";
 
 export default async function handle(
   req: NextApiRequest,
@@ -29,11 +30,7 @@ export default async function handle(
         savedWordsLists: {
           create: {
             name: listName,
-            slug: listName
-              .toLowerCase()
-              .replace(/ /g, "-")
-              .replace(/_/g, "-")
-              .concat(`-${savingUser.id}`),
+            slug: urlSafeString(listName, savingUser.id),
             words: {
               create: {
                 word: word.word,

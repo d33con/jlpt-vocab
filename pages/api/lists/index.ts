@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import prisma from "../../../lib/prisma";
 import { authOptions } from "../auth/[...nextauth]";
+import urlSafeString from "../../../utils/urlSafeString";
 
 export default async function handle(
   req: NextApiRequest,
@@ -51,12 +52,18 @@ export default async function handle(
 
   // PATCH - rename list
   if (req.method == "PATCH") {
+    const savingUser = await prisma.user.findFirst({
+      where: {
+        email: session.user.email,
+      },
+    });
     const result = await prisma.savedWordsList.update({
       where: {
         id: Number(req.query.id),
       },
       data: {
         name: req.body,
+        slug: urlSafeString(req.body, savingUser.id),
       },
     });
     res.status(200).json({
