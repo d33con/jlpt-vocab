@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import LoadingScreen from "../../../components/layout/LoadingScreen";
 import TestCompleted from "../../../components/test/TestCompleted";
@@ -15,12 +15,6 @@ const Test = ({ slug }: { slug: string }) => {
   const [dontKnowWords, setDontKnowWords] = useState<WordType[]>([]);
   const [knownWords, setKnownWords] = useState<WordType[]>([]);
 
-  useEffect(() => {
-    if (data) {
-      setTestWords();
-    }
-  }, [data]);
-
   const setTestWords = () => {
     const shuffled = [...data.list.words];
 
@@ -32,6 +26,8 @@ const Test = ({ slug }: { slug: string }) => {
     setDontKnowWords(shuffled);
     setKnownWords([]);
   };
+
+  setTestWords();
 
   const handleKnownWord = () => {
     const knownWord = dontKnowWords.shift();
